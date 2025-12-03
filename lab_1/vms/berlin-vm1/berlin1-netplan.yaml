@@ -5,7 +5,7 @@ network:
     ens3:
       addresses:
       - 192.168.122.100/24 
-      gateway4: 192.168.122.1
+      #gateway4: 192.168.122.1
 
     ens4:
       addresses:
@@ -15,6 +15,8 @@ network:
         - to: 0.0.0.0/0
           via: 10.8.0.3
           metric: 100
+        - to: 10.0.0.0/8
+          via: 10.8.0.1
         - to: fc00:0::/32
           via: fc00:0:0800:0::1
       nameservers:
