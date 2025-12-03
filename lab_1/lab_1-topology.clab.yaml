@@ -64,13 +64,13 @@ topology:
       exec:
         - sh /usr/local/bin/network-config.sh
 
-    berlin-net0:
+    berlin1-fe:
       kind: bridge
-    berlin-net1:
+    berlin2-fe:
       kind: bridge
-    berlin-net2:
+    berlin3-fe:
       kind: bridge
-    berlin-net3:
+    berlin4-fe:
       kind: bridge
 
   links:
@@ -82,11 +82,11 @@ topology:
     - endpoints: ["xrd01:Gi0-0-0-3", "amsterdam:eth2"]
     - endpoints: ["xrd02:Gi0-0-0-1", "xrd03:Gi0-0-0-0"]
     - endpoints: ["xrd02:Gi0-0-0-2", "xrd06:Gi0-0-0-1"]
-    - endpoints: ["xrd02:Gi0-0-0-3", "berlin-net0:xrd02-Gi0-0-0-3"]
-    - endpoints: ["xrd02:Gi0-0-0-4", "berlin-net1:xrd02-Gi0-0-0-4"]
+    - endpoints: ["xrd02:Gi0-0-0-3", "berlin1-fe:xrd02-Gi0-0-0-3"]
+    - endpoints: ["xrd02:Gi0-0-0-4", "berlin2-fe:xrd02-Gi0-0-0-4"]
     - endpoints: ["xrd03:Gi0-0-0-1", "xrd04:Gi0-0-0-0"]
-    - endpoints: ["xrd03:Gi0-0-0-2", "berlin-net2:xrd03-Gi0-0-0-2"]
-    - endpoints: ["xrd03:Gi0-0-0-3", "berlin-net3:xrd03-Gi0-0-0-3"]
+    - endpoints: ["xrd03:Gi0-0-0-2", "berlin3-fe:xrd03-Gi0-0-0-2"]
+    - endpoints: ["xrd03:Gi0-0-0-3", "berlin4-fe:xrd03-Gi0-0-0-3"]
     - endpoints: ["xrd04:Gi0-0-0-1", "xrd07:Gi0-0-0-1"]
     - endpoints: ["xrd05:Gi0-0-0-1", "xrd04:Gi0-0-0-2"]
     - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]

@@ -115,3 +115,101 @@
       ignore_errors: yes
 
 
+- name: berlin-vm3
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: define virsh network berlin3-fe
+      command: virsh net-define ../lab_1/vms/berlin-vm3/berlin3-fe.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin3-fe
+      command: virsh net-start berlin3-fe
+      ignore_errors: yes
+
+    - name: define virsh network berlin3-be
+      command: virsh net-define ../lab_1/vms/berlin-vm3/berlin3-be.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin3-be
+      command: virsh net-start berlin3-be
+      ignore_errors: yes
+
+    - name: add berlin3-fe bridge
+      command: brctl addbr berlin3-fe
+      ignore_errors: yes
+
+    - name: berlin3-fe link up
+      command: ip link set berlin3-fe up
+      ignore_errors: yes
+
+    - name: berlin3-fe ip address
+      command: ip addr add 10.8.2.3/24 dev berlin3-fe
+      ignore_errors: yes
+
+    - name: add berlin3-be bridge
+      command: brctl addbr berlin3-be
+      ignore_errors: yes
+
+    - name: berlin3-be link up
+      command: ip link set berlin3-be up
+      ignore_errors: yes
+
+    # - name: define virsh domain
+    #   command: virsh define ../lab_1/vms/berlin-vm3/berlin-vm3.xml
+    #   ignore_errors: yes
+      
+    # - name: start Berlin VM
+    #   command: virsh start berlin-vm3
+    #   ignore_errors: yes
+
+- name: berlin-vm4
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: define virsh network berlin4-fe
+      command: virsh net-define ../lab_1/vms/berlin-vm4/berlin4-fe.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin4-fe
+      command: virsh net-start berlin4-fe
+      ignore_errors: yes
+
+    - name: define virsh network berlin4-be
+      command: virsh net-define ../lab_1/vms/berlin-vm4/berlin4-be.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin4-be
+      command: virsh net-start berlin4-be
+      ignore_errors: yes
+
+    - name: add berlin4-fe bridge
+      command: brctl addbr berlin4-fe
+      ignore_errors: yes
+
+    - name: berlin4-fe link up
+      command: ip link set berlin4-fe up
+      ignore_errors: yes
+
+    - name: berlin4-fe ip address
+      command: ip addr add 10.8.3.3/24 dev berlin4-fe
+      ignore_errors: yes
+
+    - name: add berlin4-be bridge
+      command: brctl addbr berlin4-be
+      ignore_errors: yes
+
+    - name: berlin4-be link up
+      command: ip link set berlin4-be up
+      ignore_errors: yes
+
+    # - name: define virsh domain
+    #   command: virsh define ../lab_1/vms/berlin-vm4/berlin-vm4.xml
+    #   ignore_errors: yes
+      
+    # - name: start Berlin VM
+    #   command: virsh start berlin-vm4
+    #   ignore_errors: yes
+

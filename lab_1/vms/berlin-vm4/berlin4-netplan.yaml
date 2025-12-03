@@ -1,0 +1,31 @@
+# berlin netplan
+
+network:
+  ethernets:
+    ens3:
+      addresses:
+      - 192.168.122.103/24 
+      gateway4: 192.168.122.1
+
+    ens4:
+      addresses:
+      - 10.8.3.2/24
+      - fc00:0:0800:3::2/64
+      routes:
+        - to: 0.0.0.0/0
+          via: 10.8.3.3
+          metric: 100
+        - to: fc00:0::/32
+          via: fc00:0:0800:3::1
+      nameservers:
+        addresses:
+        - 8.8.8.8
+        search:
+        - demo.dcloud.cisco.com
+    ens5:
+      addresses:
+      - fcbb:0:0800:3::/64
+      routes:
+        - to: fcbb:0::/32
+          via: fcbb:0:0800:3::1
+  version: 2
