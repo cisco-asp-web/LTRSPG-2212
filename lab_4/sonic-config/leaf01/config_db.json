@@ -1,0 +1,50 @@
+{
+    "DEVICE_METADATA": {
+        "localhost": {
+            "mac": "02:42:ac:14:06:81",
+            "hostname": "leaf01",
+            "type": "LeafRouter",
+            "bgp_asn": "65201",
+            "docker_routing_config_mode": "split"
+        }
+    },
+    
+    "LOOPBACK_INTERFACE": {
+        "Loopback0": {},
+        "Loopback0|10.0.0.201/32": {},
+        "Loopback0|fc00:0:1201::1/128": {}
+    },
+
+    "VRF": {
+        "Vrf1": {}
+    },
+
+    "INTERFACE": {
+        "Ethernet0": {
+            "ipv6_use_link_local_only": "enable"
+        },
+        "Ethernet4": {
+            "ipv6_use_link_local_only": "enable"
+        },
+        "Ethernet8": {
+            "ipv6_use_link_local_only": "enable"
+        },
+        "Ethernet12": {
+            "ipv6_use_link_local_only": "enable"
+        },
+        "Ethernet16": {},
+        "Ethernet16|200.1.100.1/24": {},
+        "Ethernet16|2001:db8:1001:0::1/64": {},
+        "Ethernet20": {
+            "vrf_name": "Vrf1"
+        },
+        "Ethernet20|200.1.101.1/24": {
+            "vrf_name": "Vrf1"
+        },
+        "Ethernet20|2001:db8:1001:1::1/64": {
+            "vrf_name": "Vrf1"
+        }
+    }
+}
+
+

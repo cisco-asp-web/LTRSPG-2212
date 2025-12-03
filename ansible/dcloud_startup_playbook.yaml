@@ -1,0 +1,116 @@
+# ansible-playbook -e "ansible_user=dcloud ansible_ssh_pass=C1sco12345 ansible_sudo_pass=C1sco12345" /home/dcloud/LTRSPG-2212/ansible/dcloud_startup_playbook.yaml -vv
+
+- name: Update the Git Repo
+  hosts: localhost
+  become: false
+  tasks:
+
+    - name: git pull to update repo on localhost
+      command: git pull
+      args:
+        chdir: /home/cisco/LTRSPG-2212
+      ignore_errors: yes
+
+- name: berlin-vm1
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: define virsh network berlin1-fe
+      command: virsh net-define ../lab_1/vms/berlin-vm1/berlin1-fe.xml
+      ignore_errors: yes
+
+    - name: start virsh network berlin1-fe
+      command: virsh net-start berlin1-fe
+      ignore_errors: yes
+
+    - name: define virsh network berlin1-be
+      command: virsh net-define ../lab_1/vms/berlin-vm1/berlin1-be.xml
+      ignore_errors: yes
+
+    - name: start virsh network berlin1-be
+      command: virsh net-start berlin1-be
+      ignore_errors: yes
+
+    - name: add berlin1-fe bridge
+      command: brctl addbr berlin1-fe
+      ignore_errors: yes
+
+    - name: berlin1-fe link up
+      command: ip link set berlin1-fe up
+      ignore_errors: yes
+
+    - name: berlin1-fe ip address
+      command: ip addr add 10.8.0.3/24 dev berlin1-fe
+      ignore_errors: yes
+
+    - name: berlin1-fe masquerade
+      command: iptables -t nat -A POSTROUTING -o ens160 -j MASQUERADE 
+      ignore_errors: yes
+
+    - name: add berlin1-be bridge
+      command: brctl addbr berlin1-be
+      ignore_errors: yes
+
+    - name: berlin1-be link up
+      command: ip link set berlin1-be up
+      ignore_errors: yes
+
+    - name: define virsh domain
+      command: virsh define ../lab_1/vms/berlin-vm1/berlin1.xml
+      ignore_errors: yes
+
+    - name: start Berlin VM
+      command: virsh start berlin-vm1
+      ignore_errors: yes
+
+- name: berlin-vm2
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: define virsh network berlin2-fe
+      command: virsh net-define ../lab_1/vms/berlin-vm2/berlin2-fe.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin2-fe
+      command: virsh net-start berlin2-fe
+      ignore_errors: yes
+
+    - name: define virsh network berlin2-be
+      command: virsh net-define ../lab_1/vms/berlin-vm2/berlin2-be.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin2-be
+      command: virsh net-start berlin2-be
+      ignore_errors: yes
+
+    - name: add berlin2-fe bridge
+      command: brctl addbr berlin2-fe
+      ignore_errors: yes
+      
+    - name: berlin2-fe link up
+      command: ip link set berlin2-fe up
+      ignore_errors: yes
+
+    - name: berlin2-fe ip address
+      command: ip addr add 10.8.1.3/24 dev berlin2-fe
+      ignore_errors: yes
+
+    - name: add berlin2-be bridge
+      command: brctl addbr berlin2-be
+      ignore_errors: yes
+      
+    - name: berlin2-be link up
+      command: ip link set berlin2-be up
+      ignore_errors: yes
+
+    - name: define virsh domain
+      command: virsh define ../lab_1/vms/berlin-vm2/berlin2.xml
+      ignore_errors: yes
+
+    - name: start Berlin VM
+      command: virsh start berlin-vm2
+      ignore_errors: yes
+
+

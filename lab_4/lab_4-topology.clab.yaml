@@ -1,0 +1,190 @@
+name: sonic
+
+mgmt:
+  network: mgt-net
+  ipv4-subnet: 172.20.6.0/24
+  
+topology:
+  nodes:
+
+    leaf00:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.128
+
+    leaf01:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.129
+
+    leaf02:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.130
+
+    leaf03:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.131
+
+    spine00:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.192
+
+    spine01:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.193
+
+    spine02:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.194
+
+    spine03:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.195
+
+    bv00:
+      kind: generic_vm
+      image: vrnetlab/canonical_ubuntu:noble
+      mgmt-ipv4: 172.20.6.224
+      exec:
+        - ip addr add 200.0.100.2/24 dev eth1
+        - ip addr add 2001:db8:1000:0::2/64 dev eth1
+        - ip -6 route add fc00:0::/32 via 2001:db8:1000:0::1 dev eth1
+        - ip -6 route add 2001:db8::/32 via 2001:db8:1000:0::1 dev eth1
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    # host00:
+    #   kind: linux
+    #   image: pytorch-srv6-demo24:latest
+    #   mgmt-ipv4: 172.20.6.224
+    #   exec:
+    #     - ip addr add 200.0.100.2/24 dev eth1
+    #     - ip addr add 2001:db8:1000:0::2/64 dev eth1
+    #     - ip -6 route add fc00:0::/32 via 2001:db8:1000:0::1 dev eth1
+    #     - ip -6 route add 2001:db8::/32 via 2001:db8:1000:0::1 dev eth1
+    #     - sysctl -w net.ipv4.ip_forward=1
+    #     - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    bv01:
+      kind: generic_vm
+      image: vrnetlab/canonical_ubuntu:noble
+      mgmt-ipv4: 172.20.6.225
+      exec:
+        - ip addr add 200.1.100.2/24 dev eth1
+        - ip addr add 2001:db8:1001:0::2/64 dev eth1
+        - ip -6 route add fc00:0::/32 via 2001:db8:1001:0::1 dev eth1
+        - ip -6 route add 2001:db8::/32 via 2001:db8:1001:0::1 dev eth1
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    # host01:
+    #   kind: linux
+    #   image: pytorch-srv6-demo24:latest
+    #   # image: ubuntu-trex:1.4
+    #   mgmt-ipv4: 172.20.6.225
+    #   exec:
+    #     - ip addr add 200.1.100.2/24 dev eth1
+    #     - ip addr add 2001:db8:1001:0::2/64 dev eth1
+    #     - ip -6 route add fc00:0::/32 via 2001:db8:1001:0::1 dev eth1
+    #     - ip -6 route add 2001:db8::/32 via 2001:db8:1001:0::1 dev eth1
+    #     - sysctl -w net.ipv4.ip_forward=1
+    #     - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    bv02:
+      kind: generic_vm
+      image: vrnetlab/canonical_ubuntu:noble
+      mgmt-ipv4: 172.20.6.226
+      exec:
+        - ip addr add 200.2.100.2/24 dev eth1
+        - ip addr add 2001:db8:1002:0::2/64 dev eth1
+        - ip -6 route add fc00:0::/32 via 2001:db8:1002:0::1 dev eth1
+        - ip -6 route add 2001:db8::/32 via 2001:db8:1002:0::1 dev eth1
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    # host02:
+    #   kind: linux
+    #   image: pytorch-srv6-demo24:latest
+    #   # image: ubuntu-trex:1.4
+    #   mgmt-ipv4: 172.20.6.226
+    #   exec:
+    #     - ip addr add 200.2.100.2/24 dev eth1
+    #     - ip addr add 2001:db8:1002:0::2/64 dev eth1
+    #     - ip -6 route add fc00:0::/32 via 2001:db8:1002:0::1 dev eth1
+    #     - ip -6 route add 2001:db8::/32 via 2001:db8:1002:0::1 dev eth1
+    #     - sysctl -w net.ipv4.ip_forward=1
+    #     - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    bv03:
+      kind: generic_vm
+      image: vrnetlab/canonical_ubuntu:noble
+      mgmt-ipv4: 172.20.6.227
+      exec:
+        - ip addr add 200.3.100.2/24 dev eth1
+        - ip addr add 2001:db8:1003:0::2/64 dev eth1
+        - ip -6 route add fc00:0::/32 via 2001:db8:1003:0::1 dev eth1
+        - ip -6 route add 2001:db8::/32 via 2001:db8:1003:0::1 dev eth1
+        - sysctl -w net.ipv4.ip_forward=1
+        - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    # host03:
+    #   kind: linux
+    #   image: pytorch-srv6-demo24:latest
+    #   # image: ubuntu-trex:1.4
+    #   mgmt-ipv4: 172.20.6.227
+    #   exec:
+    #     - ip addr add 200.3.100.2/24 dev eth1
+    #     - ip addr add 2001:db8:1003:0::2/64 dev eth1
+    #     - ip -6 route add fc00:0::/32 via 2001:db8:1003:0::1 dev eth1
+    #     - ip -6 route add 2001:db8::/32 via 2001:db8:1003:0::1 dev eth1
+    #     - sysctl -w net.ipv4.ip_forward=1
+    #     - sysctl -w net.ipv6.conf.all.forwarding=1
+
+    berlin-net0:
+      kind: bridge
+    berlin-net1:
+      kind: bridge
+    berlin-net2:
+      kind: bridge
+    berlin-net3:
+      kind: bridge
+
+  links:
+
+    - endpoints: ["leaf00:eth1", "spine00:eth1"]
+    - endpoints: ["leaf00:eth2", "spine01:eth1"]
+    - endpoints: ["leaf00:eth3", "spine02:eth1"]
+    - endpoints: ["leaf00:eth4", "spine03:eth1"]
+
+    - endpoints: ["leaf01:eth1", "spine00:eth2"]
+    - endpoints: ["leaf01:eth2", "spine01:eth2"]
+    - endpoints: ["leaf01:eth3", "spine02:eth2"]
+    - endpoints: ["leaf01:eth4", "spine03:eth2"]
+
+    - endpoints: ["leaf02:eth1", "spine00:eth3"]
+    - endpoints: ["leaf02:eth2", "spine01:eth3"]
+    - endpoints: ["leaf02:eth3", "spine02:eth3"]
+    - endpoints: ["leaf02:eth4", "spine03:eth3"]
+
+    - endpoints: ["leaf03:eth1", "spine00:eth4"]
+    - endpoints: ["leaf03:eth2", "spine01:eth4"]
+    - endpoints: ["leaf03:eth3", "spine02:eth4"]
+    - endpoints: ["leaf03:eth4", "spine03:eth4"]
+
+    - endpoints: ["leaf00:eth5", "bv00:eth2"]
+    - endpoints: ["leaf01:eth5", "bv01:eth2"]
+    - endpoints: ["leaf02:eth5", "bv02:eth2"]  
+    - endpoints: ["leaf03:eth5", "bv03:eth2"]
+
+    - endpoints: ["bv00:eth1", "berlin-net0:bv00-eth1"]
+    - endpoints: ["bv01:eth1", "berlin-net1:bv01-eth1"]
+    - endpoints: ["bv02:eth1", "berlin-net2:bv02-eth1"]
+    - endpoints: ["bv03:eth1", "berlin-net3:bv03-eth1"]
+
+

@@ -1,0 +1,98 @@
+# Containerlab topology file for Cisco Live EU 2026 Lab 1
+
+name: cleu26
+
+mgmt:
+  network: mgt-network
+  ipv4-subnet: 10.254.254.0/24
+  
+topology:
+  nodes:
+    xrd01:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:25.2.1
+      startup-config: xrd-config/xrd01.cfg
+      mgmt-ipv4: 10.254.254.101
+      
+    xrd02:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:25.2.1
+      startup-config: xrd-config/xrd02.cfg
+      mgmt-ipv4: 10.254.254.102
+
+    xrd03:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:25.2.1
+      startup-config: xrd-config/xrd03.cfg
+      mgmt-ipv4: 10.254.254.103
+
+    xrd04:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:25.2.1
+      startup-config: xrd-config/xrd04.cfg
+      mgmt-ipv4: 10.254.254.104
+
+    xrd05:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:25.2.1
+      startup-config: xrd-config/xrd05.cfg
+      mgmt-ipv4: 10.254.254.105
+
+    xrd06:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:25.2.1
+      startup-config: xrd-config/xrd06.cfg
+      mgmt-ipv4: 10.254.254.106
+
+    xrd07:
+      kind: cisco_xrd
+      image: ios-xr/xrd-control-plane:25.2.1
+      startup-config: xrd-config/xrd07.cfg
+      mgmt-ipv4: 10.254.254.107
+
+    amsterdam:
+      kind: linux
+      image: cl-amsterdam:latest
+      mgmt-ipv4: 10.254.254.108
+      exec:
+        - sh /usr/local/bin/network-config.sh
+
+    rome:
+      kind: linux
+      image: cl-rome:latest
+      mgmt-ipv4: 10.254.254.109
+      exec:
+        - sh /usr/local/bin/network-config.sh
+
+    berlin-net0:
+      kind: bridge
+    berlin-net1:
+      kind: bridge
+    berlin-net2:
+      kind: bridge
+    berlin-net3:
+      kind: bridge
+
+  links:
+
+    # Link between XR Routers
+    - endpoints: ["xrd01:Gi0-0-0-0", "amsterdam:eth1"]
+    - endpoints: ["xrd01:Gi0-0-0-1", "xrd02:Gi0-0-0-0"]      
+    - endpoints: ["xrd01:Gi0-0-0-2", "xrd05:Gi0-0-0-0"]
+    - endpoints: ["xrd01:Gi0-0-0-3", "amsterdam:eth2"]
+    - endpoints: ["xrd02:Gi0-0-0-1", "xrd03:Gi0-0-0-0"]
+    - endpoints: ["xrd02:Gi0-0-0-2", "xrd06:Gi0-0-0-1"]
+    - endpoints: ["xrd02:Gi0-0-0-3", "berlin-net0:xrd02-Gi0-0-0-3"]
+    - endpoints: ["xrd02:Gi0-0-0-4", "berlin-net1:xrd02-Gi0-0-0-4"]
+    - endpoints: ["xrd03:Gi0-0-0-1", "xrd04:Gi0-0-0-0"]
+    - endpoints: ["xrd03:Gi0-0-0-2", "berlin-net2:xrd03-Gi0-0-0-2"]
+    - endpoints: ["xrd03:Gi0-0-0-3", "berlin-net3:xrd03-Gi0-0-0-3"]
+    - endpoints: ["xrd04:Gi0-0-0-1", "xrd07:Gi0-0-0-1"]
+    - endpoints: ["xrd05:Gi0-0-0-1", "xrd04:Gi0-0-0-2"]
+    - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]
+    - endpoints: ["xrd06:Gi0-0-0-0", "xrd07:Gi0-0-0-2"]
+    - endpoints: ["xrd07:Gi0-0-0-0", "rome:eth1"]
+    - endpoints: ["xrd07:Gi0-0-0-3", "rome:eth2"]
+
+
+

@@ -1,0 +1,332 @@
+[
+    {
+        "_key": "10.0.0.200_leaf00_10.0.0.0_spine00",
+        "_from": "fabric_node/10.0.0.200_leaf00",
+        "_to": "fabric_node/10.0.0.0_spine00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.201_leaf01_10.0.0.0_spine00",
+        "_from": "fabric_node/10.0.0.201_leaf01",
+        "_to": "fabric_node/10.0.0.0_spine00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.202_leaf02_10.0.0.0_spine00",
+        "_from": "fabric_node/10.0.0.202_leaf02",
+        "_to": "fabric_node/10.0.0.0_spine00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.203_leaf03_10.0.0.0_spine00",
+        "_from": "fabric_node/10.0.0.203_leaf03",
+        "_to": "fabric_node/10.0.0.0_spine00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.200_leaf00_10.0.0.1_spine01",
+        "_from": "fabric_node/10.0.0.200_leaf00",
+        "_to": "fabric_node/10.0.0.1_spine01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.201_leaf01_10.0.0.1_spine01",
+        "_from": "fabric_node/10.0.0.201_leaf01",
+        "_to": "fabric_node/10.0.0.1_spine01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.202_leaf02_10.0.0.1_spine01",
+        "_from": "fabric_node/10.0.0.202_leaf02",
+        "_to": "fabric_node/10.0.0.1_spine01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.203_leaf03_10.0.0.1_spine01",
+        "_from": "fabric_node/10.0.0.203_leaf03",
+        "_to": "fabric_node/10.0.0.1_spine01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.200_leaf00_10.0.0.2_spine02",
+        "_from": "fabric_node/10.0.0.200_leaf00",
+        "_to": "fabric_node/10.0.0.2_spine02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.201_leaf01_10.0.0.2_spine02",
+        "_from": "fabric_node/10.0.0.201_leaf01",
+        "_to": "fabric_node/10.0.0.2_spine02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.202_leaf02_10.0.0.2_spine02",
+        "_from": "fabric_node/10.0.0.202_leaf02",
+        "_to": "fabric_node/10.0.0.2_spine02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.203_leaf03_10.0.0.2_spine02",
+        "_from": "fabric_node/10.0.0.203_leaf03",
+        "_to": "fabric_node/10.0.0.2_spine02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.200_leaf00_10.0.0.3_spine03",
+        "_from": "fabric_node/10.0.0.200_leaf00",
+        "_to": "fabric_node/10.0.0.3_spine03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.201_leaf01_10.0.0.3_spine03",
+        "_from": "fabric_node/10.0.0.201_leaf01",
+        "_to": "fabric_node/10.0.0.3_spine03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.202_leaf02_10.0.0.3_spine03",
+        "_from": "fabric_node/10.0.0.202_leaf02",
+        "_to": "fabric_node/10.0.0.3_spine03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.203_leaf03_10.0.0.3_spine03",
+        "_from": "fabric_node/10.0.0.203_leaf03",
+        "_to": "fabric_node/10.0.0.3_spine03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.0_spine00_10.0.0.200_leaf00",
+        "_from": "fabric_node/10.0.0.0_spine00",
+        "_to": "fabric_node/10.0.0.200_leaf00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.0_spine00_10.0.0.201_leaf01",
+        "_from": "fabric_node/10.0.0.0_spine00",
+        "_to": "fabric_node/10.0.0.201_leaf01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.0_spine00_10.0.0.202_leaf02",
+        "_from": "fabric_node/10.0.0.0_spine00",
+        "_to": "fabric_node/10.0.0.202_leaf02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.0_spine00_10.0.0.203_leaf03",
+        "_from": "fabric_node/10.0.0.0_spine00",
+        "_to": "fabric_node/10.0.0.203_leaf03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.1_spine01_10.0.0.200_leaf00",
+        "_from": "fabric_node/10.0.0.1_spine01",
+        "_to": "fabric_node/10.0.0.200_leaf00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.1_spine01_10.0.0.201_leaf01",
+        "_from": "fabric_node/10.0.0.1_spine01",
+        "_to": "fabric_node/10.0.0.201_leaf01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.1_spine01_10.0.0.202_leaf02",
+        "_from": "fabric_node/10.0.0.1_spine01",
+        "_to": "fabric_node/10.0.0.202_leaf02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.1_spine01_10.0.0.203_leaf03",
+        "_from": "fabric_node/10.0.0.1_spine01",
+        "_to": "fabric_node/10.0.0.203_leaf03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.2_spine02_10.0.0.200_leaf00",
+        "_from": "fabric_node/10.0.0.2_spine02",
+        "_to": "fabric_node/10.0.0.200_leaf00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.2_spine02_10.0.0.201_leaf01",
+        "_from": "fabric_node/10.0.0.2_spine02",
+        "_to": "fabric_node/10.0.0.201_leaf01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.2_spine02_10.0.0.202_leaf02",
+        "_from": "fabric_node/10.0.0.2_spine02",
+        "_to": "fabric_node/10.0.0.202_leaf02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.2_spine02_10.0.0.203_leaf03",
+        "_from": "fabric_node/10.0.0.2_spine02",
+        "_to": "fabric_node/10.0.0.203_leaf03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.3_spine03_10.0.0.200_leaf00",
+        "_from": "fabric_node/10.0.0.3_spine03",
+        "_to": "fabric_node/10.0.0.200_leaf00",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.3_spine03_10.0.0.201_leaf01",
+        "_from": "fabric_node/10.0.0.3_spine03",
+        "_to": "fabric_node/10.0.0.201_leaf01",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.3_spine03_10.0.0.202_leaf02",
+        "_from": "fabric_node/10.0.0.3_spine03",
+        "_to": "fabric_node/10.0.0.202_leaf02",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    {
+        "_key": "10.0.0.3_spine03_10.0.0.203_leaf03",
+        "_from": "fabric_node/10.0.0.3_spine03",
+        "_to": "fabric_node/10.0.0.203_leaf03",
+        "latency": 1,
+        "percent_util_out": 0.4,
+        "percent_util_in": 0.4,
+        "load": 0
+    },
+    
+    {
+        "_key": "host00_leaf00",
+        "_from": "hosts/host00",
+        "_to": "fabric_node/10.0.0.200_leaf00"
+    },
+    {
+        "_key": "host01_leaf01",
+        "_from": "hosts/host01",
+        "_to": "fabric_node/10.0.0.201_leaf01"
+    },
+    {
+        "_key": "host02_leaf02",
+        "_from": "hosts/host02",
+        "_to": "fabric_node/10.0.0.202_leaf02"
+    },
+    {
+        "_key": "host03_leaf03",
+        "_from": "hosts/host03",
+        "_to": "fabric_node/10.0.0.203_leaf03"
+    },
+    {
+        "_key": "leaf00_host00",
+        "_from": "fabric_node/10.0.0.200_leaf00",
+        "_to": "hosts/host00"
+    },
+    {
+        "_key": "leaf01_host01",
+        "_from": "fabric_node/10.0.0.201_leaf01",
+        "_to": "hosts/host01"
+    },
+    {
+        "_key": "leaf02_host02",
+        "_from": "fabric_node/10.0.0.202_leaf02",
+        "_to": "hosts/host02"
+    },
+    {
+        "_key": "leaf03_host03",
+        "_from": "fabric_node/10.0.0.203_leaf03",
+        "_to": "hosts/host03"
+    }
+
+]

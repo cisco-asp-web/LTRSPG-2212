@@ -1,0 +1,41 @@
+[
+    {
+      "path": "1",
+      "source": "hosts/host01",
+      "destination": "hosts/host03",
+      "srv6": {
+        "sidList": [
+          "fc00:0:1201::",
+          "fc00:0:1000::",
+          "fc00:0:1203::"
+        ],
+        "usid": "fc00:0:1201:1000:1203::"
+      }
+    },
+    {
+      "path": "2",
+      "source": "hosts/host01",
+      "destination": "hosts/host00",
+      "srv6": {
+        "sidList": [
+          "fc00:0:1201::",
+          "fc00:0:1001::",
+          "fc00:0:1200::"
+        ],
+        "usid": "fc00:0:1201:1001:1200::"
+      }
+    },
+    {
+      "path": "3",
+      "source": "hosts/host03",
+      "destination": "hosts/host00",
+      "srv6": {
+        "sidList": [
+          "fc00:0:1203::",
+          "fc00:0:1000::",
+          "fc00:0:1200::"
+        ],
+        "usid": "fc00:0:1203:1000:1200::"
+      }
+    }
+  ]

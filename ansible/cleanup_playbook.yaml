@@ -1,0 +1,54 @@
+---
+
+# ansible-playbook -i hosts cleanup_playbook.yaml -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" -vv
+
+- name: topology-host cleanup
+  hosts: topology-host
+  become: true
+  tasks:
+
+    - name: cleanup lab 1
+      command: ./cleanup-lab_1.sh
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_1
+      ignore_errors: yes
+
+    - name: cleanup lab 2
+      command: ./cleanup-lab_2.sh
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_2
+      ignore_errors: yes
+
+    - name: cleanup lab 3
+      command: ./cleanup-lab_3.sh
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_3
+      ignore_errors: yes
+
+    - name: cleanup lab 4
+      command: ./cleanup-lab_4.sh
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_4
+      ignore_errors: yes
+
+- name: jalapeno cleanup
+  hosts: jalapeno
+  become: false
+  tasks:
+
+    - name: clear fabric_graph load
+      command: python3 clear-load.py
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_5/jalapeno
+      ignore_errors: yes
+
+- name: berlin cleanup cilium
+  hosts: berlin
+  become: false
+  tasks:
+
+    - name: cleanup cilium
+      command: kubectl delete -f 99-cilium-all.yaml
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_3/cilium
+      ignore_errors: no

@@ -1,0 +1,42 @@
+[
+    {
+        "_key": "host00",
+        "name": "host00",
+        "ipv6_address": "2001:db8:1000:0::2",
+        "prefix": "2001:db8:1000:0::",
+        "prefix_len": 64,
+        "interface": "eth1",
+        "dataplane": "linux",
+        "tier": "dc-endpoint"
+    },
+    {
+        "_key": "host01",
+        "name": "host01",
+        "ipv6_address": "2001:db8:1001:0::2",
+        "prefix": "2001:db8:1001:0::",
+        "prefix_len": 64,
+        "interface": "eth1",
+        "dataplane": "linux",
+        "tier": "dc-endpoint"
+    },
+    {
+        "_key": "host02",
+        "name": "host02",
+        "ipv6_address": "2001:db8:1002:0::2",
+        "prefix": "2001:db8:1002:0::",
+        "prefix_len": 64,
+        "interface": "eth1",
+        "dataplane": "linux",
+        "tier": "dc-endpoint"
+    },
+    {
+        "_key": "host03",
+        "name": "host03",
+        "ipv6_address": "2001:db8:1003:0::2",
+        "prefix": "2001:db8:1003:0::",
+        "prefix_len": 64,
+        "interface": "eth1",
+        "dataplane": "linux",
+        "tier": "dc-endpoint"
+    }
+]

@@ -1,0 +1,5 @@
+<network>
+  <name>berlin1-be</name>
+  <forward mode="bridge"/>
+  <bridge name="berlin1-be"/>
+</network>
