@@ -1,0 +1,150 @@
+# Example PyTorch Pod with Multus Backend Network
+# This pod gets:
+#   - Primary network interface (eth0) via Cilium for cluster networking
+#   - Secondary network interface (net1) via Multus on the backend network (ens5)
+#
+# Apply with: kubectl apply -f pytorch-pod-example.yaml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-training
+  annotations:
+    # This annotation tells Multus to attach the backend-network
+    # Format: <namespace>/<network-attachment-definition-name>
+    # Multiple networks can be specified as comma-separated list
+    k8s.v1.cni.cncf.io/networks: backend-network
+  labels:
+    app: pytorch
+    workload: training
+spec:
+  containers:
+  - name: pytorch
+    image: pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      echo "Primary interface (Cilium):"
+      ip addr show eth0
+      echo ""
+      echo "Backend interface (Multus - ens5):"
+      ip addr show net1
+      echo ""
+      echo "All interfaces:"
+      ip addr
+      echo ""
+      echo "IPv6 routes:"
+      ip -6 route
+      # Keep container running for testing
+      sleep infinity
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN"]
+---
+# Example: Distributed PyTorch Training with NCCL over backend network
+# This demonstrates multiple pods using the backend network for GPU-to-GPU communication
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-worker-0
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network
+  labels:
+    app: pytorch-distributed
+    role: worker
+spec:
+  containers:
+  - name: pytorch
+    image: pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+    env:
+    # Configure NCCL to use the backend network interface
+    - name: NCCL_SOCKET_IFNAME
+      value: "net1"
+    - name: NCCL_DEBUG
+      value: "INFO"
+    - name: MASTER_ADDR
+      value: "pytorch-master"
+    - name: MASTER_PORT
+      value: "29500"
+    - name: WORLD_SIZE
+      value: "2"
+    - name: RANK
+      value: "0"
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      echo "Backend interface for NCCL:"
+      ip addr show net1
+      # Your distributed training script would go here
+      sleep infinity
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "1"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-worker-1
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network
+  labels:
+    app: pytorch-distributed
+    role: worker
+spec:
+  containers:
+  - name: pytorch
+    image: pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+    env:
+    - name: NCCL_SOCKET_IFNAME
+      value: "net1"
+    - name: NCCL_DEBUG
+      value: "INFO"
+    - name: MASTER_ADDR
+      value: "pytorch-master"
+    - name: MASTER_PORT
+      value: "29500"
+    - name: WORLD_SIZE
+      value: "2"
+    - name: RANK
+      value: "1"
+    command: ["/bin/bash", "-c"]
+    args:
+    - |
+      echo "Backend interface for NCCL:"
+      ip addr show net1
+      sleep infinity
+    resources:
+      requests:
+        memory: "2Gi"
+        cpu: "1"
+---
+# Example: Request a specific IP address on the backend network
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pytorch-static-ip
+  annotations:
+    # Request specific IP address using the network-status annotation
+    k8s.v1.cni.cncf.io/networks: |
+      [
+        {
+          "name": "backend-network",
+          "ips": ["fcbb:0:0800:ffff::50"]
+        }
+      ]
+  labels:
+    app: pytorch
+spec:
+  containers:
+  - name: pytorch
+    image: pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+    command: ["sleep", "infinity"]
+

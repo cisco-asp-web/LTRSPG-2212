@@ -2,8 +2,8 @@
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 networking:
-  podSubnet: 172.16.0.0/16
-  serviceSubnet: 10.96.0.0/16
+  podSubnet: 172.16.0.0/16,fd00:172:16::/64
+  serviceSubnet: 10.96.0.0/16,fd00:96::/108
 ---
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: InitConfiguration
