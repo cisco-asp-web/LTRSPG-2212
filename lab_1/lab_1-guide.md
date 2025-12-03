@@ -125,25 +125,25 @@ We can also verify the containerlab logs in the visual code output window. Trunc
 │                       │ rome:latest                    │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
 │ clab-clus25-xrd01     │ cisco_xrd                      │ running │ 10.254.254.101 │
-│                       │ ios-xr/xrd-control-plane:25.2.1 │         │ N/A            │
+│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
 │ clab-clus25-xrd02     │ cisco_xrd                      │ running │ 10.254.254.102 │
-│                       │ ios-xr/xrd-control-plane:25.2.1 │         │ N/A            │
+│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
 │ clab-clus25-xrd03     │ cisco_xrd                      │ running │ 10.254.254.103 │
-│                       │ ios-xr/xrd-control-plane:25.2.1 │         │ N/A            │
+│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
 │ clab-clus25-xrd04     │ cisco_xrd                      │ running │ 10.254.254.104 │
-│                       │ ios-xr/xrd-control-plane:25.2.1 │         │ N/A            │
+│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
 │ clab-clus25-xrd05     │ cisco_xrd                      │ running │ 10.254.254.105 │
-│                       │ ios-xr/xrd-control-plane:25.2.1 │         │ N/A            │
+│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
 │ clab-clus25-xrd06     │ cisco_xrd                      │ running │ 10.254.254.106 │
-│                       │ ios-xr/xrd-control-plane:25.2.1 │         │ N/A            │
+│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
 │ clab-clus25-xrd07     │ cisco_xrd                      │ running │ 10.254.254.107 │
-│                       │ ios-xr/xrd-control-plane:25.2.1 │         │ N/A            │
+│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ╰───────────────────────┴────────────────────────────────┴─────────┴────────────────╯
 ```
 
