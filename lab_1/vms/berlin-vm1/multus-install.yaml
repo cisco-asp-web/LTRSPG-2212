@@ -130,23 +130,17 @@ metadata:
     tier: node
     app: multus
 data:
-  # The CNI configuration file name. Multus will generate this file
-  # Cilium typically creates 05-cilium.conflist, so we use 00-multus.conf to run first
-  cni-conf.json: |
+  # Daemon configuration for multus thick plugin
+  daemon-config.json: |
     {
-      "name": "multus-cni-network",
-      "type": "multus",
-      "capabilities": {
-        "portMappings": true
-      },
-      "delegates": [
-        {
-          "cniVersion": "0.3.1",
-          "name": "cilium",
-          "type": "cilium-cni"
-        }
-      ],
-      "kubeconfig": "/etc/cni/net.d/multus.d/multus.kubeconfig"
+      "cniVersion": "0.3.1",
+      "chrootDir": "/hostroot",
+      "cniConfigDir": "/host/etc/cni/net.d",
+      "socketDir": "/host/run/multus/",
+      "logLevel": "verbose",
+      "logToStderr": true,
+      "multusConfigFile": "auto",
+      "multusAutoconfigDir": "/host/etc/cni/net.d"
     }
 ---
 apiVersion: apps/v1
@@ -183,11 +177,7 @@ spec:
           image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2-thick
           command: ["/usr/src/multus-cni/bin/multus-daemon"]
           args:
-            - "-cni-version=0.3.1"
-            - "-cni-config-dir=/host/etc/cni/net.d"
-            - "-multus-autoconfig-dir=/host/etc/cni/net.d"
-            - "-multus-log-level=verbose"
-            - "-multus-log-file=/tmp/multus.log"
+            - "-config=/etc/cni/net.d/multus.d/daemon-config.json"
           resources:
             requests:
               cpu: "100m"
@@ -204,6 +194,8 @@ spec:
               mountPath: /host/opt/cni/bin
             - name: host-run
               mountPath: /host/run
+            - name: hostroot
+              mountPath: /hostroot
             - name: host-var-lib-cni-multus
               mountPath: /var/lib/cni/multus
             - name: host-var-lib-kubelet
@@ -213,6 +205,9 @@ spec:
             - name: host-run-netns
               mountPath: /run/netns
               mountPropagation: HostToContainer
+            - name: multus-daemon-config
+              mountPath: /etc/cni/net.d/multus.d
+              readOnly: true
       initContainers:
         - name: install-multus-binary
           image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2-thick
@@ -241,6 +236,9 @@ spec:
         - name: host-run
           hostPath:
             path: /run
+        - name: hostroot
+          hostPath:
+            path: /
         - name: host-var-lib-cni-multus
           hostPath:
             path: /var/lib/cni/multus
@@ -253,4 +251,10 @@ spec:
         - name: host-run-netns
           hostPath:
             path: /run/netns
+        - name: multus-daemon-config
+          configMap:
+            name: multus-cni-config
+            items:
+              - key: daemon-config.json
+                path: daemon-config.json
 
