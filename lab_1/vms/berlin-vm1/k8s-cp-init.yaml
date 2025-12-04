@@ -1,9 +1,14 @@
----
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
+kubernetesVersion: "v1.32.4"
 networking:
   podSubnet: 172.16.0.0/16,fd00:172:16::/64
   serviceSubnet: 10.96.0.0/16,fd00:96::/108
+controllerManager:
+  extraArgs:
+    # explicitly set per-node mask sizes for allocator (defaults are 24 and 64)
+    node-cidr-mask-size-ipv4: "24"
+    node-cidr-mask-size-ipv6: "64"
 ---
 apiVersion: kubeadm.k8s.io/v1beta4
 kind: InitConfiguration
@@ -12,5 +17,4 @@ localAPIEndpoint:
   bindPort: 6443
 nodeRegistration:
   kubeletExtraArgs:
-  - name: "node-ip"
-    value: "10.8.0.2"
+    node-ip: "10.8.0.2"
