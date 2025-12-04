@@ -181,7 +181,7 @@ spec:
       containers:
         - name: kube-multus
           image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2-thick
-          command: ["/thick-entrypoint.sh"]
+          command: ["/entrypoint.sh"]
           args:
             - "--multus-conf-file=auto"
             - "--multus-autoconfig-dir=/host/etc/cni/net.d"
