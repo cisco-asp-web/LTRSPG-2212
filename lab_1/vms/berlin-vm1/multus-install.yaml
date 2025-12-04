@@ -181,12 +181,13 @@ spec:
       containers:
         - name: kube-multus
           image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2-thick
-          command: ["/entrypoint.sh"]
+          command: ["/usr/src/multus-cni/bin/multus-daemon"]
           args:
-            - "--multus-conf-file=auto"
-            - "--multus-autoconfig-dir=/host/etc/cni/net.d"
-            - "--cni-conf-dir=/host/etc/cni/net.d"
-            - "--cleanup-config-on-exit=true"
+            - "-cni-version=0.3.1"
+            - "-cni-config-dir=/host/etc/cni/net.d"
+            - "-multus-autoconfig-dir=/host/etc/cni/net.d"
+            - "-multus-log-level=verbose"
+            - "-multus-log-file=/tmp/multus.log"
           resources:
             requests:
               cpu: "100m"
