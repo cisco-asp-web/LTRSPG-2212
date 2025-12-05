@@ -225,24 +225,12 @@ spec:
               mountPropagation: Bidirectional
         - name: install-multus-cni-config
           image: busybox:1.36
-          command:
-            - /bin/sh
-            - -c
+          command: ["/bin/sh", "-c"]
+          args:
             - |
-              cat > /host/etc/cni/net.d/00-multus.conf << 'EOF'
-              {
-                "cniVersion": "0.3.1",
-                "name": "multus-cni-network",
-                "type": "multus-shim",
-                "logLevel": "verbose",
-                "logToStderr": true,
-                "socketDir": "/run/multus/",
-                "clusterNetwork": "/etc/cni/net.d/05-cilium.conflist"
-              }
-              EOF
-              # Remove any stale backup files
+              echo '{"cniVersion":"0.3.1","name":"multus-cni-network","type":"multus-shim","logLevel":"verbose","logToStderr":true,"socketDir":"/run/multus/","clusterNetwork":"/etc/cni/net.d/05-cilium.conflist"}' > /host/etc/cni/net.d/00-multus.conf
               rm -f /host/etc/cni/net.d/00-multus.conf.cilium_bak
-              echo "Installed 00-multus.conf"
+              echo "Installed 00-multus.conf:"
               cat /host/etc/cni/net.d/00-multus.conf
           resources:
             requests:
