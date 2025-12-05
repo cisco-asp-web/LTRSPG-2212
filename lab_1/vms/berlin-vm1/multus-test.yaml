@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: samplepod
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network
+    k8s.v1.cni.cncf.io/networks: backend-network-static
 spec:
   containers:
   - name: samplepod
