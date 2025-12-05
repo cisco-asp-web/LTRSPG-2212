@@ -1,9 +1,7 @@
-# Multus CNI Installation
-# This installs Multus as a "thick" plugin that delegates to Cilium as the default CNI
-# Apply with: kubectl apply -f multus-install.yaml
+# Multus CNI Installation - Thin Plugin (Simple)
+# This installs Multus as a thin plugin that delegates to Cilium
 #
-# Note: This uses the official Multus thick plugin daemonset
-# Source: https://github.com/k8snetworkplumbingwg/multus-cni
+# Apply with: kubectl apply -f multus-install.yaml
 ---
 apiVersion: v1
 kind: Namespace
@@ -31,23 +29,19 @@ spec:
       storage: true
       schema:
         openAPIV3Schema:
-          description: 'NetworkAttachmentDefinition is a CRD schema specified by the Network Plumbing Working Group to express the intent for attaching pods to one or more logical or physical networks. More information available at: https://github.com/k8snetworkplumbingwg/multi-net-spec'
+          description: NetworkAttachmentDefinition is a CRD schema for network attachments
           type: object
           properties:
             apiVersion:
-              description: 'APIVersion defines the versioned schema of this representation of an object.'
               type: string
             kind:
-              description: 'Kind is a string value representing the REST resource this object represents.'
               type: string
             metadata:
               type: object
             spec:
-              description: 'NetworkAttachmentDefinition spec defines the desired state of a network attachment'
               type: object
               properties:
                 config:
-                  description: 'NetworkAttachmentDefinition config is a JSON-formatted CNI configuration'
                   type: string
 ---
 apiVersion: v1
@@ -62,51 +56,17 @@ metadata:
   name: multus
 rules:
   - apiGroups: ["k8s.cni.cncf.io"]
-    resources:
-      - '*'
-    verbs:
-      - '*'
-  - apiGroups:
-      - ""
-    resources:
-      - pods
-      - pods/status
-    verbs:
-      - get
-      - list
-      - update
-      - watch
-  - apiGroups:
-      - ""
-    resources:
-      - events
-    verbs:
-      - create
-      - patch
-      - update
-  - apiGroups:
-      - ""
-      - events.k8s.io
-    resources:
-      - events
-    verbs:
-      - create
-      - patch
-      - update
-  - apiGroups:
-      - ""
-    resources:
-      - nodes
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - ""
-    resources:
-      - nodes/status
-    verbs:
-      - patch
+    resources: ["*"]
+    verbs: ["*"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/status"]
+    verbs: ["get", "list", "update", "watch"]
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["create", "patch", "update"]
+  - apiGroups: [""]
+    resources: ["nodes"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -126,19 +86,23 @@ kind: ConfigMap
 metadata:
   name: multus-cni-config
   namespace: kube-system
-  labels:
-    tier: node
-    app: multus
 data:
-  # Daemon configuration for multus thick plugin
-  daemon-config.json: |
+  # This CNI config wraps Cilium and enables additional networks
+  cni-conf.json: |
     {
       "cniVersion": "0.3.1",
-      "chrootDir": "/hostroot",
-      "cniConfigDir": "/host/etc/cni/net.d",
-      "socketDir": "/host/run/multus/",
-      "logLevel": "verbose",
-      "logToStderr": true
+      "name": "multus-cni-network",
+      "type": "multus",
+      "capabilities": {"portMappings": true},
+      "delegates": [
+        {
+          "cniVersion": "0.3.1",
+          "name": "cilium",
+          "type": "cilium-cni",
+          "enable-debug": false
+        }
+      ],
+      "kubeconfig": "/etc/cni/net.d/multus.d/multus.kubeconfig"
     }
 ---
 apiVersion: apps/v1
@@ -147,9 +111,7 @@ metadata:
   name: kube-multus-ds
   namespace: kube-system
   labels:
-    tier: node
     app: multus
-    name: multus
 spec:
   selector:
     matchLabels:
@@ -159,7 +121,6 @@ spec:
   template:
     metadata:
       labels:
-        tier: node
         app: multus
         name: multus
     spec:
@@ -172,10 +133,17 @@ spec:
       serviceAccountName: multus
       containers:
         - name: kube-multus
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2-thick
-          command: ["/usr/src/multus-cni/bin/multus-daemon"]
+          # Thin plugin image - simpler, no daemon
+          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2
+          command: ["/thin_entrypoint"]
           args:
-            - "-config=/etc/cni/net.d/multus.d/daemon-config.json"
+            - "--multus-conf-file=/tmp/multus-conf/cni-conf.json"
+            - "--multus-kubeconfig-file-host=/etc/cni/net.d/multus.d/multus.kubeconfig"
+            - "--cni-conf-dir=/host/etc/cni/net.d"
+            - "--cni-bin-dir=/host/opt/cni/bin"
+            - "--cleanup-config-on-exit=true"
+            - "--rename-conf-file=true"
+            - "--skip-multus-binary-copy=false"
           resources:
             requests:
               cpu: "100m"
@@ -190,59 +158,8 @@ spec:
               mountPath: /host/etc/cni/net.d
             - name: cnibin
               mountPath: /host/opt/cni/bin
-            - name: host-run
-              mountPath: /host/run
-            - name: hostroot
-              mountPath: /hostroot
-            - name: host-var-lib-cni-multus
-              mountPath: /var/lib/cni/multus
-            - name: host-var-lib-kubelet
-              mountPath: /var/lib/kubelet
-            - name: host-run-k8s-cni-cncf-io
-              mountPath: /run/k8s.cni.cncf.io
-            - name: host-run-netns
-              mountPath: /run/netns
-              mountPropagation: HostToContainer
-            - name: multus-daemon-config
-              mountPath: /etc/cni/net.d/multus.d
-              readOnly: true
-      initContainers:
-        - name: install-multus-binary
-          image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2-thick
-          command:
-            - "cp"
-            - "/usr/src/multus-cni/bin/multus-shim"
-            - "/host/opt/cni/bin/multus-shim"
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "15Mi"
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: cnibin
-              mountPath: /host/opt/cni/bin
-              mountPropagation: Bidirectional
-        - name: install-multus-cni-config
-          image: busybox:1.36
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              set -ex
-              ls -la /etc/cni/net.d/
-              printf '%s\n' '{"cniVersion":"0.3.1","name":"multus-cni-network","type":"multus-shim","logLevel":"verbose","logToStderr":true,"socketDir":"/run/multus/","clusterNetwork":"/etc/cni/net.d/05-cilium.conflist"}' > /etc/cni/net.d/00-multus.conf
-              rm -f /etc/cni/net.d/00-multus.conf.cilium_bak 2>/dev/null || true
-              ls -la /etc/cni/net.d/
-              cat /etc/cni/net.d/00-multus.conf
-          resources:
-            requests:
-              cpu: "10m"
-              memory: "15Mi"
-          securityContext:
-            privileged: true
-          volumeMounts:
-            - name: cni
-              mountPath: /etc/cni/net.d
+            - name: multus-cfg
+              mountPath: /tmp/multus-conf
       terminationGracePeriodSeconds: 10
       volumes:
         - name: cni
@@ -251,28 +168,9 @@ spec:
         - name: cnibin
           hostPath:
             path: /opt/cni/bin
-        - name: host-run
-          hostPath:
-            path: /run
-        - name: hostroot
-          hostPath:
-            path: /
-        - name: host-var-lib-cni-multus
-          hostPath:
-            path: /var/lib/cni/multus
-        - name: host-var-lib-kubelet
-          hostPath:
-            path: /var/lib/kubelet
-        - name: host-run-k8s-cni-cncf-io
-          hostPath:
-            path: /run/k8s.cni.cncf.io
-        - name: host-run-netns
-          hostPath:
-            path: /run/netns
-        - name: multus-daemon-config
+        - name: multus-cfg
           configMap:
             name: multus-cni-config
             items:
-              - key: daemon-config.json
-                path: daemon-config.json
-
+              - key: cni-conf.json
+                path: cni-conf.json
