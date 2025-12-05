@@ -138,9 +138,7 @@ data:
       "cniConfigDir": "/host/etc/cni/net.d",
       "socketDir": "/host/run/multus/",
       "logLevel": "verbose",
-      "logToStderr": true,
-      "multusConfigFile": "auto",
-      "multusAutoconfigDir": "/host/etc/cni/net.d"
+      "logToStderr": true
     }
 ---
 apiVersion: apps/v1
@@ -225,6 +223,36 @@ spec:
             - name: cnibin
               mountPath: /host/opt/cni/bin
               mountPropagation: Bidirectional
+        - name: install-multus-cni-config
+          image: busybox:1.36
+          command:
+            - /bin/sh
+            - -c
+            - |
+              cat > /host/etc/cni/net.d/00-multus.conf << 'EOF'
+              {
+                "cniVersion": "0.3.1",
+                "name": "multus-cni-network",
+                "type": "multus-shim",
+                "logLevel": "verbose",
+                "logToStderr": true,
+                "socketDir": "/run/multus/",
+                "clusterNetwork": "/etc/cni/net.d/05-cilium.conflist"
+              }
+              EOF
+              # Remove any stale backup files
+              rm -f /host/etc/cni/net.d/00-multus.conf.cilium_bak
+              echo "Installed 00-multus.conf"
+              cat /host/etc/cni/net.d/00-multus.conf
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "15Mi"
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: cni
+              mountPath: /host/etc/cni/net.d
       terminationGracePeriodSeconds: 10
       volumes:
         - name: cni
