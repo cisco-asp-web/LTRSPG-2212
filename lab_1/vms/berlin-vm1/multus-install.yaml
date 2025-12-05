@@ -228,9 +228,14 @@ spec:
           command: ["/bin/sh", "-c"]
           args:
             - |
-              echo '{"cniVersion":"0.3.1","name":"multus-cni-network","type":"multus-shim","logLevel":"verbose","logToStderr":true,"socketDir":"/run/multus/","clusterNetwork":"/etc/cni/net.d/05-cilium.conflist"}' > /host/etc/cni/net.d/00-multus.conf
-              rm -f /host/etc/cni/net.d/00-multus.conf.cilium_bak
-              echo "Installed 00-multus.conf:"
+              set -x
+              echo "Checking mount point..."
+              ls -la /host/etc/cni/net.d/
+              echo "Writing config..."
+              printf '%s\n' '{"cniVersion":"0.3.1","name":"multus-cni-network","type":"multus-shim","logLevel":"verbose","logToStderr":true,"socketDir":"/run/multus/","clusterNetwork":"/etc/cni/net.d/05-cilium.conflist"}' | tee /host/etc/cni/net.d/00-multus.conf
+              rm -f /host/etc/cni/net.d/00-multus.conf.cilium_bak 2>/dev/null || true
+              echo "Verifying file:"
+              ls -la /host/etc/cni/net.d/
               cat /host/etc/cni/net.d/00-multus.conf
           resources:
             requests:
