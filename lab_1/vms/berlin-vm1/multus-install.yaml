@@ -88,7 +88,8 @@ metadata:
   namespace: kube-system
 data:
   # This CNI config wraps Cilium and enables additional networks
-  cni-conf.json: |
+  # Named 00-multus.conflist so it sorts BEFORE 05-cilium.conflist
+  00-multus.conflist: |
     {
       "cniVersion": "0.3.1",
       "name": "multus-cni-network",
@@ -137,13 +138,14 @@ spec:
           image: ghcr.io/k8snetworkplumbingwg/multus-cni:v4.0.2
           command: ["/thin_entrypoint"]
           args:
-            - "--multus-conf-file=/tmp/multus-conf/cni-conf.json"
+            - "--multus-conf-file=/tmp/multus-conf/00-multus.conflist"
             - "--multus-kubeconfig-file-host=/etc/cni/net.d/multus.d/multus.kubeconfig"
             - "--cni-conf-dir=/host/etc/cni/net.d"
             - "--cni-bin-dir=/host/opt/cni/bin"
             - "--cleanup-config-on-exit=true"
-            - "--rename-conf-file=true"
+            - "--rename-conf-file=false"
             - "--skip-multus-binary-copy=false"
+            - "--additional-bin-dir=/opt/cni/bin"
           resources:
             requests:
               cpu: "100m"
@@ -172,5 +174,5 @@ spec:
           configMap:
             name: multus-cni-config
             items:
-              - key: cni-conf.json
-                path: cni-conf.json
+              - key: 00-multus.conflist
+                path: 00-multus.conflist
