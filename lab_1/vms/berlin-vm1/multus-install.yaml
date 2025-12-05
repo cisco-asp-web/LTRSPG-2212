@@ -88,21 +88,14 @@ metadata:
   namespace: kube-system
 data:
   # This CNI config wraps Cilium and enables additional networks
-  # Named 00-multus.conflist so it sorts BEFORE 05-cilium.conflist
+  # Uses clusterNetwork to reference the existing Cilium config file
   00-multus.conflist: |
     {
       "cniVersion": "0.3.1",
       "name": "multus-cni-network",
       "type": "multus",
       "capabilities": {"portMappings": true},
-      "delegates": [
-        {
-          "cniVersion": "0.3.1",
-          "name": "cilium",
-          "type": "cilium-cni",
-          "enable-debug": false
-        }
-      ],
+      "clusterNetwork": "/etc/cni/net.d/05-cilium.conflist",
       "kubeconfig": "/etc/cni/net.d/multus.d/multus.kubeconfig"
     }
 ---
