@@ -269,7 +269,7 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
    
 1. From a *topology-host* terminal session run the `add-latency.sh` script:
    ```
-   ~/LTRSPG-2212/lab_1/scripts/add-latency.sh
+   ~/LTRSPG-2212/lab_1/add-latency.sh
    ```
    
 ## Validate BGP Peering

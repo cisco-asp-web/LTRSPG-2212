@@ -39,7 +39,7 @@
     - name: clear fabric_graph load
       command: python3 clear-load.py
       args:
-        chdir: /home/cisco/LTRSPG-2212/lab_5/jalapeno
+        chdir: /home/cisco/LTRSPG-2212/lab_5/jalapeno/sonic-network
       ignore_errors: yes
 
 - name: berlin cleanup cilium
