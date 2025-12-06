@@ -1,11 +1,26 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: multus-test
+  name: multus-test-01
   annotations:
     k8s.v1.cni.cncf.io/networks: backend-network-static
 spec:
+  nodeName: berlin-vm1
   containers:
-  - name: multus-test
+  - name: multus-test-01
+    command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    image: alpine
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: multus-test-02
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network-static
+spec:
+  nodeName: berlin-vm2
+  containers:
+  - name: multus-test-02
     command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
     image: alpine
