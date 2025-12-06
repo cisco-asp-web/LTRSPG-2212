@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sudo config interface ip add Loopback0 10.0.0.201/32
-sudo config interface ip add Loopback0 fc00:0:1201::1/128
+sudo config interface ip add Loopback0 10.0.0.5/32
+sudo config interface ip add Loopback0 fcbb:0:1005::1/128
