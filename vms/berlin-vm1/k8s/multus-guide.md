@@ -115,13 +115,21 @@ or
 
 ```bash
 kubectl apply -f multus-test.yaml
-
 ```
 
 ```bash
-# Check interfaces
-kubectl exec multus-test -- ip addr
+kubectl get pods -o wide
+```
 
+```bash
+# Check interfaces and routes
+kubectl exec multus-test-01 -- ip addr
+kubectl exec multus-test-01 -- ip -6 route
+kubectl exec multus-test-02 -- ip addr
+kubectl exec multus-test-02 -- ip -6 route
+```
+
+```bash
 # Clean up
 kubectl delete pod multus-test
 ```

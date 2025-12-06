@@ -33,7 +33,7 @@
             "ipv6_use_link_local_only": "enable"
         },
         "Ethernet16": {},
-        "Ethernet16|fcbb:0:800:3::/64": {
+        "Ethernet16|fcbb:0:800:3::1/64": {
         }
     }
 }
