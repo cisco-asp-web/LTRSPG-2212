@@ -39,8 +39,12 @@ This guide explains how to install and configure Multus CNI to provide a seconda
 
 Multus acts as a "meta-plugin" that wraps your primary CNI (Cilium) and enables additional network attachments.
 
+#### Quickstart guide
+https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.md
+
+
 ```bash
-kubectl apply -f multus-install.yaml
+kubectl apply -f multus-daemonset-thick.yml
 ```
 
 Verify Multus is running:
@@ -87,7 +91,35 @@ NAME               AGE
 backend-network    5s
 ```
 
-### Step 4: Deploy a Test Pod
+#### other NAD verifications
+```bash
+# List all NADs
+kubectl get network-attachment-definitions
+kubectl get net-attach-def  # short form
+
+# Describe a specific NAD to see the full config
+kubectl describe net-attach-def backend-network
+
+# View the raw YAML/JSON
+kubectl get net-attach-def backend-network -o yaml
+```
+
+### Deploy a lightweight test pod
+```bash
+# Quick test with a minimal image instead
+kubectl run multus-test --image=busybox --restart=Never \
+  --overrides='{"metadata":{"annotations":{"k8s.v1.cni.cncf.io/networks":"backend-network"}}}' \
+  -- sleep 600
+
+# Check interfaces
+kubectl exec multus-test -- ip addr
+
+# Clean up
+kubectl delete pod multus-test
+```
+
+
+### Step 4: Deploy a Test PyTorch Pod
 
 ```bash
 kubectl apply -f pytorch-pod-example.yaml

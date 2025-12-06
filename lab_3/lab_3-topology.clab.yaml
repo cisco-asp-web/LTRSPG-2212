@@ -8,6 +8,8 @@ mgmt:
   
 topology:
   nodes:
+
+# XRd Core Network
     xrd01:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
@@ -64,7 +66,7 @@ topology:
       exec:
         - sh /usr/local/bin/network-config.sh
 
-# Berlin DC SONiC nodes
+# Berlin DC SONiC Network
     leaf00:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
@@ -114,13 +116,22 @@ topology:
     berlin4-fe:
       kind: bridge
 
+    berlin1-be:
+      kind: bridge
+    berlin2-be:
+      kind: bridge
+    berlin3-be:
+      kind: bridge
+    berlin4-be:
+      kind: bridge
+
   links:
 
-    # Link between XR Routers
-    - endpoints: ["xrd01:Gi0-0-0-0", "amsterdam:eth1"]
+    # Core Network Links
+    #- endpoints: ["xrd01:Gi0-0-0-0", "amsterdam:eth1"]
     - endpoints: ["xrd01:Gi0-0-0-1", "xrd02:Gi0-0-0-0"]      
     - endpoints: ["xrd01:Gi0-0-0-2", "xrd05:Gi0-0-0-0"]
-    - endpoints: ["xrd01:Gi0-0-0-3", "amsterdam:eth2"]
+    #- endpoints: ["xrd01:Gi0-0-0-3", "amsterdam:eth2"]
     - endpoints: ["xrd02:Gi0-0-0-1", "xrd03:Gi0-0-0-0"]
     - endpoints: ["xrd02:Gi0-0-0-2", "xrd06:Gi0-0-0-1"]
     - endpoints: ["xrd02:Gi0-0-0-3", "berlin1-fe:xrd02-Gi0-0-0-3"]
@@ -132,8 +143,34 @@ topology:
     - endpoints: ["xrd05:Gi0-0-0-1", "xrd04:Gi0-0-0-2"]
     - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]
     - endpoints: ["xrd06:Gi0-0-0-0", "xrd07:Gi0-0-0-2"]
-    - endpoints: ["xrd07:Gi0-0-0-0", "rome:eth1"]
-    - endpoints: ["xrd07:Gi0-0-0-3", "rome:eth2"]
+    - endpoints: ["xrd07:Gi0-0-0-0", "rome00:eth1"]
+    - endpoints: ["xrd07:Gi0-0-0-3", "rome01:eth1"]
 
+    # Berlin DC SONiC Network Links
+    - endpoints: ["leaf00:eth1", "spine00:eth1"]
+    - endpoints: ["leaf00:eth2", "spine01:eth1"]
+    - endpoints: ["leaf00:eth3", "spine02:eth1"]
+    - endpoints: ["leaf00:eth4", "spine03:eth1"]
+
+    - endpoints: ["leaf01:eth1", "spine00:eth2"]
+    - endpoints: ["leaf01:eth2", "spine01:eth2"]
+    - endpoints: ["leaf01:eth3", "spine02:eth2"]
+    - endpoints: ["leaf01:eth4", "spine03:eth2"]
+
+    - endpoints: ["leaf02:eth1", "spine00:eth3"]
+    - endpoints: ["leaf02:eth2", "spine01:eth3"]
+    - endpoints: ["leaf02:eth3", "spine02:eth3"]
+    - endpoints: ["leaf02:eth4", "spine03:eth3"]
+
+    - endpoints: ["leaf03:eth1", "spine00:eth4"]
+    - endpoints: ["leaf03:eth2", "spine01:eth4"]
+    - endpoints: ["leaf03:eth3", "spine02:eth4"]
+    - endpoints: ["leaf03:eth4", "spine03:eth4"]
+
+    # Berlin DC SONiC Network Links to Berlin VMs
+    - endpoints: ["leaf00:eth5", "berlin1-be:leaf00-eth5"]
+    - endpoints: ["leaf01:eth5", "berlin2-be:leaf01-eth5"]
+    - endpoints: ["leaf02:eth5", "berlin3-be:leaf02-eth5"]
+    - endpoints: ["leaf03:eth5", "berlin4-be:leaf03-eth5"]
 
 
