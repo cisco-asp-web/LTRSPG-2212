@@ -108,9 +108,17 @@ kubectl get net-attach-def backend-network -o yaml
 ```bash
 # Quick test with a minimal image instead
 kubectl run multus-test --image=busybox --restart=Never \
-  --overrides='{"metadata":{"annotations":{"k8s.v1.cni.cncf.io/networks":"backend-network"}}}' \
+  --overrides='{"metadata":{"annotations":{"k8s.v1.cni.cncf.io/networks":"backend-network-static"}}}' \
   -- sleep 600
+```
+or
 
+```bash
+kubectl apply -f multus-test.yaml
+
+```
+
+```bash
 # Check interfaces
 kubectl exec multus-test -- ip addr
 
