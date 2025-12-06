@@ -118,31 +118,31 @@ We can also verify the containerlab logs in the visual code output window. Trunc
 ╭───────────────────────┬────────────────────────────────┬─────────┬────────────────╮
 │          Name         │           Kind/Image           │  State  │ IPv4/6 Address │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-amsterdam │ linux                          │ running │ 10.254.254.108 │
+│ clab-clus25-amsterdam │ linux                          │ running │ 172.20.6.108 │
 │                       │ amsterdam:latest               │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-rome      │ linux                          │ running │ 10.254.254.109 │
+│ clab-clus25-rome      │ linux                          │ running │ 172.20.6.109 │
 │                       │ rome:latest                    │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd01     │ cisco_xrd                      │ running │ 10.254.254.101 │
+│ clab-clus25-xrd01     │ cisco_xrd                      │ running │ 172.20.6.101 │
 │                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd02     │ cisco_xrd                      │ running │ 10.254.254.102 │
+│ clab-clus25-xrd02     │ cisco_xrd                      │ running │ 172.20.6.102 │
 │                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd03     │ cisco_xrd                      │ running │ 10.254.254.103 │
+│ clab-clus25-xrd03     │ cisco_xrd                      │ running │ 172.20.6.103 │
 │                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd04     │ cisco_xrd                      │ running │ 10.254.254.104 │
+│ clab-clus25-xrd04     │ cisco_xrd                      │ running │ 172.20.6.104 │
 │                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd05     │ cisco_xrd                      │ running │ 10.254.254.105 │
+│ clab-clus25-xrd05     │ cisco_xrd                      │ running │ 172.20.6.105 │
 │                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd06     │ cisco_xrd                      │ running │ 10.254.254.106 │
+│ clab-clus25-xrd06     │ cisco_xrd                      │ running │ 172.20.6.106 │
 │                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd07     │ cisco_xrd                      │ running │ 10.254.254.107 │
+│ clab-clus25-xrd07     │ cisco_xrd                      │ running │ 172.20.6.107 │
 │                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
 ╰───────────────────────┴────────────────────────────────┴─────────┴────────────────╯
 ```

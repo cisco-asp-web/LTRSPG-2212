@@ -2,8 +2,8 @@ network:
   ethernets:
     eth0:
       addresses:
-      - 10.254.254.109/24
-      gateway4: 10.254.254.1
+      - 172.20.6.109/24
+      gateway4: 172.20.6.1
       nameservers:
         addresses:
         - 8.8.8.8

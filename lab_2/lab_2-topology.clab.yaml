@@ -4,7 +4,7 @@ name: cleu26
 
 mgmt:
   network: mgt-network
-  ipv4-subnet: 10.254.254.0/24
+  ipv4-subnet: 172.20.6.0/24
   
 topology:
   nodes:
@@ -12,57 +12,98 @@ topology:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
       startup-config: xrd-config/xrd01.cfg
-      mgmt-ipv4: 10.254.254.101
+      mgmt-ipv4: 172.20.6.101
       
     xrd02:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
       startup-config: xrd-config/xrd02.cfg
-      mgmt-ipv4: 10.254.254.102
+      mgmt-ipv4: 172.20.6.102
 
     xrd03:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
       startup-config: xrd-config/xrd03.cfg
-      mgmt-ipv4: 10.254.254.103
+      mgmt-ipv4: 172.20.6.103
 
     xrd04:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
       startup-config: xrd-config/xrd04.cfg
-      mgmt-ipv4: 10.254.254.104
+      mgmt-ipv4: 172.20.6.104
 
     xrd05:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
       startup-config: xrd-config/xrd05.cfg
-      mgmt-ipv4: 10.254.254.105
+      mgmt-ipv4: 172.20.6.105
 
     xrd06:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
       startup-config: xrd-config/xrd06.cfg
-      mgmt-ipv4: 10.254.254.106
+      mgmt-ipv4: 172.20.6.106
 
     xrd07:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
       startup-config: xrd-config/xrd07.cfg
-      mgmt-ipv4: 10.254.254.107
+      mgmt-ipv4: 172.20.6.107
 
-    amsterdam:
-      kind: linux
-      image: cl-amsterdam:latest
-      mgmt-ipv4: 10.254.254.108
-      exec:
-        - sh /usr/local/bin/network-config.sh
-
-    rome:
+    rome00:
       kind: linux
       image: cl-rome:latest
-      mgmt-ipv4: 10.254.254.109
+      mgmt-ipv4: 172.20.6.109
       exec:
         - sh /usr/local/bin/network-config.sh
+
+    rome01:
+      kind: linux
+      image: cl-rome:latest
+      mgmt-ipv4: 172.20.6.110
+      exec:
+        - sh /usr/local/bin/network-config.sh
+
+# Berlin DC SONiC nodes
+    leaf00:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.128
+
+    leaf01:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.129
+
+    leaf02:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.130
+
+    leaf03:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.131
+
+    spine00:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.192
+
+    spine01:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.193
+
+    spine02:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.194
+
+    spine03:
+      kind: linux
+      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      mgmt-ipv4: 172.20.6.195
 
     berlin1-fe:
       kind: bridge
