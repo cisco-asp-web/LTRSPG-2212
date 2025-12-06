@@ -143,8 +143,8 @@ topology:
     - endpoints: ["xrd05:Gi0-0-0-1", "xrd04:Gi0-0-0-2"]
     - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]
     - endpoints: ["xrd06:Gi0-0-0-0", "xrd07:Gi0-0-0-2"]
-    - endpoints: ["xrd07:Gi0-0-0-0", "rome:eth1"]
-    - endpoints: ["xrd07:Gi0-0-0-3", "rome:eth2"]
+    - endpoints: ["xrd07:Gi0-0-0-0", "rome00:eth1"]
+    - endpoints: ["xrd07:Gi0-0-0-3", "rome01:eth1"]
 
     # Berlin DC SONiC Network Links
     - endpoints: ["leaf00:eth1", "spine00:eth1"]
