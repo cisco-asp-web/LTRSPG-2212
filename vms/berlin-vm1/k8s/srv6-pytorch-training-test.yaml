@@ -26,6 +26,9 @@ data:
   WORLD_SIZE: "2"
   MASTER_PORT: "29500"
   HOSTS: "srv6-pytorch-0,srv6-pytorch-1"
+  # Backend route prefix - adjust based on your topology
+  # Examples: "fcbb:0:0800::/48" (narrow) or "fcbb:0::/32" (wide)
+  BACKEND_ROUTE_PREFIX: "fcbb:0:0800::/48"
 ---
 # Pod for rank 0 (master) on berlin-vm1
 apiVersion: v1
@@ -55,6 +58,10 @@ spec:
         sleep 5
         echo "Network interfaces:"
         ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
         echo "Starting PyTorch distributed training..."
         exec python3 /app/test_plugin.py
     envFrom:
@@ -65,6 +72,8 @@ spec:
       value: "0"
     - name: MASTER_ADDR
       value: "fcbb:0:0800:0::"  # Static IPv6 address of master pod on berlin-vm1
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:0::1"  # Gateway for berlin-vm1's backend network
     securityContext:
       capabilities:
         add:
@@ -115,6 +124,10 @@ spec:
         sleep 5
         echo "Network interfaces:"
         ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
         echo "Starting PyTorch distributed training..."
         exec python3 /app/test_plugin.py
     envFrom:
@@ -125,6 +138,8 @@ spec:
       value: "1"
     - name: MASTER_ADDR
       value: "fcbb:0:0800:0::"  # Static IPv6 address of master pod on berlin-vm1
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:1::1"  # Gateway for berlin-vm2's backend network
     securityContext:
       capabilities:
         add:
