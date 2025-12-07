@@ -52,7 +52,7 @@ spec:
     - name: RANK
       value: "0"
     - name: MASTER_ADDR
-      value: "fcbb:0:800:ffff::1"  # IPv6 address of master pod (assigned by whereabouts)
+      value: "fcbb:0:800:ffff::2"  # IPv6 address of master pod (assigned by whereabouts)
     securityContext:
       capabilities:
         add:
@@ -108,7 +108,7 @@ spec:
     - name: RANK
       value: "1"
     - name: MASTER_ADDR
-      value: "fcbb:0:800:ffff::1"  # IPv6 address of master pod (assigned by whereabouts)
+      value: "fcbb:0:800:ffff::2"  # IPv6 address of master pod (assigned by whereabouts)
     securityContext:
       capabilities:
         add:
