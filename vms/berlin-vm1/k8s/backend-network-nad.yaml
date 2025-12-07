@@ -6,6 +6,10 @@
 # - Works better with virtual switches and cloud networking
 # - Lower overhead than bridge-based solutions
 #
+# IMPORTANT: Before using this NAD, remove the IPv6 address from ens5 on each VM:
+#   berlin-vm1: sudo ip -6 addr del fcbb:0:0800:0::/64 dev ens5
+#   berlin-vm2: sudo ip -6 addr del fcbb:0:0800:1::/64 dev ens5
+#
 # Apply with: kubectl apply -f backend-network-nad.yaml
 ---
 apiVersion: k8s.cni.cncf.io/v1
@@ -22,10 +26,7 @@ spec:
       "master": "ens5",
       "mode": "l3",
       "ipam": {
-        "type": "whereabouts",
-        "range": "fcbb:0:0800:ffff::/64",
-        "gateway": "fcbb:0:0800:ffff::1",
-        "enable_ipv6": true
+        "type": "static"
       }
     }
 ---
