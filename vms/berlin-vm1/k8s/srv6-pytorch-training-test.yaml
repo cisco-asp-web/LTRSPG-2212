@@ -1,5 +1,9 @@
 # SRv6 PyTorch Distributed Training Setup
 # Uses Multus for backend network (net1 on ens5)
+#
+# Before applying, create the code ConfigMap:
+#   kubectl create configmap pytorch-code --from-file=test_plugin.py=test_plugin.py
+#
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -48,7 +52,7 @@ spec:
     - name: RANK
       value: "0"
     - name: MASTER_ADDR
-      value: "fcbb:0:800:ffff::100"  # IPv6 address from whereabouts
+      value: "fcbb:0:800:ffff::1"  # IPv6 address of master pod (assigned by whereabouts)
     securityContext:
       capabilities:
         add:
@@ -61,6 +65,14 @@ spec:
       limits:
         memory: "2Gi"
         cpu: "1"
+    volumeMounts:
+    - name: pytorch-code
+      mountPath: /app/test_plugin.py
+      subPath: test_plugin.py
+  volumes:
+  - name: pytorch-code
+    configMap:
+      name: pytorch-code
   restartPolicy: Never
 ---
 # Pod for rank 1 (worker) on berlin-vm2
@@ -96,7 +108,7 @@ spec:
     - name: RANK
       value: "1"
     - name: MASTER_ADDR
-      value: "fcbb:0:800:ffff::100"  # IPv6 address of master pod
+      value: "fcbb:0:800:ffff::1"  # IPv6 address of master pod (assigned by whereabouts)
     securityContext:
       capabilities:
         add:
@@ -109,6 +121,14 @@ spec:
       limits:
         memory: "2Gi"
         cpu: "1"
+    volumeMounts:
+    - name: pytorch-code
+      mountPath: /app/test_plugin.py
+      subPath: test_plugin.py
+  volumes:
+  - name: pytorch-code
+    configMap:
+      name: pytorch-code
   restartPolicy: Never
 ---
 # Headless service for DNS resolution (optional)
