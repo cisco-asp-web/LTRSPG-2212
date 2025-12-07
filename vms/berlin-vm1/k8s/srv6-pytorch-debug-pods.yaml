@@ -1,0 +1,47 @@
+# Simple debug pods for SRv6 PyTorch setup
+# Use this to test network connectivity before running the full distributed training
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-debug-0
+  labels:
+    app: srv6-debug
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network
+spec:
+  nodeName: berlin-vm1
+  containers:
+  - name: pytorch
+    image: docker.io/library/pytorch-srv6-demo:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-debug-1
+  labels:
+    app: srv6-debug
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network
+spec:
+  nodeName: berlin-vm2
+  containers:
+  - name: pytorch
+    image: docker.io/library/pytorch-srv6-demo:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+  restartPolicy: Never
+

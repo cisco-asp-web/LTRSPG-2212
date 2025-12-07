@@ -1,0 +1,126 @@
+# SRv6 PyTorch Distributed Training Setup
+# Uses Multus for backend network (net1 on ens5)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pytorch-distributed-config
+data:
+  JALAPENO_API_ENDPOINT: "http://198.18.128.101:30800/api/v1"
+  TOPOLOGY_COLLECTION: "fabric_graph"
+  BACKEND_INTERFACE: "net1"
+  ROUTE_PLATFORM: "linux"
+  ROUTE_TABLE_ID: "254"
+  WORLD_SIZE: "2"
+  MASTER_PORT: "29500"
+  HOSTS: "srv6-pytorch-0,srv6-pytorch-1"
+---
+# Pod for rank 0 (master) on berlin-vm1
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-pytorch-0
+  labels:
+    app: srv6-pytorch
+    role: master
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network
+spec:
+  nodeName: berlin-vm1
+  containers:
+  - name: pytorch
+    image: docker.io/library/pytorch-srv6-demo:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-pytorch-0 (master)..."
+        echo "Waiting for network interfaces..."
+        sleep 5
+        echo "Network interfaces:"
+        ip addr
+        echo "Starting PyTorch distributed training..."
+        exec python3 /app/demo/test_plugin.py
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: RANK
+      value: "0"
+    - name: MASTER_ADDR
+      value: "fcbb:0:800:ffff::100"  # IPv6 address from whereabouts
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+  restartPolicy: Never
+---
+# Pod for rank 1 (worker) on berlin-vm2
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-pytorch-1
+  labels:
+    app: srv6-pytorch
+    role: worker
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network
+spec:
+  nodeName: berlin-vm2
+  containers:
+  - name: pytorch
+    image: docker.io/library/pytorch-srv6-demo:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-pytorch-1 (worker)..."
+        echo "Waiting for network interfaces..."
+        sleep 5
+        echo "Network interfaces:"
+        ip addr
+        echo "Starting PyTorch distributed training..."
+        exec python3 /app/demo/test_plugin.py
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: RANK
+      value: "1"
+    - name: MASTER_ADDR
+      value: "fcbb:0:800:ffff::100"  # IPv6 address of master pod
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_RAW
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+  restartPolicy: Never
+---
+# Headless service for DNS resolution (optional)
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv6-pytorch
+spec:
+  clusterIP: None
+  selector:
+    app: srv6-pytorch
+  ports:
+  - port: 29500
+    name: distributed
+
