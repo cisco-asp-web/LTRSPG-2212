@@ -40,7 +40,7 @@ spec:
         echo "Network interfaces:"
         ip addr
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/demo/test_plugin.py
+        exec python3 /app/test_plugin.py
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
@@ -88,7 +88,7 @@ spec:
         echo "Network interfaces:"
         ip addr
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/demo/test_plugin.py
+        exec python3 /app/test_plugin.py
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
