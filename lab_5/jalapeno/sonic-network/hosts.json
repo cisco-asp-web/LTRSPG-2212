@@ -38,5 +38,25 @@
         "interface": "eth1",
         "dataplane": "linux",
         "tier": "dc-endpoint"
+    },
+    {
+        "_key": "srv6-pytorch-0",
+        "name": "srv6-pytorch-0",
+        "ipv6_address": "fcbb:0:0800:0::",
+        "prefix": "fcbb:0:0800:0::",
+        "prefix_len": 64,
+        "interface": "net1",
+        "dataplane": "linux",
+        "tier": "dc-endpoint"
+    },
+    {
+        "_key": "srv6-pytorch-1",
+        "name": "srv6-pytorch-1",
+        "ipv6_address": "fcbb:0:0800:1::",
+        "prefix": "fcbb:0:0800:1::",
+        "prefix_len": 64,
+        "interface": "net1",
+        "dataplane": "linux",
+        "tier": "dc-endpoint"
     }
 ]

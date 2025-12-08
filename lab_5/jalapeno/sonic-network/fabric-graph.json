@@ -327,6 +327,25 @@
         "_key": "leaf03_host03",
         "_from": "fabric_node/10.0.0.203_leaf03",
         "_to": "hosts/host03"
+    },
+    {
+        "_key": "srv6-pytorch-0_leaf00",
+        "_from": "hosts/srv6-pytorch-0",
+        "_to": "fabric_node/10.0.0.200_leaf00"
+    },
+    {
+        "_key": "srv6-pytorch-1_leaf01",
+        "_from": "hosts/srv6-pytorch-1",
+        "_to": "fabric_node/10.0.0.201_leaf01"
+    },
+    {
+        "_key": "leaf00_srv6-pytorch-0",
+        "_from": "fabric_node/10.0.0.200_leaf00",
+        "_to": "hosts/srv6-pytorch-0"
+    },
+    {
+        "_key": "leaf01_srv6-pytorch-1",
+        "_from": "fabric_node/10.0.0.201_leaf01",
+        "_to": "hosts/srv6-pytorch-1"
     }
-
 ]
