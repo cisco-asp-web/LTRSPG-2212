@@ -42,7 +42,7 @@ metadata:
     k8s.v1.cni.cncf.io/networks: |
       [{
         "name": "backend-network",
-        "ips": ["fcbb:0:0800:0::2/64"]
+        "ips": ["fcbb:0:0800:0::/64"]
       }]
 spec:
   nodeName: berlin-vm1
@@ -71,7 +71,7 @@ spec:
     - name: RANK
       value: "0"
     - name: MASTER_ADDR
-      value: "fcbb:0:0800:0::2"  # Static IPv6 address of master pod on berlin-vm1
+      value: "fcbb:0:0800:0::"  # Static IPv6 address of master pod on berlin-vm1
     - name: BACKEND_GATEWAY
       value: "fcbb:0:0800:0::1"  # Gateway for berlin-vm1's backend network
     securityContext:
@@ -108,7 +108,7 @@ metadata:
     k8s.v1.cni.cncf.io/networks: |
       [{
         "name": "backend-network",
-        "ips": ["fcbb:0:0800:1::2/64"]
+        "ips": ["fcbb:0:0800:1::/64"]
       }]
 spec:
   nodeName: berlin-vm2
@@ -137,7 +137,7 @@ spec:
     - name: RANK
       value: "1"
     - name: MASTER_ADDR
-      value: "fcbb:0:0800:0::2"  # Static IPv6 address of master pod on berlin-vm1
+      value: "fcbb:0:0800:0::"  # Static IPv6 address of master pod on berlin-vm1
     - name: BACKEND_GATEWAY
       value: "fcbb:0:0800:1::1"  # Gateway for berlin-vm2's backend network
     securityContext:
