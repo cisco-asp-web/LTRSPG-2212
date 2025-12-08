@@ -6,8 +6,11 @@
 #    berlin-vm1: sudo ip -6 addr del fcbb:0:0800:0::/64 dev ens5
 #    berlin-vm2: sudo ip -6 addr del fcbb:0:0800:1::/64 dev ens5
 #
-# 2. Create the code ConfigMap:
-#    kubectl create configmap pytorch-code --from-file=test_plugin.py=test_plugin.py
+# 2. Create the code ConfigMap (from pytorch-plugin directory):
+#    kubectl delete configmap pytorch-code 2>/dev/null; \
+#    kubectl create configmap pytorch-code \
+#      --from-file=test_plugin.py=test_plugin.py \
+#      --from-file=dist_setup.py=pytorch-plugin/dist_setup.py
 #
 # 3. Apply the updated NAD:
 #    kubectl apply -f backend-network-nad.yaml
@@ -90,6 +93,9 @@ spec:
     - name: pytorch-code
       mountPath: /app/test_plugin.py
       subPath: test_plugin.py
+    - name: pytorch-code
+      mountPath: /app/dist_setup.py
+      subPath: dist_setup.py
   volumes:
   - name: pytorch-code
     configMap:
@@ -156,6 +162,9 @@ spec:
     - name: pytorch-code
       mountPath: /app/test_plugin.py
       subPath: test_plugin.py
+    - name: pytorch-code
+      mountPath: /app/dist_setup.py
+      subPath: dist_setup.py
   volumes:
   - name: pytorch-code
     configMap:

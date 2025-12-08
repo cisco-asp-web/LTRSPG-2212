@@ -7,8 +7,12 @@ import netifaces
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def get_node_info(backend_iface='eth1'):
+def get_node_info(backend_iface=None):
     """Get node information including hostname and IP address"""
+    # Use BACKEND_INTERFACE from environment if not specified
+    if backend_iface is None:
+        backend_iface = os.environ.get('BACKEND_INTERFACE', 'eth1')
+    
     # Get hostname from environment variable, with a default based on rank
     hostname = os.environ.get('HOSTNAME')
     if not hostname:
