@@ -1,5 +1,12 @@
 # Simple debug pods for SRv6 PyTorch setup
 # Use this to test network connectivity before running the full distributed training
+#
+# These pods get the same IP addresses and routes as the training pods
+# but just sleep instead of running the training script.
+#
+# Test connectivity with:
+#   kubectl exec srv6-debug-0 -- ping6 -c 3 fcbb:0:0800:1::
+#   kubectl exec srv6-debug-1 -- ping6 -c 3 fcbb:0:0800:0::
 ---
 apiVersion: v1
 kind: Pod
@@ -8,14 +15,36 @@ metadata:
   labels:
     app: srv6-debug
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:0::/64"]
+      }]
 spec:
   nodeName: berlin-vm1
   containers:
-  - name: pytorch
+  - name: debug
     image: docker.io/library/pytorch-srv6-demo:latest
     imagePullPolicy: Never
-    command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-debug-0 on berlin-vm1..."
+        echo "Network interfaces:"
+        ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
+        echo "Debug pod ready. Use 'kubectl exec' to run commands."
+        trap : TERM INT
+        sleep infinity & wait
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:0::1"  # Gateway for berlin-vm1's backend network
     securityContext:
       capabilities:
         add:
@@ -30,18 +59,39 @@ metadata:
   labels:
     app: srv6-debug
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:1::/64"]
+      }]
 spec:
   nodeName: berlin-vm2
   containers:
-  - name: pytorch
+  - name: debug
     image: docker.io/library/pytorch-srv6-demo:latest
     imagePullPolicy: Never
-    command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-debug-1 on berlin-vm2..."
+        echo "Network interfaces:"
+        ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
+        echo "Debug pod ready. Use 'kubectl exec' to run commands."
+        trap : TERM INT
+        sleep infinity & wait
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:1::1"  # Gateway for berlin-vm2's backend network
     securityContext:
       capabilities:
         add:
         - NET_ADMIN
         - NET_RAW
   restartPolicy: Never
-
