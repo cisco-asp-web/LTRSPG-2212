@@ -9,6 +9,23 @@
 #   kubectl exec srv6-debug-1 -- ping6 -c 3 fcbb:0:0800:0::
 ---
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pytorch-distributed-config
+data:
+  JALAPENO_API_ENDPOINT: "http://198.18.128.101:30800/api/v1"
+  TOPOLOGY_COLLECTION: "fabric_graph"
+  BACKEND_INTERFACE: "net1"
+  ROUTE_PLATFORM: "linux"
+  ROUTE_TABLE_ID: "254"
+  WORLD_SIZE: "2"
+  MASTER_PORT: "29500"
+  HOSTS: "srv6-pytorch-0,srv6-pytorch-1"
+  # Backend route prefix - adjust based on your topology
+  # Examples: "fcbb:0:0800::/48" (narrow) or "fcbb:0::/32" (wide)
+  BACKEND_ROUTE_PREFIX: "fcbb:0:0800::/48"
+---
+apiVersion: v1
 kind: Pod
 metadata:
   name: srv6-debug-0
