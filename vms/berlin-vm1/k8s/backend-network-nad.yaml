@@ -22,43 +22,11 @@ spec:
     {
       "cniVersion": "0.3.1",
       "name": "backend-network",
-      "type": "ipvlan",
+      "type": "macvlan",
       "master": "ens5",
-      "mode": "l3",
+      "mode": "bridge",
       "ipam": {
         "type": "static"
-      }
-    }
----
-# Alternative: If you prefer static IP assignment per pod, use this version
-# with host-local IPAM. Each node gets a unique range.
-apiVersion: k8s.cni.cncf.io/v1
-kind: NetworkAttachmentDefinition
-metadata:
-  name: backend-network-static
-  namespace: default
-spec:
-  config: |
-    {
-      "cniVersion": "0.3.1",
-      "name": "backend-network-static",
-      "type": "ipvlan",
-      "master": "ens5",
-      "mode": "l3",
-      "ipam": {
-        "type": "host-local",
-        "ranges": [
-          [
-            {
-              "subnet": "fcbb:0:0800:ffff::/64",
-              "rangeStart": "fcbb:0:0800:ffff::100",
-              "rangeEnd": "fcbb:0:0800:ffff::200"
-            }
-          ]
-        ],
-        "routes": [
-          { "dst": "fcbb:0::/32" }
-        ]
       }
     }
 ---
@@ -67,7 +35,7 @@ spec:
 apiVersion: k8s.cni.cncf.io/v1
 kind: NetworkAttachmentDefinition
 metadata:
-  name: backend-network-macvlan
+  name: backend-network-static
   namespace: default
 spec:
   config: |
