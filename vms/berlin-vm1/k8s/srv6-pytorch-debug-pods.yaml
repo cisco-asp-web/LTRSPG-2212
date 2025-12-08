@@ -47,6 +47,11 @@ spec:
     args:
       - |
         echo "Starting srv6-debug-0 on berlin-vm1..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
         echo "Network interfaces:"
         ip addr
         echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
@@ -63,10 +68,7 @@ spec:
     - name: BACKEND_GATEWAY
       value: "fcbb:0:0800:0::1"  # Gateway for berlin-vm1's backend network
     securityContext:
-      capabilities:
-        add:
-        - NET_ADMIN
-        - NET_RAW
+      privileged: true  # Required for sysctl
   restartPolicy: Never
 ---
 apiVersion: v1
@@ -91,6 +93,11 @@ spec:
     args:
       - |
         echo "Starting srv6-debug-1 on berlin-vm2..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
         echo "Network interfaces:"
         ip addr
         echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
@@ -107,8 +114,5 @@ spec:
     - name: BACKEND_GATEWAY
       value: "fcbb:0:0800:1::1"  # Gateway for berlin-vm2's backend network
     securityContext:
-      capabilities:
-        add:
-        - NET_ADMIN
-        - NET_RAW
+      privileged: true  # Required for sysctl
   restartPolicy: Never

@@ -57,6 +57,11 @@ spec:
     args:
       - |
         echo "Starting srv6-pytorch-0 (master)..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
         echo "Waiting for network interfaces..."
         sleep 5
         echo "Network interfaces:"
@@ -78,10 +83,7 @@ spec:
     - name: BACKEND_GATEWAY
       value: "fcbb:0:0800:0::1"  # Gateway for berlin-vm1's backend network
     securityContext:
-      capabilities:
-        add:
-        - NET_ADMIN
-        - NET_RAW
+      privileged: true  # Required for sysctl
     resources:
       requests:
         memory: "512Mi"
@@ -126,6 +128,11 @@ spec:
     args:
       - |
         echo "Starting srv6-pytorch-1 (worker)..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
         echo "Waiting for network interfaces..."
         sleep 5
         echo "Network interfaces:"
@@ -147,10 +154,7 @@ spec:
     - name: BACKEND_GATEWAY
       value: "fcbb:0:0800:1::1"  # Gateway for berlin-vm2's backend network
     securityContext:
-      capabilities:
-        add:
-        - NET_ADMIN
-        - NET_RAW
+      privileged: true  # Required for sysctl
     resources:
       requests:
         memory: "512Mi"
