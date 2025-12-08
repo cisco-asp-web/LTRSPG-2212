@@ -2,17 +2,14 @@
 # Uses Multus for backend network (net1 on ens5)
 #
 # Prerequisites:
-# 1. Remove IPv6 from ens5 on each VM:
-#    berlin-vm1: sudo ip -6 addr del fcbb:0:0800:0::/64 dev ens5
-#    berlin-vm2: sudo ip -6 addr del fcbb:0:0800:1::/64 dev ens5
 #
-# 2. Create the code ConfigMap (from pytorch-plugin directory):
+# 1. Create the code ConfigMap (from pytorch-plugin directory):
 #    kubectl delete configmap pytorch-code 2>/dev/null; \
 #    kubectl create configmap pytorch-code \
 #      --from-file=test_plugin.py=test_plugin.py \
 #      --from-file=dist_setup.py=pytorch-plugin/dist_setup.py
 #
-# 3. Apply the updated NAD:
+# 2. Apply the updated NAD:
 #    kubectl apply -f backend-network-nad.yaml
 #
 ---
@@ -31,7 +28,7 @@ data:
   HOSTS: "srv6-pytorch-0,srv6-pytorch-1"
   # Backend route prefix - for reaching other pods
   # Examples: "fcbb:0:0800::/48" (narrow) or "fcbb:0::/32" (wide)
-  BACKEND_ROUTE_PREFIX: "fcbb:0:0800::/48"
+  # BACKEND_ROUTE_PREFIX: "fcbb:0:0800::/48"
   # SRv6 uSID block - for SRv6 encapsulated traffic
   SRV6_USID_BLOCK: "fcbb::/32"
 ---
