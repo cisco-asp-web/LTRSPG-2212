@@ -29,9 +29,11 @@ data:
   WORLD_SIZE: "2"
   MASTER_PORT: "29500"
   HOSTS: "srv6-pytorch-0,srv6-pytorch-1"
-  # Backend route prefix - adjust based on your topology
+  # Backend route prefix - for reaching other pods
   # Examples: "fcbb:0:0800::/48" (narrow) or "fcbb:0::/32" (wide)
   BACKEND_ROUTE_PREFIX: "fcbb:0:0800::/48"
+  # SRv6 uSID block - for SRv6 encapsulated traffic
+  SRV6_USID_BLOCK: "fcbb::/32"
 ---
 # Pod for rank 0 (master) on berlin-vm1
 apiVersion: v1
@@ -68,6 +70,8 @@ spec:
         ip addr
         echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
         ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Adding SRv6 uSID block route: $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
@@ -139,6 +143,8 @@ spec:
         ip addr
         echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
         ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Adding SRv6 uSID block route: $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
