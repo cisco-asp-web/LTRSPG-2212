@@ -10,46 +10,46 @@ topology:
   nodes:
 
 # XRd Core Network
-    xrd01:
+    london:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/xrd01.cfg
+      startup-config: xrd-config/london.cfg
       mgmt-ipv4: 172.20.6.101
       
-    xrd02:
+    amsterdam:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/xrd02.cfg
+      startup-config: xrd-config/amsterdam.cfg
       mgmt-ipv4: 172.20.6.102
 
-    xrd03:
+    berlin:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/xrd03.cfg
+      startup-config: xrd-config/berlin.cfg
       mgmt-ipv4: 172.20.6.103
 
-    xrd04:
+    zurich:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/xrd04.cfg
+      startup-config: xrd-config/zurich.cfg
       mgmt-ipv4: 172.20.6.104
 
-    xrd05:
+    paris:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/xrd05.cfg
+      startup-config: xrd-config/paris.cfg
       mgmt-ipv4: 172.20.6.105
 
-    xrd06:
+    barcelona:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/xrd06.cfg
+      startup-config: xrd-config/barcelona.cfg
       mgmt-ipv4: 172.20.6.106
 
-    xrd07:
+    rome:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/xrd07.cfg
+      startup-config: xrd-config/rome.cfg
       mgmt-ipv4: 172.20.6.107
 
     rome00:
@@ -66,7 +66,7 @@ topology:
       exec:
         - sh /usr/local/bin/network-config.sh
 
-# Berlin DC SONiC Network
+# London DC SONiC Network
     leaf00:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
@@ -128,25 +128,25 @@ topology:
   links:
 
     # Core Network Links
-    #- endpoints: ["xrd01:Gi0-0-0-0", "amsterdam:eth1"]
-    - endpoints: ["xrd01:Gi0-0-0-1", "xrd02:Gi0-0-0-0"]      
-    - endpoints: ["xrd01:Gi0-0-0-2", "xrd05:Gi0-0-0-0"]
-    #- endpoints: ["xrd01:Gi0-0-0-3", "amsterdam:eth2"]
-    - endpoints: ["xrd02:Gi0-0-0-1", "xrd03:Gi0-0-0-0"]
-    - endpoints: ["xrd02:Gi0-0-0-2", "xrd06:Gi0-0-0-1"]
-    - endpoints: ["xrd02:Gi0-0-0-3", "berlin1-fe:xrd02-Gi0-0-0-3"]
-    - endpoints: ["xrd02:Gi0-0-0-4", "berlin2-fe:xrd02-Gi0-0-0-4"]
-    - endpoints: ["xrd03:Gi0-0-0-1", "xrd04:Gi0-0-0-0"]
-    - endpoints: ["xrd03:Gi0-0-0-2", "berlin3-fe:xrd03-Gi0-0-0-2"]
-    - endpoints: ["xrd03:Gi0-0-0-3", "berlin4-fe:xrd03-Gi0-0-0-3"]
-    - endpoints: ["xrd04:Gi0-0-0-1", "xrd07:Gi0-0-0-1"]
-    - endpoints: ["xrd05:Gi0-0-0-1", "xrd04:Gi0-0-0-2"]
-    - endpoints: ["xrd05:Gi0-0-0-2", "xrd06:Gi0-0-0-2"]
-    - endpoints: ["xrd06:Gi0-0-0-0", "xrd07:Gi0-0-0-2"]
-    - endpoints: ["xrd07:Gi0-0-0-0", "rome00:eth1"]
-    - endpoints: ["xrd07:Gi0-0-0-3", "rome01:eth1"]
+    #- endpoints: ["london:Gi0-0-0-0", "amsterdam:eth1"]
+    - endpoints: ["london:Gi0-0-0-1", "amsterdam:Gi0-0-0-0"]      
+    - endpoints: ["london:Gi0-0-0-2", "paris:Gi0-0-0-0"]
+    #- endpoints: ["london:Gi0-0-0-3", "amsterdam:eth2"]
+    - endpoints: ["amsterdam:Gi0-0-0-1", "berlin:Gi0-0-0-0"]
+    - endpoints: ["amsterdam:Gi0-0-0-2", "barcelona:Gi0-0-0-1"]
+    - endpoints: ["amsterdam:Gi0-0-0-3", "berlin1-fe:amsterdam-Gi0-0-0-3"]
+    - endpoints: ["amsterdam:Gi0-0-0-4", "berlin2-fe:amsterdam-Gi0-0-0-4"]
+    - endpoints: ["berlin:Gi0-0-0-1", "zurich:Gi0-0-0-0"]
+    - endpoints: ["berlin:Gi0-0-0-2", "berlin3-fe:berlin-Gi0-0-0-2"]
+    - endpoints: ["berlin:Gi0-0-0-3", "berlin4-fe:berlin-Gi0-0-0-3"]
+    - endpoints: ["zurich:Gi0-0-0-1", "rome:Gi0-0-0-1"]
+    - endpoints: ["paris:Gi0-0-0-1", "zurich:Gi0-0-0-2"]
+    - endpoints: ["paris:Gi0-0-0-2", "barcelona:Gi0-0-0-2"]
+    - endpoints: ["barcelona:Gi0-0-0-0", "rome:Gi0-0-0-2"]
+    - endpoints: ["rome:Gi0-0-0-0", "rome00:eth1"]
+    - endpoints: ["rome:Gi0-0-0-3", "rome01:eth1"]
 
-    # Berlin DC SONiC Network Links
+    # London DC SONiC Network Links
     - endpoints: ["leaf00:eth1", "spine00:eth1"]
     - endpoints: ["leaf00:eth2", "spine01:eth1"]
     - endpoints: ["leaf00:eth3", "spine02:eth1"]
@@ -167,7 +167,7 @@ topology:
     - endpoints: ["leaf03:eth3", "spine02:eth4"]
     - endpoints: ["leaf03:eth4", "spine03:eth4"]
 
-    # Berlin DC SONiC Network Links to Berlin VMs
+    # London DC SONiC Network Links to Berlin VMs
     - endpoints: ["leaf00:eth5", "berlin1-be:leaf00-eth5"]
     - endpoints: ["leaf01:eth5", "berlin2-be:leaf01-eth5"]
     - endpoints: ["leaf02:eth5", "berlin3-be:leaf02-eth5"]
