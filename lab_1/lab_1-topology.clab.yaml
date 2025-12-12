@@ -59,7 +59,7 @@ topology:
       exec:
         - sh /usr/local/bin/network-config.sh
 
-    rome01:
+    storage-london:
       kind: linux
       image: cl-rome:latest
       mgmt-ipv4: 172.20.6.110
@@ -82,10 +82,10 @@ topology:
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.130
 
-    leaf03:
-      kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
-      mgmt-ipv4: 172.20.6.131
+    #leaf03:
+    #  kind: linux
+    #  image: vrnetlab/sonic_sonic-vs:vpp20250422
+    #  mgmt-ipv4: 172.20.6.131
 
     spine00:
       kind: linux
@@ -102,10 +102,10 @@ topology:
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.194
 
-    spine03:
-      kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
-      mgmt-ipv4: 172.20.6.195
+    #spine03:
+    #  kind: linux
+    #  image: vrnetlab/sonic_sonic-vs:vpp20250422
+    #  mgmt-ipv4: 172.20.6.195
 
     london1-fe:
       kind: bridge
@@ -113,8 +113,8 @@ topology:
       kind: bridge
     london3-fe:
       kind: bridge
-    london4-fe:
-      kind: bridge
+    #london4-fe:
+    #  kind: bridge
 
     london1-be:
       kind: bridge
@@ -122,55 +122,55 @@ topology:
       kind: bridge
     london3-be:
       kind: bridge
-    london4-be:
-      kind: bridge
+    #london4-be:
+    #  kind: bridge
 
   links:
 
     # Core Network Links
-    #- endpoints: ["london:Gi0-0-0-0", "amsterdam:eth1"]
-    - endpoints: ["london:Gi0-0-0-1", "amsterdam:Gi0-0-0-0"]      
-    - endpoints: ["london:Gi0-0-0-2", "paris:Gi0-0-0-0"]
+    - endpoints: ["london:Gi0-0-0-0", "storage-london:eth1"]                        # Link O
+    - endpoints: ["london:Gi0-0-0-1", "amsterdam:Gi0-0-0-0"]                        # Link A
+    - endpoints: ["london:Gi0-0-0-2", "paris:Gi0-0-0-0"]                            # Link B
     #- endpoints: ["london:Gi0-0-0-3", "amsterdam:eth2"]
-    - endpoints: ["amsterdam:Gi0-0-0-1", "berlin:Gi0-0-0-0"]
-    - endpoints: ["amsterdam:Gi0-0-0-2", "barcelona:Gi0-0-0-1"]
-    - endpoints: ["amsterdam:Gi0-0-0-3", "berlin1-fe:amsterdam-Gi0-0-0-3"]
-    - endpoints: ["amsterdam:Gi0-0-0-4", "berlin2-fe:amsterdam-Gi0-0-0-4"]
-    - endpoints: ["berlin:Gi0-0-0-1", "zurich:Gi0-0-0-0"]
-    - endpoints: ["berlin:Gi0-0-0-2", "berlin3-fe:berlin-Gi0-0-0-2"]
-    - endpoints: ["berlin:Gi0-0-0-3", "berlin4-fe:berlin-Gi0-0-0-3"]
-    - endpoints: ["zurich:Gi0-0-0-1", "rome:Gi0-0-0-1"]
-    - endpoints: ["paris:Gi0-0-0-1", "zurich:Gi0-0-0-2"]
-    - endpoints: ["paris:Gi0-0-0-2", "barcelona:Gi0-0-0-2"]
-    - endpoints: ["barcelona:Gi0-0-0-0", "rome:Gi0-0-0-2"]
-    - endpoints: ["rome:Gi0-0-0-0", "rome00:eth1"]
-    - endpoints: ["rome:Gi0-0-0-3", "rome01:eth1"]
+    - endpoints: ["amsterdam:Gi0-0-0-1", "berlin:Gi0-0-0-0"]                        # Link E
+    - endpoints: ["amsterdam:Gi0-0-0-2", "barcelona:Gi0-0-0-1"]                     # Link C
+    # - endpoints: ["amsterdam:Gi0-0-0-3", "berlin1-fe:amsterdam-Gi0-0-0-3"]        
+    # - endpoints: ["amsterdam:Gi0-0-0-4", "berlin2-fe:amsterdam-Gi0-0-0-4"]
+    - endpoints: ["berlin:Gi0-0-0-1", "zurich:Gi0-0-0-0"]                           # Link F
+    # - endpoints: ["berlin:Gi0-0-0-2", "berlin3-fe:berlin-Gi0-0-0-2"]            
+    # - endpoints: ["berlin:Gi0-0-0-3", "berlin4-fe:berlin-Gi0-0-0-3"]                
+    - endpoints: ["zurich:Gi0-0-0-1", "rome:Gi0-0-0-1"]                             # Link H
+    - endpoints: ["paris:Gi0-0-0-1", "zurich:Gi0-0-0-2"]                            # Link D
+    - endpoints: ["paris:Gi0-0-0-2", "barcelona:Gi0-0-0-2"]                         # Link G
+    - endpoints: ["barcelona:Gi0-0-0-0", "rome:Gi0-0-0-2"]                          # Link I
+    - endpoints: ["rome:Gi0-0-0-0", "rome00:eth1"]                                  # Link J
+    - endpoints: ["rome:Gi0-0-0-3", "rome00:eth2"]                                  # Link K
 
     # London DC SONiC Network Links
     - endpoints: ["leaf00:eth1", "spine00:eth1"]
     - endpoints: ["leaf00:eth2", "spine01:eth1"]
     - endpoints: ["leaf00:eth3", "spine02:eth1"]
-    - endpoints: ["leaf00:eth4", "spine03:eth1"]
+    #- endpoints: ["leaf00:eth4", "spine03:eth1"]
 
     - endpoints: ["leaf01:eth1", "spine00:eth2"]
     - endpoints: ["leaf01:eth2", "spine01:eth2"]
     - endpoints: ["leaf01:eth3", "spine02:eth2"]
-    - endpoints: ["leaf01:eth4", "spine03:eth2"]
+    #- endpoints: ["leaf01:eth4", "spine03:eth2"]
 
     - endpoints: ["leaf02:eth1", "spine00:eth3"]
     - endpoints: ["leaf02:eth2", "spine01:eth3"]
     - endpoints: ["leaf02:eth3", "spine02:eth3"]
-    - endpoints: ["leaf02:eth4", "spine03:eth3"]
+    #- endpoints: ["leaf02:eth4", "spine03:eth3"]
 
     - endpoints: ["leaf03:eth1", "spine00:eth4"]
     - endpoints: ["leaf03:eth2", "spine01:eth4"]
     - endpoints: ["leaf03:eth3", "spine02:eth4"]
-    - endpoints: ["leaf03:eth4", "spine03:eth4"]
+    #- endpoints: ["leaf03:eth4", "spine03:eth4"]
 
     # London DC SONiC Network Links to London VMs
     - endpoints: ["leaf00:eth5", "london1-be:leaf00-eth5"]
     - endpoints: ["leaf01:eth5", "london2-be:leaf01-eth5"]
     - endpoints: ["leaf02:eth5", "london3-be:leaf02-eth5"]
-    - endpoints: ["leaf03:eth5", "london4-be:leaf03-eth5"]
+    #- endpoints: ["leaf03:eth5", "london4-be:leaf03-eth5"]
 
 
