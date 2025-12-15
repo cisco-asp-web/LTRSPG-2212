@@ -9,42 +9,50 @@ topology:
 
     leaf00:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.128
 
     leaf01:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.129
 
     leaf02:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.130
 
     leaf03:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.131
 
     spine00:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.192
 
     spine01:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.193
 
     spine02:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.194
 
     spine03:
       kind: linux
-      image: vrnetlab/sonic_sonic-vs:vpp20250422
+      #image: vrnetlab/sonic_sonic-vs:vpp20250422
+      image: vrnetlab/sonic_sonic-vs:sonic-ngdp-202505
       mgmt-ipv4: 172.20.6.195
 
     bv00:
