@@ -162,9 +162,9 @@ topology:
     - endpoints: ["leaf02:eth3", "spine02:eth3"]
     #- endpoints: ["leaf02:eth4", "spine03:eth3"]
 
-    - endpoints: ["leaf03:eth1", "spine00:eth4"]
-    - endpoints: ["leaf03:eth2", "spine01:eth4"]
-    - endpoints: ["leaf03:eth3", "spine02:eth4"]
+    #- endpoints: ["leaf03:eth1", "spine00:eth4"]
+    #- endpoints: ["leaf03:eth2", "spine01:eth4"]
+    #- endpoints: ["leaf03:eth3", "spine02:eth4"]
     #- endpoints: ["leaf03:eth4", "spine03:eth4"]
 
     # London DC SONiC Network Links to London VMs
