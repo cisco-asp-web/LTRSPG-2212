@@ -13,43 +13,43 @@ topology:
     london:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/london.cfg
+      #startup-config: xrd-config/london.cfg
       mgmt-ipv4: 172.20.6.101
       
     amsterdam:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/amsterdam.cfg
+      #startup-config: xrd-config/amsterdam.cfg
       mgmt-ipv4: 172.20.6.102
 
     berlin:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/berlin.cfg
+      #startup-config: xrd-config/berlin.cfg
       mgmt-ipv4: 172.20.6.103
 
     zurich:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/zurich.cfg
+      #startup-config: xrd-config/zurich.cfg
       mgmt-ipv4: 172.20.6.104
 
     paris:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/paris.cfg
+      #startup-config: xrd-config/paris.cfg
       mgmt-ipv4: 172.20.6.105
 
     barcelona:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/barcelona.cfg
+      #startup-config: xrd-config/barcelona.cfg
       mgmt-ipv4: 172.20.6.106
 
     rome:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      startup-config: xrd-config/rome.cfg
+      #startup-config: xrd-config/rome.cfg
       mgmt-ipv4: 172.20.6.107
 
     rome00:
