@@ -1,8 +1,8 @@
 <domain type='kvm'>
-  <name>berlin-vm4</name>
+  <name>london-vm-00</name>
   <description>ubuntu-22.04-k8s-vm</description>
-  <memory unit='MB'>3000</memory>
-  <currentMemory unit='MB'>3000</currentMemory>
+  <memory unit='MB'>4000</memory>
+  <currentMemory unit='MB'>4000</currentMemory>
   <cpu mode='custom' match='exact' check='partial'>
     <model fallback='allow'>qemu64</model>
     <feature policy='require' name='ssse3'/>
@@ -33,11 +33,11 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/home/cisco/images/berlin-vm4.qcow2'/>
+      <source file='/home/cisco/images/london-vm-00.qcow2'/>
       <target dev='vda' bus='virtio'/>
     </disk>
     <interface type='network'>
-      <mac address='52:54:44:44:a4:b4'/>
+      <mac address='52:54:a1:b1:11:11'/>
       <source network='default' bridge='virbr0'/>
       <target dev='vnet0'/>
       <model type='virtio'/>
@@ -45,16 +45,16 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
     </interface>
     <interface type='network'>
-      <mac address="52:54:44:44:c4:d4"/>   
-      <source network='berlin4-fe' bridge='berlin4-fe'/>
+      <mac address="52:54:c1:d1:11:11"/>   
+      <source network='london1-fe' bridge='london1-fe'/>
       <target dev='vnet1'/>
       <model type='virtio'/>
       <alias name='net1'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </interface>
     <interface type='network'>
-      <mac address="52:54:44:44:e4:f4"/>   
-      <source network='berlin4-be' bridge='berlin4-be'/>
+      <mac address="52:54:e1:f1:11:11"/>   
+      <source network='london1-be' bridge='london1-be'/>
       <target dev='vnet2'/>
       <model type='virtio'/>
       <alias name='net2'/>
