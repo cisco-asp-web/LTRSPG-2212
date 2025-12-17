@@ -1,5 +1,5 @@
 <network>
-  <name>berlin1-fe</name>
+  <name>london-vm-00-fe</name>
   <forward mode="bridge"/>
-  <bridge name="berlin1-fe"/>
+  <bridge name="london-vm-00-fe"/>
 </network>

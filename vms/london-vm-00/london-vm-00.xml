@@ -46,7 +46,7 @@
     </interface>
     <interface type='network'>
       <mac address="52:54:c1:d1:11:11"/>   
-      <source network='london1-fe' bridge='london1-fe'/>
+      <source network='london-vm-00-fe' bridge='london-vm-00-fe'/>
       <target dev='vnet1'/>
       <model type='virtio'/>
       <alias name='net1'/>
@@ -54,7 +54,7 @@
     </interface>
     <interface type='network'>
       <mac address="52:54:e1:f1:11:11"/>   
-      <source network='london1-be' bridge='london1-be'/>
+      <source network='london-vm-00-be' bridge='london-vm-00-be'/>
       <target dev='vnet2'/>
       <model type='virtio'/>
       <alias name='net2'/>

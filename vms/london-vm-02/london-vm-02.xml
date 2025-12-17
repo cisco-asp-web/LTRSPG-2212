@@ -1,5 +1,5 @@
 <domain type='kvm'>
-  <name>berlin-vm3</name>
+  <name>london-vm-02</name>
   <description>ubuntu-22.04-k8s-vm</description>
   <memory unit='MB'>3000</memory>
   <currentMemory unit='MB'>3000</currentMemory>
@@ -33,7 +33,7 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/home/cisco/images/berlin-vm3.qcow2'/>
+      <source file='/home/cisco/images/london-vm-02.qcow2'/>
       <target dev='vda' bus='virtio'/>
     </disk>
     <interface type='network'>
@@ -46,7 +46,7 @@
     </interface>
     <interface type='network'>
       <mac address="52:54:33:33:c3:d3"/>   
-      <source network='berlin3-fe' bridge='berlin3-fe'/>
+      <source network='london-vm-02-fe' bridge='london-vm-02-fe'/>
       <target dev='vnet1'/>
       <model type='virtio'/>
       <alias name='net1'/>
@@ -54,7 +54,7 @@
     </interface>
     <interface type='network'>
       <mac address="52:54:33:33:e3:f3"/>   
-      <source network='berlin3-be' bridge='berlin3-be'/>
+      <source network='london-vm-02-be' bridge='london-vm-02-be'/>
       <target dev='vnet2'/>
       <model type='virtio'/>
       <alias name='net2'/>

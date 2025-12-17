@@ -42,6 +42,7 @@ sudo ip netns exec clab-cleu26-spine01 tcpdump -ni eth2
 ```bash
 kubectl delete -f srv6-pytorch-debug-pods.yaml
 kubectl apply -f srv6-pytorch-training-test.yaml
+kubectl get pods
 kubectl logs -f srv6-pytorch-0
 ```
 
