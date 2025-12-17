@@ -24,7 +24,7 @@ network:
         - 8.8.8.8
         search:
         - demo.dcloud.cisco.com
-    ens5:
+    #ens5:
       # addresses:
       # - fcbb:0:0800:0::/64
       # routes:
