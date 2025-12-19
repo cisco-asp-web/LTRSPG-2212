@@ -1,0 +1,294 @@
+{
+  "freeTextAnnotations": [],
+  "freeShapeAnnotations": [],
+  "groupStyleAnnotations": [],
+  "cloudNodeAnnotations": [],
+  "nodeAnnotations": [
+    {
+      "id": "xrd-london",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "xrd-amsterdam",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "xrd-berlin",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "xrd-zurich",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "xrd-paris",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "xrd-barcelona",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "xrd-rome",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "app-container-rome",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "app-container-london",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "sonic-leaf-00",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "sonic-leaf-01",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "sonic-leaf-02",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "sonic-spine-00",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "sonic-spine-01",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "sonic-spine-02",
+      "icon": "router",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "london-vm-00-fe",
+      "icon": "bridge",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "london-vm-01-fe",
+      "icon": "bridge",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "london-vm-02-fe",
+      "icon": "bridge",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "london-vm-00-be",
+      "icon": "bridge",
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "london-vm-01-be",
+      "icon": "bridge",
+      "position": {
+        "x": -91,
+        "y": -21
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "london-vm-02-be",
+      "icon": "bridge",
+      "position": {
+        "x": -91,
+        "y": 7
+      },
+      "geoCoordinates": {
+        "lat": 48.684826888402256,
+        "lng": 9.007895390625677
+      }
+    },
+    {
+      "id": "london-vm-00-be:sonic-leaf00-eth5",
+      "icon": "bridge",
+      "yamlNodeId": "london-vm-00-be",
+      "yamlInterface": "sonic-leaf00-eth5",
+      "label": "london-vm-00-be",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "london-vm-01-be:sonic-leaf01-eth5",
+      "icon": "bridge",
+      "yamlNodeId": "london-vm-01-be",
+      "yamlInterface": "sonic-leaf01-eth5",
+      "label": "london-vm-01-be",
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "london-vm-02-be:sonic-leaf02-eth5",
+      "icon": "bridge",
+      "yamlNodeId": "london-vm-02-be",
+      "yamlInterface": "sonic-leaf02-eth5",
+      "label": "london-vm-02-be",
+      "position": {
+        "x": -91,
+        "y": 7
+      }
+    }
+  ],
+  "aliasEndpointAnnotations": []
+}

@@ -10,167 +10,152 @@ topology:
   nodes:
 
 # XRd Core Network
-    london:
+    xrd-london:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      #startup-config: xrd-config/london.cfg
+      startup-config: xrd-config/london.cfg
       mgmt-ipv4: 172.20.6.101
       
-    amsterdam:
+    xrd-amsterdam:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      #startup-config: xrd-config/amsterdam.cfg
+      startup-config: xrd-config/amsterdam.cfg
       mgmt-ipv4: 172.20.6.102
 
-    berlin:
+    xrd-berlin:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      #startup-config: xrd-config/berlin.cfg
+      startup-config: xrd-config/berlin.cfg
       mgmt-ipv4: 172.20.6.103
 
-    zurich:
+    xrd-zurich:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      #startup-config: xrd-config/zurich.cfg
+      startup-config: xrd-config/zurich.cfg
       mgmt-ipv4: 172.20.6.104
 
-    paris:
+    xrd-paris:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      #startup-config: xrd-config/paris.cfg
+      startup-config: xrd-config/paris.cfg
       mgmt-ipv4: 172.20.6.105
 
-    barcelona:
+    xrd-barcelona:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      #startup-config: xrd-config/barcelona.cfg
+      startup-config: xrd-config/barcelona.cfg
       mgmt-ipv4: 172.20.6.106
 
-    rome:
+    xrd-rome:
       kind: cisco_xrd
       image: cisco-xrd-control-plane:24.4.1
-      #startup-config: xrd-config/rome.cfg
+      startup-config: xrd-config/rome.cfg
       mgmt-ipv4: 172.20.6.107
 
-    rome00:
+    app-container-rome:
       kind: linux
-      image: cl-rome:latest
+      image: cl-rome-container:latest
       mgmt-ipv4: 172.20.6.109
-      exec:
-        - sh /usr/local/bin/network-config.sh
+      cap-add:
+        - NET_ADMIN
+        - NET_RAW
+      ports:
+        - 2222:22
 
-    storage-london:
+    app-container-london:
       kind: linux
-      image: cl-rome:latest
-      mgmt-ipv4: 172.20.6.110
-      exec:
-        - sh /usr/local/bin/network-config.sh
+      image: cl-london-container:latest
+      mgmt-ipv4: 172.20.6.108
+      cap-add:
+        - NET_ADMIN
+        - NET_RAW
+      ports:
+        - 22222:22
 
 # London DC SONiC Network
-    leaf00:
+    sonic-leaf-00:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.128
 
-    leaf01:
+    sonic-leaf-01:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.129
 
-    leaf02:
+    sonic-leaf-02:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.130
 
-    #leaf03:
-    #  kind: linux
-    #  image: vrnetlab/sonic_sonic-vs:vpp20250422
-    #  mgmt-ipv4: 172.20.6.131
 
-    spine00:
+    sonic-spine-00:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.192
 
-    spine01:
+    sonic-spine-01:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.193
 
-    spine02:
+    sonic-spine-02:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.194
 
-    #spine03:
-    #  kind: linux
-    #  image: vrnetlab/sonic_sonic-vs:vpp20250422
-    #  mgmt-ipv4: 172.20.6.195
+    london-vm-00-fe:
+      kind: bridge
+    london-vm-01-fe:
+      kind: bridge
+    london-vm-02-fe:
+      kind: bridge
 
-    london1-fe:
+    london-vm-00-be:
       kind: bridge
-    london2-fe:
+    london-vm-01-be:
       kind: bridge
-    london3-fe:
+    london-vm-02-be:
       kind: bridge
-    #london4-fe:
-    #  kind: bridge
 
-    london1-be:
-      kind: bridge
-    london2-be:
-      kind: bridge
-    london3-be:
-      kind: bridge
-    #london4-be:
-    #  kind: bridge
 
   links:
 
     # Core Network Links
-    - endpoints: ["london:Gi0-0-0-0", "storage-london:eth1"]                        # Link O
-    - endpoints: ["london:Gi0-0-0-1", "amsterdam:Gi0-0-0-0"]                        # Link A
-    - endpoints: ["london:Gi0-0-0-2", "paris:Gi0-0-0-0"]                            # Link B
-    #- endpoints: ["london:Gi0-0-0-3", "amsterdam:eth2"]
-    - endpoints: ["amsterdam:Gi0-0-0-1", "berlin:Gi0-0-0-0"]                        # Link E
-    - endpoints: ["amsterdam:Gi0-0-0-2", "barcelona:Gi0-0-0-1"]                     # Link C
-    # - endpoints: ["amsterdam:Gi0-0-0-3", "berlin1-fe:amsterdam-Gi0-0-0-3"]        
-    # - endpoints: ["amsterdam:Gi0-0-0-4", "berlin2-fe:amsterdam-Gi0-0-0-4"]
-    - endpoints: ["berlin:Gi0-0-0-1", "zurich:Gi0-0-0-0"]                           # Link F
-    # - endpoints: ["berlin:Gi0-0-0-2", "berlin3-fe:berlin-Gi0-0-0-2"]            
-    # - endpoints: ["berlin:Gi0-0-0-3", "berlin4-fe:berlin-Gi0-0-0-3"]                
-    - endpoints: ["zurich:Gi0-0-0-1", "rome:Gi0-0-0-1"]                             # Link H
-    - endpoints: ["paris:Gi0-0-0-1", "zurich:Gi0-0-0-2"]                            # Link D
-    - endpoints: ["paris:Gi0-0-0-2", "barcelona:Gi0-0-0-2"]                         # Link G
-    - endpoints: ["barcelona:Gi0-0-0-0", "rome:Gi0-0-0-2"]                          # Link I
-    - endpoints: ["rome:Gi0-0-0-0", "rome00:eth1"]                                  # Link J
-    - endpoints: ["rome:Gi0-0-0-3", "rome00:eth2"]                                  # Link K
+    - endpoints: ["xrd-london:Gi0-0-0-0", "app-container-london:eth1"]                      # Link O
+    - endpoints: ["xrd-london:Gi0-0-0-1", "xrd-amsterdam:Gi0-0-0-0"]                        # Link A
+    - endpoints: ["xrd-london:Gi0-0-0-2", "xrd-paris:Gi0-0-0-0"]                            # Link B
+    - endpoints: ["xrd-amsterdam:Gi0-0-0-1", "xrd-berlin:Gi0-0-0-0"]                        # Link E
+    - endpoints: ["xrd-amsterdam:Gi0-0-0-2", "xrd-barcelona:Gi0-0-0-1"]                     # Link C
+    - endpoints: ["xrd-berlin:Gi0-0-0-1", "xrd-zurich:Gi0-0-0-0"]                           # Link F                
+    - endpoints: ["xrd-zurich:Gi0-0-0-1", "xrd-rome:Gi0-0-0-1"]                             # Link H
+    - endpoints: ["xrd-paris:Gi0-0-0-1", "xrd-zurich:Gi0-0-0-2"]                            # Link D
+    - endpoints: ["xrd-paris:Gi0-0-0-2", "xrd-barcelona:Gi0-0-0-2"]                         # Link G
+    - endpoints: ["xrd-barcelona:Gi0-0-0-0", "xrd-rome:Gi0-0-0-2"]                          # Link I
+    - endpoints: ["xrd-rome:Gi0-0-0-0", "app-container-rome:eth1"]                          # Link J
+    - endpoints: ["xrd-rome:Gi0-0-0-3", "app-container-rome:eth2"]                          # Link K
 
     # London DC SONiC Network Links
-    - endpoints: ["leaf00:eth1", "spine00:eth1"]
-    - endpoints: ["leaf00:eth2", "spine01:eth1"]
-    - endpoints: ["leaf00:eth3", "spine02:eth1"]
-    #- endpoints: ["leaf00:eth4", "spine03:eth1"]
+    - endpoints: ["sonic-leaf-00:eth1", "sonic-spine-00:eth1"]
+    - endpoints: ["sonic-leaf-00:eth2", "sonic-spine-01:eth1"]
+    - endpoints: ["sonic-leaf-00:eth3", "sonic-spine-02:eth1"]
+    - endpoints: ["sonic-leaf-01:eth1", "sonic-spine-00:eth2"]
+    - endpoints: ["sonic-leaf-01:eth2", "sonic-spine-01:eth2"]
+    - endpoints: ["sonic-leaf-01:eth3", "sonic-spine-02:eth2"]
+    - endpoints: ["sonic-leaf-02:eth1", "sonic-spine-00:eth3"]
+    - endpoints: ["sonic-leaf-02:eth2", "sonic-spine-01:eth3"]
+    - endpoints: ["sonic-leaf-02:eth3", "sonic-spine-02:eth3"]
 
-    - endpoints: ["leaf01:eth1", "spine00:eth2"]
-    - endpoints: ["leaf01:eth2", "spine01:eth2"]
-    - endpoints: ["leaf01:eth3", "spine02:eth2"]
-    #- endpoints: ["leaf01:eth4", "spine03:eth2"]
-
-    - endpoints: ["leaf02:eth1", "spine00:eth3"]
-    - endpoints: ["leaf02:eth2", "spine01:eth3"]
-    - endpoints: ["leaf02:eth3", "spine02:eth3"]
-    #- endpoints: ["leaf02:eth4", "spine03:eth3"]
-
-    #- endpoints: ["leaf03:eth1", "spine00:eth4"]
-    #- endpoints: ["leaf03:eth2", "spine01:eth4"]
-    #- endpoints: ["leaf03:eth3", "spine02:eth4"]
-    #- endpoints: ["leaf03:eth4", "spine03:eth4"]
 
     # London DC SONiC Network Links to London VMs
-    - endpoints: ["leaf00:eth5", "london1-be:leaf00-eth5"]
-    - endpoints: ["leaf01:eth5", "london2-be:leaf01-eth5"]
-    - endpoints: ["leaf02:eth5", "london3-be:leaf02-eth5"]
-    #- endpoints: ["leaf03:eth5", "london4-be:leaf03-eth5"]
+    - endpoints: ["sonic-leaf-00:eth5", "london-vm-00-be:sonic-leaf00-eth5"]
+    - endpoints: ["sonic-leaf-01:eth5", "london-vm-01-be:sonic-leaf01-eth5"]
+    - endpoints: ["sonic-leaf-02:eth5", "london-vm-02-be:sonic-leaf02-eth5"]
+
+
+    # London DC SONiC  Front End Network Links between London VMs (bridges) and XRd
+    - endpoints: ["xrd-london:Gi0-0-0-3", "london-vm-00-fe:xrd-london:Gi0-0-0-3"]
+    - endpoints: ["xrd-london:Gi0-0-0-4", "london-vm-01-fe:xrd-london:Gi0-0-0-4"]
+    - endpoints: ["xrd-london:Gi0-0-0-5", "london-vm-02-fe:xrd-london:Gi0-0-0-5"]
 
 
