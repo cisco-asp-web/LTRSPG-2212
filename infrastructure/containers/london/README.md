@@ -207,7 +207,7 @@ It is suitable **only for isolated lab environments**.
 # Build the container Image:
 
 ```
-docker build -t cl-london-container:latest:latest .
+docker build -t cl-london-container:latest .
 ```
 
 # Summary
