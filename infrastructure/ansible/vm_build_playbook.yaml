@@ -1,0 +1,31 @@
+# ansible-playbook -e "ansible_user=dcloud ansible_ssh_pass=C1sco12345 ansible_sudo_pass=C1sco12345" /home/dcloud/LTRSPG-2212/ansible/startup_playbook.yaml -vv
+# ansible-playbook -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" /home/cisco/LTRSPG-2212/ansible/startup_playbook.yaml -vv
+
+- name: Update the Git Repo
+  hosts: localhost
+  become: false
+  tasks:
+
+    - name: git pull to update repo on localhost
+      command: git pull
+      args:
+        chdir: /home/cisco/LTRSPG-2212
+      ignore_errors: yes
+
+- name: london-vm-00
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: start London-VM-00
+      command: virsh start london-vm-00
+      ignore_errors: yes
+
+- name: london-vm-01
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: start London-VM-01
+      command: virsh start london-vm-01
+      ignore_errors: yes

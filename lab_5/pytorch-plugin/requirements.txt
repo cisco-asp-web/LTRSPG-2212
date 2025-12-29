@@ -1,5 +1,9 @@
 # Core dependencies
-torch>=2.0.0
+
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.0.0+cpu
+
+#torch>=2.0.0
 numpy>=1.24.0
 python-dotenv>=1.0.0
 requests>=2.31.0
@@ -12,7 +16,7 @@ pyroute2>=0.7.0
 # VPP support (optional)
 vpp-papi>=2.3.0
 
-# Development dependencies
-pytest>=7.0.0  # For testing
-black>=23.0.0  # For code formatting
-flake8>=6.0.0  # For linting
+# # Development dependencies
+# pytest>=7.0.0  # For testing
+# black>=23.0.0  # For code formatting
+# flake8>=6.0.0  # For linting

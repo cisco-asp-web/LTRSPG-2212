@@ -1,8 +1,16 @@
-[vms]
+[dcloud_vms]
 topology-host ansible_host=198.18.133.100
 
 jalapeno ansible_host=198.18.128.101
 
-[berlin]
+[london_vms]
+192.168.122.100 ansible_python_interpreter=/usr/bin/python3
+192.168.122.101 ansible_python_interpreter=/usr/bin/python3
+192.168.122.102 ansible_python_interpreter=/usr/bin/python3
+
+[london_k8s_cp]
 192.168.122.100 ansible_python_interpreter=/usr/bin/python3
 
+[london_k8s_workers]
+192.168.122.101 ansible_python_interpreter=/usr/bin/python3
+192.168.122.102 ansible_python_interpreter=/usr/bin/python3

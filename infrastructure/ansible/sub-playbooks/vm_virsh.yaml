@@ -1,0 +1,153 @@
+
+
+- name: london-vm-00
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: define virsh network london-vm-00-fe
+      command: virsh net-define ../../vms/london-vm-00/london-vm-00-fe.xml
+      ignore_errors: yes
+
+    - name: start virsh network london-vm-00-fe
+      command: virsh net-start london-vm-00-fe
+      ignore_errors: yes
+
+    - name: define virsh network london-vm-00-be
+      command: virsh net-define ../../vms/london-vm-00/london-vm-00-be.xml
+      ignore_errors: yes
+
+    - name: start virsh network london-vm-00-be
+      command: virsh net-start london-vm-00-be
+      ignore_errors: yes
+
+    - name: add london-vm-00-fe bridge
+      command: brctl addbr london-vm-00-fe
+      ignore_errors: yes
+
+    - name: london-vm-00-fe link up
+      command: ip link set london-vm-00-fe up
+      ignore_errors: yes
+
+    - name: london-vm-00-fe ip address
+      command: ip addr add 10.8.0.3/24 dev london-vm-00-fe
+      ignore_errors: yes
+
+    - name: berlin1-fe masquerade
+      command: iptables -t nat -A POSTROUTING -o ens160 -j MASQUERADE 
+      ignore_errors: yes
+
+    - name: add london-vm-00-be bridge
+      command: brctl addbr london-vm-00-be
+      ignore_errors: yes
+
+    - name: london-vm-00-be link up
+      command: ip link set london-vm-00-be up
+      ignore_errors: yes
+
+    - name: define virsh domain
+      command: virsh define ../../vms/london-vm-00/london-vm-00.xml
+      ignore_errors: yes
+
+    - name: start London VM
+      command: virsh start london-vm-00
+      ignore_errors: yes
+
+- name: london-vm-01
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: define virsh network berlin2-fe
+      command: virsh net-define ../vms/berlin-vm2/berlin2-fe.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin2-fe
+      command: virsh net-start berlin2-fe
+      ignore_errors: yes
+
+    - name: define virsh network berlin2-be
+      command: virsh net-define ../vms/berlin-vm2/berlin2-be.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin2-be
+      command: virsh net-start berlin2-be
+      ignore_errors: yes
+
+    - name: add berlin2-fe bridge
+      command: brctl addbr berlin2-fe
+      ignore_errors: yes
+      
+    - name: berlin2-fe link up
+      command: ip link set berlin2-fe up
+      ignore_errors: yes
+
+    - name: berlin2-fe ip address
+      command: ip addr add 10.8.1.3/24 dev berlin2-fe
+      ignore_errors: yes
+
+    - name: add berlin2-be bridge
+      command: brctl addbr berlin2-be
+      ignore_errors: yes
+      
+    - name: berlin2-be link up
+      command: ip link set berlin2-be up
+      ignore_errors: yes
+
+    - name: define virsh domain
+      command: virsh define ../vms/berlin-vm2/berlin-vm2.xml
+      ignore_errors: yes
+
+    - name: start Berlin VM
+      command: virsh start berlin-vm2
+      ignore_errors: yes
+
+
+- name: berlin-vm3
+  hosts: localhost
+  become: true
+  tasks:
+
+    - name: define virsh network berlin3-fe
+      command: virsh net-define ../vms/berlin-vm3/berlin3-fe.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin3-fe
+      command: virsh net-start berlin3-fe
+      ignore_errors: yes
+
+    - name: define virsh network berlin3-be
+      command: virsh net-define ../vms/berlin-vm3/berlin3-be.xml
+      ignore_errors: yes
+      
+    - name: start virsh network berlin3-be
+      command: virsh net-start berlin3-be
+      ignore_errors: yes
+
+    - name: add berlin3-fe bridge
+      command: brctl addbr berlin3-fe
+      ignore_errors: yes
+
+    - name: berlin3-fe link up
+      command: ip link set berlin3-fe up
+      ignore_errors: yes
+
+    - name: berlin3-fe ip address
+      command: ip addr add 10.8.2.3/24 dev berlin3-fe
+      ignore_errors: yes
+
+    - name: add berlin3-be bridge
+      command: brctl addbr berlin3-be
+      ignore_errors: yes
+
+    - name: berlin3-be link up
+      command: ip link set berlin3-be up
+      ignore_errors: yes
+
+    # - name: define virsh domain
+    #   command: virsh define ../vms/berlin-vm3/berlin-vm3.xml
+    #   ignore_errors: yes
+      
+    # - name: start Berlin VM
+    #   command: virsh start berlin-vm3
+    #   ignore_errors: yes
