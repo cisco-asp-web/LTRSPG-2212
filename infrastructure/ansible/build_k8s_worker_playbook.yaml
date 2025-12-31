@@ -1,0 +1,262 @@
+# ansible-playbook -e "ansible_user=dcloud ansible_ssh_pass=C1sco12345 ansible_sudo_pass=C1sco12345" /home/dcloud/LTRSPG-2212/ansible/startup_playbook.yaml -vv
+# ansible-playbook -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" /home/cisco/LTRSPG-2212/ansible/startup_playbook.yaml -vv
+
+- name: Update the Git Repo
+  hosts: localhost
+  become: false
+  tasks:
+
+    - name: git pull to update repo on localhost
+      command: git pull
+      args:
+        chdir: /home/cisco/LTRSPG-2212
+      ignore_errors: yes
+
+- name: install k8s on workers
+  hosts: london_k8s_workers
+  become: true
+  tasks:
+
+    - name: apt update && upgrade
+      apt:
+        update_cache: yes
+        upgrade: yes
+      ignore_errors: yes
+
+    - name: timedatectl
+      command: timedatectl set-timezone America/Los_Angeles
+      ignore_errors: yes
+
+    - name: swapoff
+      command: swapoff -a
+      ignore_errors: yes
+
+    - name: rm swap
+      command: rm /swap.img
+      ignore_errors: yes
+
+    - name: comment out swap in fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*\sswap\s.*)$'
+        replace: '# \1'
+      ignore_errors: yes
+
+    - name: install utils
+      apt:
+        name:
+          - bridge-utils
+          - curl
+          - apt-transport-https
+        state: present
+      ignore_errors: yes
+
+    - name: mkdir apt keyrings
+      command: mkdir -p -m 755 /etc/apt/keyrings
+      ignore_errors: yes
+
+    - name: curl kubernetes apt key
+      shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      ignore_errors: yes
+
+    - name: chmod apt keyrings
+      command: chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      ignore_errors: yes
+
+    - name: add kubernetes apt source
+      shell: echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
+      ignore_errors: yes
+
+    - name: chmod kubernetes apt source
+      command: chmod 644 /etc/apt/sources.list.d/kubernetes.list
+      ignore_errors: yes
+
+    - name: apt update
+      apt:
+        update_cache: yes
+      ignore_errors: yes
+
+    - name: install kubernetes
+      apt: 
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+      ignore_errors: yes
+
+    - name: apt-mark hold kubernetes
+      command: apt-mark hold kubelet kubeadm kubectl
+      ignore_errors: yes
+
+    - name: enable kubelet
+      command: systemctl enable --now kubelet
+      ignore_errors: yes
+
+    - name: modprobe overlay
+      command: modprobe overlay
+      ignore_errors: yes
+
+    - name: modprobe br_netfilter
+      command: modprobe br_netfilter
+      ignore_errors: yes
+
+    - name: persist kernel modules across reboots
+      blockinfile:
+        path: /etc/modules-load.d/k8s.conf
+        create: yes
+        block: |
+          overlay
+          br_netfilter
+        marker: "# {mark} ANSIBLE MANAGED - K8S MODULES"
+      ignore_errors: yes
+
+    - name: add k8s sysctl settings
+      blockinfile:
+        path: /etc/sysctl.conf
+        block: |
+          net.bridge.bridge-nf-call-ip6tables = 1
+          net.bridge.bridge-nf-call-iptables = 1
+          net.ipv4.ip_forward = 1
+          net.ipv6.conf.all.forwarding=1
+        marker: "# {mark} ANSIBLE MANAGED - K8S SETTINGS"
+      ignore_errors: yes
+
+    - name: apply sysctl settings
+      command: sysctl -p
+      ignore_errors: yes
+
+    # Install containerd and runc
+    - name: download containerd
+      get_url:
+        url: https://github.com/containerd/containerd/releases/download/v1.7.27/containerd-1.7.27-linux-amd64.tar.gz
+        dest: /tmp/containerd-1.7.27-linux-amd64.tar.gz
+      ignore_errors: yes
+
+    - name: extract containerd to /usr/local
+      unarchive:
+        src: /tmp/containerd-1.7.27-linux-amd64.tar.gz
+        dest: /usr/local
+        remote_src: yes
+      ignore_errors: yes
+
+    - name: download containerd.service
+      get_url:
+        url: https://raw.githubusercontent.com/containerd/containerd/main/containerd.service
+        dest: /etc/systemd/system/containerd.service
+      ignore_errors: yes
+
+    - name: systemctl daemon-reload
+      command: systemctl daemon-reload
+      ignore_errors: yes
+
+    - name: enable and start containerd
+      command: systemctl enable --now containerd
+      ignore_errors: yes
+
+    - name: download runc
+      get_url:
+        url: https://github.com/opencontainers/runc/releases/download/v1.2.6/runc.amd64
+        dest: /tmp/runc.amd64
+      ignore_errors: yes
+
+    - name: install runc
+      copy:
+        src: /tmp/runc.amd64
+        dest: /usr/local/sbin/runc
+        mode: '0755'
+        remote_src: yes
+      ignore_errors: yes
+
+    # Configure containerd
+    - name: create /etc/containerd directory
+      file:
+        path: /etc/containerd
+        state: directory
+      ignore_errors: yes
+
+    - name: copy containerd config
+      copy:
+        src: /home/cisco/LTRSPG-2212/lab_3/cilium/containerd-config.toml
+        dest: /etc/containerd/config.toml
+      ignore_errors: yes
+
+    - name: restart containerd
+      command: systemctl restart containerd
+      ignore_errors: yes
+
+    # Verify services are running
+    - name: verify containerd is running
+      command: systemctl is-active containerd
+      register: containerd_status
+      ignore_errors: yes
+
+    - name: show containerd status
+      debug:
+        msg: "containerd status: {{ containerd_status.stdout }}"
+
+    - name: verify kubelet is running
+      command: systemctl is-active kubelet
+      register: kubelet_status
+      ignore_errors: yes
+
+    - name: show kubelet status
+      debug:
+        msg: "kubelet status: {{ kubelet_status.stdout }}"
+
+# Join workers to k8s cluster
+- name: join london-vm-01 to cluster
+  hosts: 192.168.122.101
+  become: true
+  tasks:
+
+    - name: copy k8s-join.yaml for london-vm-01
+      copy:
+        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-01/london-vm-01-k8s-join.yaml
+        dest: /tmp/k8s-join.yaml
+      ignore_errors: yes
+
+    - name: kubeadm join
+      command: kubeadm join --config /tmp/k8s-join.yaml
+      ignore_errors: yes
+
+- name: join london-vm-02 to cluster
+  hosts: 192.168.122.102
+  become: true
+  tasks:
+
+    - name: copy k8s-join.yaml for london-vm-02
+      copy:
+        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-02/london-vm-02-k8s-join.yaml
+        dest: /tmp/k8s-join.yaml
+      ignore_errors: yes
+
+    - name: kubeadm join
+      command: kubeadm join --config /tmp/k8s-join.yaml
+      ignore_errors: yes
+
+- name: k8s control plane
+  hosts: london_k8s_cp
+  tasks:
+
+    - name: get nodes -o wide
+      command: kubectl get nodes -o wide
+      register: nodes
+      ignore_errors: yes
+
+    - name: show nodes -o wide
+      debug:
+        msg: "{{ nodes.stdout_lines }}"
+
+    - name: get pods status
+      command: kubectl get pods --all-namespaces
+      register: pods
+      ignore_errors: yes
+
+    - name: show pods status
+      debug:
+        msg: "{{ pods.stdout_lines }}"
+
+    - name: untaint control plane
+      command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+      ignore_errors: yes
