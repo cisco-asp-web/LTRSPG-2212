@@ -1,6 +1,5 @@
 [dcloud_vms]
 topology-host ansible_host=198.18.133.100
-
 jalapeno ansible_host=198.18.128.101
 
 [london_vms]
