@@ -5,11 +5,11 @@ localhost ansible_connection=local
 leaf00 ansible_host=172.20.6.128
 leaf01 ansible_host=172.20.6.129
 leaf02 ansible_host=172.20.6.130
-leaf03 ansible_host=172.20.6.131
+#leaf03 ansible_host=172.20.6.131
 spine00 ansible_host=172.20.6.192
 spine01 ansible_host=172.20.6.193
 spine02 ansible_host=172.20.6.194
-spine03 ansible_host=172.20.6.195
+#spine03 ansible_host=172.20.6.195
 
 [hosts]
 host00 ansible_host=172.20.6.224

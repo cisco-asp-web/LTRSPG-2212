@@ -81,7 +81,6 @@ backend-network    5s
 #### other NAD verifications
 ```bash
 # List all NADs
-kubectl get network-attachment-definitions
 kubectl get net-attach-def  # short form
 
 # Describe a specific NAD to see the full config
@@ -122,22 +121,6 @@ kubectl exec multus-test-02 -- ip -6 route
 # Clean up
 kubectl delete pod multus-test
 ```
-
-
-### Step 4: Deploy a Test PyTorch Pod
-
-```bash
-kubectl apply -f pytorch-pod-example.yaml
-```
-
-Check the pod has both network interfaces:
-```bash
-kubectl exec pytorch-training -- ip addr
-```
-
-You should see:
-- `eth0` - Primary interface via Cilium (172.16.x.x)
-- `net1` - Backend interface via Multus (fcbb:0:0800:ffff::x)
 
 ## Network Attachment Definition Options
 
@@ -224,55 +207,8 @@ annotations:
 kubectl logs -n kube-system -l app=multus
 ```
 
-### Check pod network status
-```bash
-kubectl get pod pytorch-training -o jsonpath='{.metadata.annotations.k8s\.v1\.cni\.cncf\.io/network-status}' | jq
-```
-
-### Test connectivity between pods on backend network
-```bash
-# From pytorch-worker-0
-kubectl exec pytorch-worker-0 -- ping6 -c 3 <pytorch-worker-1-backend-ip>
-```
-
-## Troubleshooting
-
-### Pod stuck in ContainerCreating
-
-Check Multus logs:
-```bash
-kubectl logs -n kube-system -l app=multus --tail=50
-```
-
-Common issues:
-- CNI binary not found: Verify `/opt/cni/bin/` contains ipvlan/macvlan binaries
-- Interface not found: Verify ens5 exists on the node
-- IPAM failure: Check whereabouts logs
-
-### No secondary interface in pod
-
-Verify the annotation is correct:
-```bash
-kubectl get pod <pod-name> -o yaml | grep -A5 annotations
-```
-
-### IP address conflicts
-
-Switch from host-local to whereabouts IPAM, or ensure each node has a unique IP range.
-
-## Files in this Directory
-
-| File | Description |
-|------|-------------|
-| `multus-install.yaml` | Multus CNI DaemonSet and RBAC |
-| `whereabouts-install.yaml` | Whereabouts IPAM DaemonSet and CRDs |
-| `backend-network-nad.yaml` | NetworkAttachmentDefinition for ens5 |
-| `pytorch-pod-example.yaml` | Example pods using the backend network |
-| `multus-guide.md` | This guide |
-
 ## References
 
 - [Multus CNI GitHub](https://github.com/k8snetworkplumbingwg/multus-cni)
-- [Whereabouts IPAM](https://github.com/k8snetworkplumbingwg/whereabouts)
-- [CNI Plugins](https://www.cni.dev/plugins/current/)
+
 

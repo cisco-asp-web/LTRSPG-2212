@@ -1,10 +1,10 @@
 ## Contents
 - [Contents](#contents)
-- [xrd01](#xrd01)
-- [xrd07](#xrd07)
+- [london](#london)
+- [rome](#rome)
 - [Back to Lab 1 Guide](#back-to-lab-1-guide)
 
-## xrd01
+## london
 ```
 conf t
 
@@ -52,7 +52,7 @@ segment-routing
  
 ```
 
-## xrd07
+## rome
 ```
 conf t
 

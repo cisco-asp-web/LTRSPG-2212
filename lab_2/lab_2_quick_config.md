@@ -1,13 +1,12 @@
 ## Contents
 - [Contents](#contents)
-- [xrd01](#xrd01)
-- [xrd05](#xrd05)
-- [xrd06](#xrd06)
-- [xrd07](#xrd07)
+- [london](#london)
+- [paris](#paris)
+- [rome](#rome)
 - [Example VRF and interface config:](#example-vrf-and-interface-config)
 - [Back to Lab 2 Guide](#back-to-lab-2-guide)
 
-## xrd01
+## london
 ```
 conf t
 
@@ -89,7 +88,7 @@ commit
 
 ```
 
-## xrd05
+## paris
 ```
 conf t
 
@@ -107,25 +106,7 @@ commit
 
 ```
 
-## xrd06
-```
-conf t
-
-router bgp 65000
- neighbor-group xrd-ipv6-peer
-  address-family vpnv4 unicast
-   route-reflector-client
-  !
-  address-family vpnv6 unicast
-   route-reflector-client
-  !
- !
-!
-commit
-
-```
-
-## xrd07
+## rome
 ```
 conf t
 
