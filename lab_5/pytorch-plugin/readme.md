@@ -1,5 +1,5 @@
 Build/update the pytorch-srv6 docker image:
 
 ```
-docker build -t pytorch-srv6-demo24 .
+docker build -t pytorch-srv6:latest .
 ```
