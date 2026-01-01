@@ -20,7 +20,7 @@ data:
   ROUTE_TABLE_ID: "254"
   WORLD_SIZE: "2"
   MASTER_PORT: "29500"
-  HOSTS: "srv6-pytorch-0,srv6-pytorch-1"
+  HOSTS: "srv6-pytorch-0,srv6-pytorch-1,srv6-pytorch-2"
   # Backend route prefix - for reaching other pods
   # Examples: "fcbb:0:0800::/48" (narrow) or "fcbb:0::/32" (wide)
   BACKEND_ROUTE_PREFIX: "fcbb:0:0800::/48"
@@ -40,7 +40,7 @@ metadata:
         "ips": ["fcbb:0:0800:0::/64"]
       }]
 spec:
-  nodeName: berlin-vm1
+  nodeName: london-vm-00
   containers:
   - name: debug
     image: docker.io/library/pytorch-srv6-demo:latest
@@ -48,7 +48,7 @@ spec:
     command: ["/bin/bash", "-c"]
     args:
       - |
-        echo "Starting srv6-debug-0 on berlin-vm1..."
+        echo "Starting srv6-debug-0 on london-vm-00..."
         echo "Enabling IPv6 forwarding and SRv6..."
         sysctl -w net.ipv6.conf.all.forwarding=1
         sysctl -w net.ipv6.conf.all.seg6_enabled=1
@@ -70,7 +70,7 @@ spec:
         name: pytorch-distributed-config
     env:
     - name: BACKEND_GATEWAY
-      value: "fcbb:0:0800:0::1"  # Gateway for berlin-vm1's backend network
+      value: "fcbb:0:0800:0::1"  # Gateway for london-vm-00's backend network
     securityContext:
       privileged: true  # Required for sysctl
   restartPolicy: Never
@@ -88,7 +88,7 @@ metadata:
         "ips": ["fcbb:0:0800:1::/64"]
       }]
 spec:
-  nodeName: berlin-vm2
+  nodeName: london-vm-01
   containers:
   - name: debug
     image: docker.io/library/pytorch-srv6-demo:latest
@@ -96,7 +96,7 @@ spec:
     command: ["/bin/bash", "-c"]
     args:
       - |
-        echo "Starting srv6-debug-1 on berlin-vm2..."
+        echo "Starting srv6-debug-1 on london-vm-01..."
         echo "Enabling IPv6 forwarding and SRv6..."
         sysctl -w net.ipv6.conf.all.forwarding=1
         sysctl -w net.ipv6.conf.all.seg6_enabled=1
@@ -118,7 +118,56 @@ spec:
         name: pytorch-distributed-config
     env:
     - name: BACKEND_GATEWAY
-      value: "fcbb:0:0800:1::1"  # Gateway for berlin-vm2's backend network
+      value: "fcbb:0:0800:1::1"  # Gateway for london-vm-01's backend network
+    securityContext:
+      privileged: true  # Required for sysctl
+  restartPolicy: Never
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-debug-2
+  labels:
+    app: srv6-debug
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:2::/64"]
+      }]
+spec:
+  nodeName: london-vm-02
+  containers:
+  - name: debug
+    image: docker.io/library/pytorch-srv6-demo:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-debug-2 on london-vm-02..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
+        echo "Network interfaces:"
+        ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Adding SRv6 uSID block route: $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
+        echo "Debug pod ready. Use 'kubectl exec' to run commands."
+        trap : TERM INT
+        sleep infinity & wait
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:2::1"  # Gateway for london-vm-02's backend network
     securityContext:
       privileged: true  # Required for sysctl
   restartPolicy: Never
