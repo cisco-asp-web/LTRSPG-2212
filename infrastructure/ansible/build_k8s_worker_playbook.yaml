@@ -1,5 +1,4 @@
-# ansible-playbook -e "ansible_user=dcloud ansible_ssh_pass=C1sco12345 ansible_sudo_pass=C1sco12345" /home/dcloud/LTRSPG-2212/ansible/startup_playbook.yaml -vv
-# ansible-playbook -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" /home/cisco/LTRSPG-2212/ansible/startup_playbook.yaml -vv
+# ansible-playbook -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" -i hosts build_k8s_worker_playbook.yaml -vv
 
 - name: Update the Git Repo
   hosts: localhost
@@ -56,7 +55,7 @@
       ignore_errors: yes
 
     - name: curl kubernetes apt key
-      shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
       ignore_errors: yes
 
     - name: chmod apt keyrings
@@ -64,7 +63,7 @@
       ignore_errors: yes
 
     - name: add kubernetes apt source
-      shell: echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list
+      shell: echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
       ignore_errors: yes
 
     - name: chmod kubernetes apt source
