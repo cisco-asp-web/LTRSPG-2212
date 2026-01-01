@@ -64,7 +64,7 @@ kube-multus-ds-yyyyy  1/1     Running   0          1m
 The NetworkAttachmentDefinition (NAD) tells Multus how to configure the secondary network interface.
 
 ```bash
-kubectl apply -f backend-network-nad.yaml
+kubectl apply -f multus-backend-network-nad.yaml
 ```
 
 Verify the NAD was created:
@@ -110,6 +110,8 @@ kubectl get pods -o wide
 
 ```bash
 # Check interfaces and routes
+kubectl exec multus-test-00 -- ip addr
+kubectl exec multus-test-00 -- ip -6 route
 kubectl exec multus-test-01 -- ip addr
 kubectl exec multus-test-01 -- ip -6 route
 kubectl exec multus-test-02 -- ip addr
