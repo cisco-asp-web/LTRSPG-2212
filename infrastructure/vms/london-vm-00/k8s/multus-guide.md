@@ -59,19 +59,6 @@ kube-multus-ds-xxxxx  1/1     Running   0          1m
 kube-multus-ds-yyyyy  1/1     Running   0          1m
 ```
 
-### Step 2: Install Whereabouts IPAM (Recommended)
-
-Whereabouts provides cluster-wide IP address management for secondary networks. This prevents IP conflicts when pods are scheduled across different nodes.
-
-```bash
-kubectl apply -f whereabouts-install.yaml
-```
-
-Verify Whereabouts is running:
-```bash
-kubectl get pods -n kube-system -l app=whereabouts
-```
-
 ### Step 3: Create NetworkAttachmentDefinition
 
 The NetworkAttachmentDefinition (NAD) tells Multus how to configure the secondary network interface.

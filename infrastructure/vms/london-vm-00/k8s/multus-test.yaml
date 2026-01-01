@@ -1,11 +1,25 @@
 apiVersion: v1
 kind: Pod
 metadata:
+  name: multus-test-00
+  annotations:
+    k8s.v1.cni.cncf.io/networks: backend-network
+spec:
+  nodeName: london-vm-00
+  containers:
+  - name: multus-test-00
+    command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    image: alpine
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
   name: multus-test-01
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network-static
+    k8s.v1.cni.cncf.io/networks: backend-network
 spec:
-  nodeName: berlin-vm1
+  nodeName: london-vm-01
   containers:
   - name: multus-test-01
     command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
@@ -17,9 +31,9 @@ kind: Pod
 metadata:
   name: multus-test-02
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network-static
+    k8s.v1.cni.cncf.io/networks: backend-network
 spec:
-  nodeName: berlin-vm2
+  nodeName: london-vm-02
   containers:
   - name: multus-test-02
     command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
