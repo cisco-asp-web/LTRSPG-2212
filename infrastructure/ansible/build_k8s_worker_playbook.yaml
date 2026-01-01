@@ -222,7 +222,7 @@
       ignore_errors: yes
 
     - name: kubeadm join
-      command: kubeadm join --config /tmp/k8s-join.yaml
+      command: kubeadm join --config /tmp/k8s-join.yaml --v=5
       ignore_errors: yes
 
 - name: join london-vm-02 to cluster

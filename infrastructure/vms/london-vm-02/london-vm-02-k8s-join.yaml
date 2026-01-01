@@ -3,7 +3,7 @@ kind: JoinConfiguration
 discovery:
   bootstrapToken:
     apiServerEndpoint: 10.8.0.2:6443
-    token: "tp1d5f.s78fx0rhj1915mcn"
+    token: "op1n8e.0kxz7cz53wq7i7er"
     caCertHashes:
     - "sha256:10018ead487de42e14c176587cfc7f5ed7f50171c047d91ef00065ea7283a28e"
 nodeRegistration:
