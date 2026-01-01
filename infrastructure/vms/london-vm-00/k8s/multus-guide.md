@@ -8,22 +8,22 @@ This guide explains how to install and configure Multus CNI to provide a seconda
 ┌─────────────────────────────────────────────────────────────────┐
 │                        Kubernetes Node                          │
 │  ┌───────────────────────────────────────────────────────────┐  │
-│  │                         Pod                                │  │
+│  │                         Pod                               │  │
 │  │   ┌─────────┐                          ┌─────────┐        │  │
 │  │   │  eth0   │  Primary (Cilium)        │  net1   │ Backend│  │
 │  │   └────┬────┘                          └────┬────┘        │  │
 │  └────────┼─────────────────────────────────────┼────────────┘  │
 │           │                                     │               │
-│  ┌────────▼────────┐                  ┌─────────▼────────┐     │
-│  │   Cilium CNI    │                  │  IPVLAN/MACVLAN  │     │
-│  │  (via Multus)   │                  │   (via Multus)   │     │
-│  └────────┬────────┘                  └─────────┬────────┘     │
+│  ┌────────▼────────┐                  ┌─────────▼────────┐      │
+│  │   Cilium CNI    │                  │  IPVLAN/MACVLAN  │      │
+│  │  (via Multus)   │                  │   (via Multus)   │      │
+│  └────────┬────────┘                  └─────────┬────────┘      │
 │           │                                     │               │
-│  ┌────────▼────────┐                  ┌─────────▼────────┐     │
-│  │      ens4       │                  │       ens5       │     │
-│  │  Frontend NIC   │                  │   Backend NIC    │     │
-│  │  10.8.x.2/24    │                  │ fcbb:0:0800:x::/64│    │
-│  └─────────────────┘                  └──────────────────┘     │
+│  ┌────────▼────────┐                  ┌─────────▼────────┐      │
+│  │      ens4       │                  │       ens5       │      │
+│  │  Frontend NIC   │                  │   Backend NIC    │      │
+│  │  10.8.x.2/24    │                  │fcbb:0:0800:x::/64│      │
+│  └─────────────────┘                  └──────────────────┘      │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -44,7 +44,7 @@ https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/quickstart.m
 
 
 ```bash
-kubectl apply -f multus-daemonset-thick.yml
+kubectl apply -f multus-daemonset.yml
 ```
 
 Verify Multus is running:
