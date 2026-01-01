@@ -54,6 +54,12 @@
       command: mkdir -p -m 755 /etc/apt/keyrings
       ignore_errors: yes
 
+    - name: remove existing kubernetes keyring
+      file:
+        path: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+        state: absent
+      ignore_errors: yes
+
     - name: curl kubernetes apt key
       shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
       ignore_errors: yes
