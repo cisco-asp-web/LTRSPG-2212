@@ -3,7 +3,11 @@ kind: Pod
 metadata:
   name: multus-test-00
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:800:0::10/64"]
+      }]
 spec:
   nodeName: london-vm-00
   containers:
@@ -17,7 +21,11 @@ kind: Pod
 metadata:
   name: multus-test-01
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:800:1::10/64"]
+      }]
 spec:
   nodeName: london-vm-01
   containers:
@@ -31,7 +39,11 @@ kind: Pod
 metadata:
   name: multus-test-02
   annotations:
-    k8s.v1.cni.cncf.io/networks: backend-network
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:800:2::10/64"]
+      }]
 spec:
   nodeName: london-vm-02
   containers:
