@@ -1,0 +1,9 @@
+# Cilium Helm values (contains cluster-specific config)
+infrastructure/vms/london-vm-00/k8s/cilium-helm.yaml
+
+# Common ignores
+*.swp
+*.swo
+*~
+.DS_Store
+
