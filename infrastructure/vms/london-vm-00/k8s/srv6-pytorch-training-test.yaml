@@ -88,17 +88,17 @@ spec:
       limits:
         memory: "2Gi"
         cpu: "1"
-    volumeMounts:
-    - name: pytorch-code
-      mountPath: /app/test_plugin.py
-      subPath: test_plugin.py
-    - name: pytorch-code
-      mountPath: /app/dist_setup.py
-      subPath: dist_setup.py
-  volumes:
-  - name: pytorch-code
-    configMap:
-      name: pytorch-code
+    # volumeMounts:
+    # - name: pytorch-code
+    #   mountPath: /app/test_plugin.py
+    #   subPath: test_plugin.py
+    # - name: pytorch-code
+    #   mountPath: /app/dist_setup.py
+    #   subPath: dist_setup.py
+  # volumes:
+  # - name: pytorch-code
+  #   configMap:
+  #     name: pytorch-code
   restartPolicy: Never
 ---
 # Pod for rank 1 (worker) on london-vm-01
@@ -161,17 +161,17 @@ spec:
       limits:
         memory: "2Gi"
         cpu: "1"
-    volumeMounts:
-    - name: pytorch-code
-      mountPath: /app/test_plugin.py
-      subPath: test_plugin.py
-    - name: pytorch-code
-      mountPath: /app/dist_setup.py
-      subPath: dist_setup.py
-  volumes:
-  - name: pytorch-code
-    configMap:
-      name: pytorch-code
+    # volumeMounts:
+    # - name: pytorch-code
+    #   mountPath: /app/test_plugin.py
+    #   subPath: test_plugin.py
+    # - name: pytorch-code
+    #   mountPath: /app/dist_setup.py
+    #   subPath: dist_setup.py
+  # volumes:
+  # - name: pytorch-code
+  #   configMap:
+  #     name: pytorch-code
   restartPolicy: Never
 
 ---
@@ -235,17 +235,17 @@ spec:
       limits:
         memory: "2Gi"
         cpu: "1"
-    volumeMounts:
-    - name: pytorch-code
-      mountPath: /app/test_plugin.py
-      subPath: test_plugin.py
-    - name: pytorch-code
-      mountPath: /app/dist_setup.py
-      subPath: dist_setup.py
-  volumes:
-  - name: pytorch-code
-    configMap:
-      name: pytorch-code
+    # volumeMounts:
+    # - name: pytorch-code
+    #   mountPath: /app/test_plugin.py
+    #   subPath: test_plugin.py
+    # - name: pytorch-code
+    #   mountPath: /app/dist_setup.py
+    #   subPath: dist_setup.py
+  # volumes:
+  # - name: pytorch-code
+  #   configMap:
+  #     name: pytorch-code
   restartPolicy: Never
 
 ---
