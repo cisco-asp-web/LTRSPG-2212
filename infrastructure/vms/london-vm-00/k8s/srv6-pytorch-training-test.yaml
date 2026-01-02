@@ -175,7 +175,7 @@ spec:
   restartPolicy: Never
 
 ---
-# Pod for rank 1 (worker) on london-vm-02
+# Pod for rank 2 (worker) on london-vm-02
 apiVersion: v1
 kind: Pod
 metadata:
@@ -221,7 +221,7 @@ spec:
         name: pytorch-distributed-config
     env:
     - name: RANK
-      value: "1"
+      value: "2"
     - name: MASTER_ADDR
       value: "fcbb:0:0800:0::2"  # Static IPv6 address of master pod on london-vm1
     - name: BACKEND_GATEWAY

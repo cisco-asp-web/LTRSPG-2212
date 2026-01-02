@@ -18,7 +18,7 @@ data:
   BACKEND_INTERFACE: "net1"
   ROUTE_PLATFORM: "linux"
   ROUTE_TABLE_ID: "254"
-  WORLD_SIZE: "2"
+  WORLD_SIZE: "3"
   MASTER_PORT: "29500"
   HOSTS: "srv6-pytorch-0,srv6-pytorch-1,srv6-pytorch-2"
   # Backend route prefix - for reaching other pods
