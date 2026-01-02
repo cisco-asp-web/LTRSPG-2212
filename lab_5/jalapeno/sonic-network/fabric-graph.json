@@ -161,54 +161,8 @@
         "percent_util_in": 0.4,
         "load": 0
     },
-    {
-        "_key": "10.0.0.3_spine03_10.0.0.200_leaf00",
-        "_from": "fabric_node/10.0.0.3_spine03",
-        "_to": "fabric_node/10.0.0.200_leaf00",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.3_spine03_10.0.0.201_leaf01",
-        "_from": "fabric_node/10.0.0.3_spine03",
-        "_to": "fabric_node/10.0.0.201_leaf01",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.3_spine03_10.0.0.202_leaf02",
-        "_from": "fabric_node/10.0.0.3_spine03",
-        "_to": "fabric_node/10.0.0.202_leaf02",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    
-    {
-        "_key": "host00_leaf00",
-        "_from": "hosts/host00",
-        "_to": "fabric_node/10.0.0.200_leaf00"
-    },
-    {
-        "_key": "host01_leaf01",
-        "_from": "hosts/host01",
-        "_to": "fabric_node/10.0.0.201_leaf01"
-    },
-    {
-        "_key": "host02_leaf02",
-        "_from": "hosts/host02",
-        "_to": "fabric_node/10.0.0.202_leaf02"
-    },
-    {
-        "_key": "host03_leaf03",
-        "_from": "hosts/host03",
-        "_to": "fabric_node/10.0.0.203_leaf03"
-    },
+
+
     {
         "_key": "srv6-pytorch-0_leaf00",
         "_from": "hosts/srv6-pytorch-0",
