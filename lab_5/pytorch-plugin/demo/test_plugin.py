@@ -29,19 +29,25 @@ def get_all_nodes():
     return nodes
 
 def main():
-    # Set environment variables for distributed setup
-    os.environ['RANK'] = os.getenv('RANK', '0')
-    os.environ['WORLD_SIZE'] = os.getenv('WORLD_SIZE', '3')  # Using 3 hosts
+    # All configuration comes from environment variables
+    # These should be set by the Kubernetes pod spec or .env file
+    rank = int(os.getenv('RANK', '0'))
+    world_size = int(os.getenv('WORLD_SIZE', '2'))
+    master_addr = os.getenv('MASTER_ADDR')
+    master_port = os.getenv('MASTER_PORT', '29500')
+    backend_interface = os.getenv('BACKEND_INTERFACE', 'net1')
     
-    # Get the master IP address based on rank
-    rank = int(os.environ['RANK'])
-    # Always use host00 as the master
-    master_ip = '2001:db8:1000::2'  # host00 IPv6
+    # Validate required environment variables
+    if not master_addr:
+        print("Error: MASTER_ADDR environment variable is required")
+        return
     
-    os.environ['MASTER_ADDR'] = master_ip
-    os.environ['MASTER_PORT'] = os.getenv('MASTER_PORT', '29501')
-    os.environ['BACKEND_INTERFACE'] = os.getenv('BACKEND_INTERFACE', 'eth1')
-    os.environ['TOPOLOGY_COLLECTION'] = os.getenv('TOPOLOGY_COLLECTION')
+    # Set environment variables for torch.distributed
+    os.environ['RANK'] = str(rank)
+    os.environ['WORLD_SIZE'] = str(world_size)
+    os.environ['MASTER_ADDR'] = master_addr
+    os.environ['MASTER_PORT'] = master_port
+    os.environ['BACKEND_INTERFACE'] = backend_interface
     
     # Print all environment variables for debugging
     # print("\nEnvironment Variables:")
