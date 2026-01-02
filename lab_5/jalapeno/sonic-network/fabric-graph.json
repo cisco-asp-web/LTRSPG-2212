@@ -27,15 +27,6 @@
         "load": 0
     },
     {
-        "_key": "10.0.0.203_leaf03_10.0.0.0_spine00",
-        "_from": "fabric_node/10.0.0.203_leaf03",
-        "_to": "fabric_node/10.0.0.0_spine00",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
         "_key": "10.0.0.200_leaf00_10.0.0.1_spine01",
         "_from": "fabric_node/10.0.0.200_leaf00",
         "_to": "fabric_node/10.0.0.1_spine01",
@@ -56,15 +47,6 @@
     {
         "_key": "10.0.0.202_leaf02_10.0.0.1_spine01",
         "_from": "fabric_node/10.0.0.202_leaf02",
-        "_to": "fabric_node/10.0.0.1_spine01",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.203_leaf03_10.0.0.1_spine01",
-        "_from": "fabric_node/10.0.0.203_leaf03",
         "_to": "fabric_node/10.0.0.1_spine01",
         "latency": 1,
         "percent_util_out": 0.4,
@@ -99,51 +81,6 @@
         "load": 0
     },
     {
-        "_key": "10.0.0.203_leaf03_10.0.0.2_spine02",
-        "_from": "fabric_node/10.0.0.203_leaf03",
-        "_to": "fabric_node/10.0.0.2_spine02",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.200_leaf00_10.0.0.3_spine03",
-        "_from": "fabric_node/10.0.0.200_leaf00",
-        "_to": "fabric_node/10.0.0.3_spine03",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.201_leaf01_10.0.0.3_spine03",
-        "_from": "fabric_node/10.0.0.201_leaf01",
-        "_to": "fabric_node/10.0.0.3_spine03",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.202_leaf02_10.0.0.3_spine03",
-        "_from": "fabric_node/10.0.0.202_leaf02",
-        "_to": "fabric_node/10.0.0.3_spine03",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.203_leaf03_10.0.0.3_spine03",
-        "_from": "fabric_node/10.0.0.203_leaf03",
-        "_to": "fabric_node/10.0.0.3_spine03",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
         "_key": "10.0.0.0_spine00_10.0.0.200_leaf00",
         "_from": "fabric_node/10.0.0.0_spine00",
         "_to": "fabric_node/10.0.0.200_leaf00",
@@ -165,15 +102,6 @@
         "_key": "10.0.0.0_spine00_10.0.0.202_leaf02",
         "_from": "fabric_node/10.0.0.0_spine00",
         "_to": "fabric_node/10.0.0.202_leaf02",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.0_spine00_10.0.0.203_leaf03",
-        "_from": "fabric_node/10.0.0.0_spine00",
-        "_to": "fabric_node/10.0.0.203_leaf03",
         "latency": 1,
         "percent_util_out": 0.4,
         "percent_util_in": 0.4,
@@ -207,15 +135,6 @@
         "load": 0
     },
     {
-        "_key": "10.0.0.1_spine01_10.0.0.203_leaf03",
-        "_from": "fabric_node/10.0.0.1_spine01",
-        "_to": "fabric_node/10.0.0.203_leaf03",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
         "_key": "10.0.0.2_spine02_10.0.0.200_leaf00",
         "_from": "fabric_node/10.0.0.2_spine02",
         "_to": "fabric_node/10.0.0.200_leaf00",
@@ -237,15 +156,6 @@
         "_key": "10.0.0.2_spine02_10.0.0.202_leaf02",
         "_from": "fabric_node/10.0.0.2_spine02",
         "_to": "fabric_node/10.0.0.202_leaf02",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
-    {
-        "_key": "10.0.0.2_spine02_10.0.0.203_leaf03",
-        "_from": "fabric_node/10.0.0.2_spine02",
-        "_to": "fabric_node/10.0.0.203_leaf03",
         "latency": 1,
         "percent_util_out": 0.4,
         "percent_util_in": 0.4,
@@ -278,15 +188,6 @@
         "percent_util_in": 0.4,
         "load": 0
     },
-    {
-        "_key": "10.0.0.3_spine03_10.0.0.203_leaf03",
-        "_from": "fabric_node/10.0.0.3_spine03",
-        "_to": "fabric_node/10.0.0.203_leaf03",
-        "latency": 1,
-        "percent_util_out": 0.4,
-        "percent_util_in": 0.4,
-        "load": 0
-    },
     
     {
         "_key": "host00_leaf00",
@@ -309,26 +210,6 @@
         "_to": "fabric_node/10.0.0.203_leaf03"
     },
     {
-        "_key": "leaf00_host00",
-        "_from": "fabric_node/10.0.0.200_leaf00",
-        "_to": "hosts/host00"
-    },
-    {
-        "_key": "leaf01_host01",
-        "_from": "fabric_node/10.0.0.201_leaf01",
-        "_to": "hosts/host01"
-    },
-    {
-        "_key": "leaf02_host02",
-        "_from": "fabric_node/10.0.0.202_leaf02",
-        "_to": "hosts/host02"
-    },
-    {
-        "_key": "leaf03_host03",
-        "_from": "fabric_node/10.0.0.203_leaf03",
-        "_to": "hosts/host03"
-    },
-    {
         "_key": "srv6-pytorch-0_leaf00",
         "_from": "hosts/srv6-pytorch-0",
         "_to": "fabric_node/10.0.0.200_leaf00"
@@ -339,6 +220,11 @@
         "_to": "fabric_node/10.0.0.201_leaf01"
     },
     {
+        "_key": "srv6-pytorch-2_leaf02",
+        "_from": "hosts/srv6-pytorch-2",
+        "_to": "fabric_node/10.0.0.202_leaf02"
+    },
+    {
         "_key": "leaf00_srv6-pytorch-0",
         "_from": "fabric_node/10.0.0.200_leaf00",
         "_to": "hosts/srv6-pytorch-0"
@@ -347,5 +233,10 @@
         "_key": "leaf01_srv6-pytorch-1",
         "_from": "fabric_node/10.0.0.201_leaf01",
         "_to": "hosts/srv6-pytorch-1"
+    },
+    {
+        "_key": "leaf02_srv6-pytorch-2",
+        "_from": "fabric_node/10.0.0.202_leaf02",
+        "_to": "hosts/srv6-pytorch-2"
     }
 ]

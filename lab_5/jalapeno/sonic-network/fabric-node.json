@@ -50,23 +50,6 @@
           }
         ]
       },
-    {
-        "_key": "10.0.0.3_spine03",
-        "router_id": "10.0.0.3",
-        "name": "spine03",
-        "tier": "dc-tier-1",
-        "asn": 65003,
-        "sids": [
-          {
-            "srv6_sid": "fc00:0:1003::",
-            "srv6_endpoint_behavior": {
-              "endpoint_behavior": 48,
-              "flag": 0,
-              "algo": 0
-            }
-          }
-        ]
-      },
       {
         "_key": "10.0.0.200_leaf00",
         "router_id": "10.0.0.200",
@@ -141,30 +124,5 @@
             }
           }
         ]
-      },
-      {
-        "_key": "10.0.0.203_leaf03",
-        "router_id": "10.0.0.203",
-        "name": "leaf03",
-        "tier": "dc-tier-0",
-        "asn": 65203,
-        "sids": [
-          {
-            "srv6_sid": "fc00:0:1203::",
-            "srv6_endpoint_behavior": {
-              "endpoint_behavior": 48,
-              "flag": 0,
-              "algo": 0
-            }
-          },
-          {
-            "srv6_sid": "fc00:0:1203:fe06::",
-            "srv6_endpoint_behavior": {
-              "endpoint_behavior": 62,
-              "flag": 0,
-              "algo": 0
-            }
-          }
-        ]
-    }
+      }
   ]
