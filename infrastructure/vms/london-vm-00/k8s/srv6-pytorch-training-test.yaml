@@ -26,6 +26,7 @@ data:
   WORLD_SIZE: "3"
   MASTER_PORT: "29500"
   HOSTS: "srv6-pytorch-0,srv6-pytorch-1,srv6-pytorch-2"
+  BACKEND_ROUTE_PREFIX: "fcbb:0:800::/48"
   SRV6_USID_BLOCK: "fcbb::/32"
 ---
 # Pod for rank 0 (master) on london-vm1
