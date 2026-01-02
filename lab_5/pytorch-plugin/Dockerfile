@@ -29,7 +29,8 @@ COPY srv6_plugin.py /app/
 
 # Copy demo files
 COPY demo/test_plugin.py /app/
-COPY demo/.env /app/
+# Note: .env is for local development only, not copied to image
+# In Kubernetes, use ConfigMap/pod spec for environment variables
 
 # Create a script to set capabilities at runtime
 RUN echo '#!/bin/bash\nsetcap cap_net_admin,cap_net_raw+ep /sbin/ip\nexec "$@"' > /app/entrypoint.sh && \

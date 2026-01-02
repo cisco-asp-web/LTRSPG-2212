@@ -5,8 +5,9 @@ import torch.distributed as dist
 from dotenv import load_dotenv
 from srv6_plugin import DemoPlugin
 
-# Load environment variables
-load_dotenv()
+# Load environment variables from .env file (only if not already set)
+# In Kubernetes, env vars are set by the pod spec/ConfigMap
+load_dotenv(override=False)
 
 def cleanup():
     """Cleanup function to destroy distributed process group"""
