@@ -43,7 +43,7 @@ spec:
   nodeName: london-vm-00
   containers:
   - name: debug
-    image: docker.io/library/pytorch-srv6-demo:latest
+    image: docker.io/library/pytorch-srv6:latest
     imagePullPolicy: Never
     command: ["/bin/bash", "-c"]
     args:
@@ -91,7 +91,7 @@ spec:
   nodeName: london-vm-01
   containers:
   - name: debug
-    image: docker.io/library/pytorch-srv6-demo:latest
+    image: docker.io/library/pytorch-srv6:latest
     imagePullPolicy: Never
     command: ["/bin/bash", "-c"]
     args:
@@ -140,7 +140,7 @@ spec:
   nodeName: london-vm-02
   containers:
   - name: debug
-    image: docker.io/library/pytorch-srv6-demo:latest
+    image: docker.io/library/pytorch-srv6:latest
     imagePullPolicy: Never
     command: ["/bin/bash", "-c"]
     args:
