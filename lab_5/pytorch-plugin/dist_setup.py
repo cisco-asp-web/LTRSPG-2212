@@ -7,8 +7,12 @@ import netifaces
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def get_node_info(backend_iface='eth1'):
+def get_node_info(backend_iface=None):
     """Get node information including hostname and IP address"""
+    # Get backend interface from environment if not specified
+    if backend_iface is None:
+        backend_iface = os.environ.get('BACKEND_INTERFACE', 'net1')
+    
     # Get hostname from environment variable, with a default based on rank
     hostname = os.environ.get('HOSTNAME')
     if not hostname:
@@ -37,7 +41,7 @@ def init_distributed():
     """Initialize PyTorch distributed training"""
     # Get distributed training info
     rank = int(os.environ.get('RANK', '0'))
-    world_size = int(os.environ.get('WORLD_SIZE', '1'))
+    world_size = int(os.environ.get('WORLD_SIZE', '2'))
     master_addr = os.environ.get('MASTER_ADDR', 'localhost')
     master_port = os.environ.get('MASTER_PORT', '29500')
     
