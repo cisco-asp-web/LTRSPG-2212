@@ -35,7 +35,7 @@ Each of the labs is designed to be completed in the order presented. Lab 1 will 
 
 | File Name      | Description                                                         |
 |:---------------|:--------------------------------------------------------------------|
-| ansible        | Ansible scripts to update the lab at bootup                         |
+| infrasstructure| Base configurations for the non-router containers and VMs in the    |
 | topo_drawings  | Lab diagrams folder                                                 |
 | lab_1 -> lab_5 | Individual lab folders                                              |
 
@@ -52,7 +52,7 @@ Within each lab directory you should see several files of importance:
 
 
 > [!NOTE]
-> We've recently launched a whole series of SRv6 labs on github, many of which are built on XRd:
+> We've recently launched a whole series of SRv6 labs on github, many of which leverage Containerlab and XRd:
 > 
 > https://github.com/segmentrouting/srv6-labs
 
@@ -76,7 +76,7 @@ This lab environment consists of three virtual machines, each with a specific ro
 | VM Name              | IP Address       | Role / Description                                                                                                     | Key Tools / Use Cases                                                                                          |
 |----------------------|------------------|------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
 | **Topology Host**    | `198.18.133.100` | Primary VM that hosts our SONiC and XRd networks deployed via Containerlab                        | - `Containerlab` to define and deploy topologies (`*.clab.yaml`)<br>- `Edgeshark` for in-container packet captures |
-| **Jalapeno Host**    | `198.18.128.101` | Hosts **Project Jalapeno**, an SDN controller framework focused on tunnel-based and graph-driven control planes       | - SDN automation & path computation<br>- Real-time topology modeling<br>- Graph database ingestion              |
+| **Jalapeno Host**    | `198.18.128.101` | Hosts **Project Jalapeno**, an open-source SDN controller framework focused on tunnel-based and graph-driven control planes       | - SDN automation & path computation<br>- Real-time topology modeling<br>- Graph database ingestion              |
 | **Windows Management** | `198.18.128.102` | RDP-accessible Windows VM for student interaction with the lab                                                        | - Lab documentation access<br>- VS Code with SSH and extensions:<br> &nbsp;&nbsp;• Start/stop topologies<br> &nbsp;&nbsp;• Capture traffic<br> &nbsp;&nbsp;• Access containers and Linux hosts |
 
 
