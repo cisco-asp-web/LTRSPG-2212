@@ -91,6 +91,9 @@ def main():
         is_ipv6 = ':' in master_addr
         
         # Test connectivity to all other nodes
+        ping_success = 0
+        ping_fail = 0
+        
         for node in nodes:
             if node['hostname'] != current_host:  # Skip self
                 print(f"\nTesting connectivity from {current_host} to {node['hostname']}...", flush=True)
@@ -109,13 +112,25 @@ def main():
                     if ping_destination:
                         print(f"Pinging {ping_destination}", flush=True)
                         ping_cmd = "ping6" if is_ipv6 else "ping"
-                        os.system(f"{ping_cmd} -c 4 {ping_destination}")
+                        result = os.system(f"{ping_cmd} -c 4 {ping_destination}")
+                        if result == 0:
+                            ping_success += 1
+                        else:
+                            ping_fail += 1
                     else:
                         print(f"Could not determine ping destination for {node['hostname']}", flush=True)
+                        ping_fail += 1
                 else:
                     print(f"Could not get route information for {node['hostname']}", flush=True)
+                    ping_fail += 1
         
-        print("\nTest completed successfully!", flush=True)
+        # Report results
+        if ping_fail == 0 and ping_success > 0:
+            print(f"\nSRv6 connectivity test PASSED! ({ping_success} successful pings)", flush=True)
+        elif ping_success > 0:
+            print(f"\nSRv6 connectivity test PARTIAL: {ping_success} passed, {ping_fail} failed", flush=True)
+        else:
+            print(f"\nSRv6 connectivity test FAILED! ({ping_fail} failed attempts)", flush=True)
         
     except Exception as e:
         print(f"\nError during test: {str(e)}")
