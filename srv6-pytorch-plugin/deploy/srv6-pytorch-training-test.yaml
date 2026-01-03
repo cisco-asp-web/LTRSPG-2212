@@ -1,0 +1,265 @@
+# SRv6 PyTorch Distributed Training Setup
+# Uses Multus for backend network (net1 on ens5)
+#
+# Prerequisites:
+#
+# 1. Create the code ConfigMap (from pytorch-plugin directory):
+#    kubectl delete configmap pytorch-code 2>/dev/null; \
+#    kubectl create configmap pytorch-code \
+#      --from-file=test_plugin.py=test_plugin.py \
+#      --from-file=dist_setup.py=pytorch-plugin/dist_setup.py
+#
+# 2. Apply the updated NAD:
+#    kubectl apply -f backend-network-nad.yaml
+#
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pytorch-distributed-config
+data:
+  JALAPENO_API_ENDPOINT: "http://198.18.128.101:30800/api/v1"
+  TOPOLOGY_COLLECTION: "fabric_graph"
+  BACKEND_INTERFACE: "net1"
+  ROUTE_PLATFORM: "linux"
+  ROUTE_TABLE_ID: "254"
+  WORLD_SIZE: "3"
+  MASTER_PORT: "29500"
+  HOSTS: "srv6-pytorch-0,srv6-pytorch-1,srv6-pytorch-2"
+  BACKEND_ROUTE_PREFIX: "fcbb:0:800::/48"
+  SRV6_USID_BLOCK: "fcbb::/32"
+---
+# Pod for rank 0 (master) on london-vm1
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-pytorch-0
+  labels:
+    app: srv6-pytorch
+    role: master
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:0::2/64"]
+      }]
+spec:
+  nodeName: london-vm-00
+  containers:
+  - name: pytorch
+    image: docker.io/library/pytorch-srv6:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-pytorch-0 (master)..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
+        echo "Waiting for network interfaces..."
+        sleep 5
+        echo "Network interfaces:"
+        ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Adding SRv6 uSID block route: $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
+        echo "Starting PyTorch distributed training..."
+        exec python3 /app/test_plugin.py
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: RANK
+      value: "0"
+    - name: MASTER_ADDR
+      value: "fcbb:0:0800:0::2"  # Static IPv6 address of master pod on london-vm1
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:0::1"  # Gateway for london-vm1's backend network
+    securityContext:
+      privileged: true  # Required for sysctl
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+    # volumeMounts:
+    # - name: pytorch-code
+    #   mountPath: /app/test_plugin.py
+    #   subPath: test_plugin.py
+    # - name: pytorch-code
+    #   mountPath: /app/dist_setup.py
+    #   subPath: dist_setup.py
+  # volumes:
+  # - name: pytorch-code
+  #   configMap:
+  #     name: pytorch-code
+  restartPolicy: Never
+---
+# Pod for rank 1 (worker) on london-vm-01
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-pytorch-1
+  labels:
+    app: srv6-pytorch
+    role: worker
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:1::2/64"]
+      }]
+spec:
+  nodeName: london-vm-01
+  containers:
+  - name: pytorch
+    image: docker.io/library/pytorch-srv6:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-pytorch-1 (worker)..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
+        echo "Waiting for network interfaces..."
+        sleep 5
+        echo "Network interfaces:"
+        ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Adding SRv6 uSID block route: $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
+        echo "Starting PyTorch distributed training..."
+        exec python3 /app/test_plugin.py
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: RANK
+      value: "1"
+    - name: MASTER_ADDR
+      value: "fcbb:0:0800:0::2"  # Static IPv6 address of master pod on london-vm1
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:1::1"  # Gateway for london-vm2's backend network
+    securityContext:
+      privileged: true  # Required for sysctl
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+    # volumeMounts:
+    # - name: pytorch-code
+    #   mountPath: /app/test_plugin.py
+    #   subPath: test_plugin.py
+    # - name: pytorch-code
+    #   mountPath: /app/dist_setup.py
+    #   subPath: dist_setup.py
+  # volumes:
+  # - name: pytorch-code
+  #   configMap:
+  #     name: pytorch-code
+  restartPolicy: Never
+
+---
+# Pod for rank 2 (worker) on london-vm-02
+apiVersion: v1
+kind: Pod
+metadata:
+  name: srv6-pytorch-2
+  labels:
+    app: srv6-pytorch
+    role: worker
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:2::2/64"]
+      }]
+spec:
+  nodeName: london-vm-02
+  containers:
+  - name: pytorch
+    image: docker.io/library/pytorch-srv6:latest
+    imagePullPolicy: Never
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        echo "Starting srv6-pytorch-1 (worker)..."
+        echo "Enabling IPv6 forwarding and SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.$BACKEND_INTERFACE.seg6_enabled=1 2>/dev/null || true
+        echo "Waiting for network interfaces..."
+        sleep 5
+        echo "Network interfaces:"
+        ip addr
+        echo "Adding backend route: $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $BACKEND_ROUTE_PREFIX via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Adding SRv6 uSID block route: $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE"
+        ip -6 route add $SRV6_USID_BLOCK via $BACKEND_GATEWAY dev $BACKEND_INTERFACE || echo "Route may already exist"
+        echo "Routing table:"
+        ip -6 route show
+        echo "Starting PyTorch distributed training..."
+        exec python3 /app/test_plugin.py
+    envFrom:
+    - configMapRef:
+        name: pytorch-distributed-config
+    env:
+    - name: RANK
+      value: "2"
+    - name: MASTER_ADDR
+      value: "fcbb:0:0800:0::2"  # Static IPv6 address of master pod on london-vm1
+    - name: BACKEND_GATEWAY
+      value: "fcbb:0:0800:2::1"  # Gateway for london-vm2's backend network
+    securityContext:
+      privileged: true  # Required for sysctl
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1"
+    # volumeMounts:
+    # - name: pytorch-code
+    #   mountPath: /app/test_plugin.py
+    #   subPath: test_plugin.py
+    # - name: pytorch-code
+    #   mountPath: /app/dist_setup.py
+    #   subPath: dist_setup.py
+  # volumes:
+  # - name: pytorch-code
+  #   configMap:
+  #     name: pytorch-code
+  restartPolicy: Never
+
+---
+# Headless service for DNS resolution (optional)
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv6-pytorch
+spec:
+  clusterIP: None
+  selector:
+    app: srv6-pytorch
+  ports:
+  - port: 29500
+    name: distributed
+
