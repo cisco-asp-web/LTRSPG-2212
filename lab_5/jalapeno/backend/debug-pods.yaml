@@ -1,0 +1,165 @@
+# Debug pods for manual network testing
+# Deploy with: kubectl apply -f debug-pods.yaml
+# Exec into:   kubectl exec -it debug-pod-0 -- bash
+# Delete:      kubectl delete -f debug-pods.yaml
+#
+# Useful commands inside the pod:
+#   ip -6 route show
+#   ip -6 route add <prefix> encap seg6 mode encap.red segs <sid> dev net1
+#   ping6 -c 4 <destination>
+#   tcpdump -i net1 -n
+#
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod-0
+  labels:
+    app: debug-pod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:0::10/64"]
+      }]
+spec:
+  nodeName: london-vm-00
+  containers:
+  - name: debug
+    image: ubuntu:24.04
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        apt-get update && apt-get install -y iproute2 iputils-ping tcpdump net-tools curl dnsutils
+        echo "Debug pod ready on london-vm-00"
+        echo "Backend interface (net1):"
+        ip addr show net1
+        echo ""
+        echo "Enabling SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.net1.seg6_enabled=1 2>/dev/null || true
+        echo ""
+        echo "Adding base routes..."
+        ip -6 route add fcbb:0:0800::/48 via fcbb:0:0800:0::1 dev net1 || echo "Route may exist"
+        ip -6 route add fcbb::/32 via fcbb:0:0800:0::1 dev net1 || echo "Route may exist"
+        echo ""
+        echo "Current routes:"
+        ip -6 route show
+        echo ""
+        echo "Ready for testing. Use: kubectl exec -it debug-pod-0 -- bash"
+        sleep infinity
+    securityContext:
+      privileged: true
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod-1
+  labels:
+    app: debug-pod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:1::10/64"]
+      }]
+spec:
+  nodeName: london-vm-01
+  containers:
+  - name: debug
+    image: ubuntu:24.04
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        apt-get update && apt-get install -y iproute2 iputils-ping tcpdump net-tools curl dnsutils
+        echo "Debug pod ready on london-vm-01"
+        echo "Backend interface (net1):"
+        ip addr show net1
+        echo ""
+        echo "Enabling SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.net1.seg6_enabled=1 2>/dev/null || true
+        echo ""
+        echo "Adding base routes..."
+        ip -6 route add fcbb:0:0800::/48 via fcbb:0:0800:1::1 dev net1 || echo "Route may exist"
+        ip -6 route add fcbb::/32 via fcbb:0:0800:1::1 dev net1 || echo "Route may exist"
+        echo ""
+        echo "Current routes:"
+        ip -6 route show
+        echo ""
+        echo "Ready for testing. Use: kubectl exec -it debug-pod-1 -- bash"
+        sleep infinity
+    securityContext:
+      privileged: true
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-pod-2
+  labels:
+    app: debug-pod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "backend-network",
+        "ips": ["fcbb:0:0800:2::10/64"]
+      }]
+spec:
+  nodeName: london-vm-02
+  containers:
+  - name: debug
+    image: ubuntu:24.04
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        apt-get update && apt-get install -y iproute2 iputils-ping tcpdump net-tools curl dnsutils
+        echo "Debug pod ready on london-vm-02"
+        echo "Backend interface (net1):"
+        ip addr show net1
+        echo ""
+        echo "Enabling SRv6..."
+        sysctl -w net.ipv6.conf.all.forwarding=1
+        sysctl -w net.ipv6.conf.all.seg6_enabled=1
+        sysctl -w net.ipv6.conf.default.seg6_enabled=1
+        sysctl -w net.ipv6.conf.net1.seg6_enabled=1 2>/dev/null || true
+        echo ""
+        echo "Adding base routes..."
+        ip -6 route add fcbb:0:0800::/48 via fcbb:0:0800:2::1 dev net1 || echo "Route may exist"
+        ip -6 route add fcbb::/32 via fcbb:0:0800:2::1 dev net1 || echo "Route may exist"
+        echo ""
+        echo "Current routes:"
+        ip -6 route show
+        echo ""
+        echo "Ready for testing. Use: kubectl exec -it debug-pod-2 -- bash"
+        sleep infinity
+    securityContext:
+      privileged: true
+    resources:
+      requests:
+        memory: "128Mi"
+        cpu: "100m"
+      limits:
+        memory: "256Mi"
+        cpu: "200m"
+  restartPolicy: Never
+
