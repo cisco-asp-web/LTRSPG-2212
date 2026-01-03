@@ -11,7 +11,7 @@ Usage:
     # Set required environment variables (or use a .env file)
     export RANK=0
     export WORLD_SIZE=2
-    export MASTER_ADDR=fcbb:0:0800:0::10
+    export MASTER_ADDR=fcbb:0:0800:0::2
     export MASTER_PORT=29500
     export BACKEND_INTERFACE=net1
     export JALAPENO_API_ENDPOINT=http://api:8080
