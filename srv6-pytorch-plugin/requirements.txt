@@ -1,0 +1,20 @@
+# SRv6 PyTorch Plugin Dependencies
+
+# PyTorch (CPU-only version for smaller image size)
+# For GPU support, replace with: torch>=2.0.0
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.5.1+cpu
+
+# Core dependencies
+numpy>=1.24.0,<2.0.0
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Network utilities
+ipaddress>=1.0.23
+netifaces>=0.11.0
+pyroute2>=0.7.0
+
+# VPP support (optional - uncomment if using VPP)
+# vpp-papi>=2.3.0
+

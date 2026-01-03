@@ -1,0 +1,64 @@
+# NetworkAttachmentDefinition for the Backend Network (ens5)
+# This creates a secondary network attachment using ipvlan for the backend NIC
+# 
+# IPVLAN is preferred over MACVLAN in cloud/virtualized environments because:
+# - It doesn't require promiscuous mode on the parent interface
+# - Works better with virtual switches and cloud networking
+# - Lower overhead than bridge-based solutions
+#
+# IMPORTANT: Before using this NAD, remove the IPv6 address from ens5 on each VM:
+#   berlin-vm1: sudo ip -6 addr del fcbb:0:0800:0::/64 dev ens5
+#   berlin-vm2: sudo ip -6 addr del fcbb:0:0800:1::/64 dev ens5
+#
+# Apply with: kubectl apply -f backend-network-nad.yaml
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: backend-network
+  namespace: default
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "name": "backend-network",
+      "type": "macvlan",
+      "master": "ens5",
+      "mode": "bridge",
+      "ipam": {
+        "type": "static"
+      }
+    }
+---
+# Alternative: MACVLAN-based network (use if IPVLAN doesn't work)
+# Requires promiscuous mode on the host interface
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: backend-network-static
+  namespace: default
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "name": "backend-network-macvlan",
+      "type": "macvlan",
+      "master": "ens5",
+      "mode": "bridge",
+      "ipam": {
+        "type": "host-local",
+        "ranges": [
+          [
+            {
+              "subnet": "fcbb:0:0800:ffff::/64",
+              "rangeStart": "fcbb:0:0800:ffff::100",
+              "rangeEnd": "fcbb:0:0800:ffff::200"
+            }
+          ]
+        ],
+        "routes": [
+          { "dst": "fcbb:0::/32" }
+        ]
+      }
+    }
+
