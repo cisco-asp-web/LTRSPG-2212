@@ -27,7 +27,9 @@ The fabric load balancing API is running shortest-path queries against the graph
 python3 clear-load.py
 ```
 
-**generate-routes.py**
+### Jan 3, 2026 - with new k8s hosts the below section probably should be deleted or re-worked
+
+**generate-routes.py** 
 This script works with the Jalapeno UI where the user runs through the "Workload Scheduler" workflow. Upon path calculation the UI displays a popup of SRv6 data. Click on the popup and it displays the data in json format. Copy the json into a file and run it with *generate-routes.py*. The python script will generate a set of *docker exec* commands that when run, will setup all the linux SRv6 routes that the path calculation came up with.
 
 *Usage*:

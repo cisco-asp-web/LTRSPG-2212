@@ -20,9 +20,9 @@ def reverse_usid_segments(usid):
     """
     Reverse the path segments in a USID while keeping the uSID block at the start
     Args:
-        usid: Original USID (e.g., 'fc00:0:1202:1000:1201::')
+        usid: Original USID (e.g., 'fc00:0:1004:1000:1006::')
     Returns:
-        str: USID with reversed path segments and fe06 appended (e.g., 'fc00:0:1201:1000:1202:fe06::')
+        str: USID with reversed path segments and fe06 appended (e.g., 'fc00:0:1006:1000:1004:fe06::')
     """
     # Split the USID into segments, excluding the trailing ::
     segments = usid.rstrip(':').split(':')

@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "srv6-pytorch-plugin"
+version = "0.1.0"
+description = "SRv6 route programming plugin for PyTorch distributed training"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Cisco Systems", email = "brmcdoug@cisco.com"}
+]
+keywords = [
+    "pytorch",
+    "distributed-training",
+    "srv6",
+    "segment-routing",
+    "network-programming",
+    "machine-learning",
+    "jalapeno"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: System :: Networking",
+]
+dependencies = [
+    "torch>=2.0.0",
+    "numpy>=1.24.0,<2.0.0",
+    "python-dotenv>=1.0.0",
+    "requests>=2.31.0",
+    "ipaddress>=1.0.23",
+    "netifaces>=0.11.0",
+    "pyroute2>=0.7.0",
+]
+
+[project.optional-dependencies]
+vpp = ["vpp-papi>=2.3.0"]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0",
+]
+cpu = [
+    "torch>=2.0.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/segmentrouting/srv6-pytorch-plugin"
+Documentation = "https://github.com/segmentrouting/srv6-pytorch-plugin#readme"
+Repository = "https://github.com/segmentrouting/srv6-pytorch-plugin.git"
+Issues = "https://github.com/segmentrouting/srv6-pytorch-plugin/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["srv6_plugin*"]
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+
