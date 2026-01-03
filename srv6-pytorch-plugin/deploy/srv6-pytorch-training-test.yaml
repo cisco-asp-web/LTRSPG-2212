@@ -3,14 +3,18 @@
 #
 # Prerequisites:
 #
-# 1. Create the code ConfigMap (from pytorch-plugin directory):
-#    kubectl delete configmap pytorch-code 2>/dev/null; \
-#    kubectl create configmap pytorch-code \
-#      --from-file=test_plugin.py=test_plugin.py \
-#      --from-file=dist_setup.py=pytorch-plugin/dist_setup.py
+# 1. Build and import the container image:
+#    docker build -t srv6-pytorch-plugin:latest .
+#    docker save srv6-pytorch-plugin:latest -o /tmp/srv6-pytorch-plugin.tar
+#    # On each worker node:
+#    sudo ctr -n k8s.io images import /tmp/srv6-pytorch-plugin.tar
 #
-# 2. Apply the updated NAD:
-#    kubectl apply -f backend-network-nad.yaml
+# 2. Apply Multus and the backend network NAD:
+#    kubectl apply -f multus-daemonset.yml
+#    kubectl apply -f multus-backend-network-nad.yaml
+#
+# 3. Deploy the training pods:
+#    kubectl apply -f srv6-pytorch-training-test.yaml
 #
 ---
 apiVersion: v1
@@ -47,7 +51,7 @@ spec:
   nodeName: london-vm-00
   containers:
   - name: pytorch
-    image: docker.io/library/pytorch-srv6:latest
+    image: docker.io/library/srv6-pytorch-plugin:latest
     imagePullPolicy: Never
     command: ["/bin/bash", "-c"]
     args:
@@ -69,7 +73,7 @@ spec:
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/test_plugin.py
+        exec python3 /app/examples/test_connectivity.py
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
@@ -120,7 +124,7 @@ spec:
   nodeName: london-vm-01
   containers:
   - name: pytorch
-    image: docker.io/library/pytorch-srv6:latest
+    image: docker.io/library/srv6-pytorch-plugin:latest
     imagePullPolicy: Never
     command: ["/bin/bash", "-c"]
     args:
@@ -142,7 +146,7 @@ spec:
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/test_plugin.py
+        exec python3 /app/examples/test_connectivity.py
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
@@ -194,7 +198,7 @@ spec:
   nodeName: london-vm-02
   containers:
   - name: pytorch
-    image: docker.io/library/pytorch-srv6:latest
+    image: docker.io/library/srv6-pytorch-plugin:latest
     imagePullPolicy: Never
     command: ["/bin/bash", "-c"]
     args:
@@ -216,7 +220,7 @@ spec:
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/test_plugin.py
+        exec python3 /app/examples/test_connectivity.py
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
