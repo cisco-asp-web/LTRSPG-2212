@@ -1,5 +1,5 @@
 ---
-apiVersion: isovalent.com/v1alpha1
+apiVersion: isovalent.com/v1
 kind: IsovalentBGPPeerConfig
 metadata:
   name: cilium-peer
