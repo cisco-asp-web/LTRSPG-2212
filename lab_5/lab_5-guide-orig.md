@@ -56,10 +56,18 @@ Cisco doesn't currently have a controller product for host-based SRv6 and the Hy
 
 Before we get into PyTorch and automation, let's manually add a Linux route with SRv6 encapsulation:
 
-1. From VSCode open an ssh session to **london-vm-00** and add a Linux SRv6 route to *`london-vm-02`* that will take the path *`leaf00`* -> *`spine01`* -> *`leaf02`*:
+1. Add a Linux SRv6 route on *`host00`* to *`host02`* to take the path *`leaf00`* -> *`spine01`* -> *`leaf02`*: 
 
+
+   Execute the *route add* from the *topology-host* with *docker exec*:
+   **old SRH route**
    ```
-   ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap.red segs  fc00:0:1004:1001:1006:fe06:: dev net1
+   docker exec -it clab-sonic-host00 ip -6 route add 2001:db8:1002::/64 encap seg6 mode encap segs fc00:0:1200:1001:1202:fe06:: dev eth1
+   ```
+
+   **new uSID route**
+   ```
+   docker exec -it clab-sonic-host00 ip -6 route add 2001:db8:1002::/64 encap seg6 mode encap.red segs  fc00:0:1200:1001:1202:fe06:: dev eth1
    ```
 
 2. Display the Linux route on *host00*:

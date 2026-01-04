@@ -34,7 +34,7 @@ We will have achieved the following objectives upon completion of Lab 4:
 
 ## Containerlab SONiC topology
 
-In lab 1 our containerlab script deployed both the XRd topology and the SONiC nodes in our London data center. 
+In lab 1 our containerlab script deployed both the XRd topology and the SONiC nodes in our London AI/ML backend data center. 
 
 Our SONiC ML Training Fabric topology looks like this:
 ![Lab 4 Topology](../topo_drawings/lab4-topology-diagram.png)
@@ -42,12 +42,12 @@ Our SONiC ML Training Fabric topology looks like this:
 
 ## SONiC: A Very Quick Tour
 
-SONiC is Linux plus a microservices-style architecture with modules running as Docker containers. These containers comprise what can be thought of as a highly modular *router application suite*. The containers interact and communicate with each other through the Switch State Service (*`swss`*) container. The infrastructure also relies on the use of a *redis-database* engine: a key-value database to provide a language independent interface, a method for data persistence, replication and multi-process communication among all SONiC subsystems.
+SONiC is Linux plus a microservices-style architecture with modules running as Docker containers. The containers interact and communicate with each other through the Switch State Service (*`swss`*) container. The infrastructure also relies on the use of a *redis-database* engine: a key-value database to provide a language independent interface, a method for data persistence, replication and multi-process communication among all SONiC subsystems.
 
 For a deep dive on SONiC architecture and containers please see: https://sonicfoundation.dev/deep-dive-into-sonic-architecture-design/
 
 
-1. ssh to leaf00 in our topology using the visual code extension (note: password is *`admin`*)
+1. ssh to leaf00 in our topology using the visual code extension (note: user/password is *`admin/admin`*)
 
 2. List SONiC's docker containers.
     ```
@@ -57,19 +57,19 @@ For a deep dive on SONiC architecture and containers please see: https://sonicfo
     Expected output:
     ```
     admin@sonic:~$ docker ps
-    CONTAINER ID   IMAGE                                COMMAND                  CREATED         STATUS         PORTS     NAMES
-    fd325f9f71a3   docker-snmp:latest                   "/usr/bin/docker-snm…"   4 minutes ago   Up 4 minutes             snmp
-    83abaaeb0eda   docker-platform-monitor:latest       "/usr/bin/docker_ini…"   4 minutes ago   Up 4 minutes             pmon
-    07b16407200a   docker-sonic-mgmt-framework:latest   "/usr/local/bin/supe…"   4 minutes ago   Up 4 minutes             mgmt-framework
-    e92cfef2d1a7   docker-lldp:latest                   "/usr/bin/docker-lld…"   4 minutes ago   Up 4 minutes             lldp
-    e039e0c50696   docker-sonic-gnmi:latest             "/usr/local/bin/supe…"   4 minutes ago   Up 4 minutes             gnmi
-    0eb9d4243f43   docker-router-advertiser:latest      "/usr/bin/docker-ini…"   6 minutes ago   Up 6 minutes             radv
-    a802d70ada48   docker-fpm-frr:latest                "/usr/bin/docker_ini…"   6 minutes ago   Up 6 minutes             bgp
-    c6bd49fba18d   docker-syncd-vpp:latest              "/usr/local/bin/supe…"   6 minutes ago   Up 6 minutes             syncd
-    81ea6a8d2eba   docker-teamd:latest                  "/usr/local/bin/supe…"   6 minutes ago   Up 6 minutes             teamd
-    98c4bb45296b   docker-orchagent:latest              "/usr/bin/docker-ini…"   6 minutes ago   Up 6 minutes             swss
-    5459d7bc624a   docker-eventd:latest                 "/usr/local/bin/supe…"   6 minutes ago   Up 6 minutes             eventd
-    bab374f5a2b5   docker-database:latest               "/usr/local/bin/dock…"   6 minutes ago   Up 6 minutes             database
+    CONTAINER ID  IMAGE                              COMMAND                 CREATED        STATUS        PORTS     NAMES
+    fd325f9f71a3  docker-snmp:latest                 "/usr/bin/docker-snm…"  4 minutes ago  Up 4 minutes             snmp
+    83abaaeb0eda  docker-platform-monitor:latest     "/usr/bin/docker_ini…"  4 minutes ago  Up 4 minutes             pmon
+    07b16407200a  docker-sonic-mgmt-framework:latest "/usr/local/bin/supe…"  4 minutes ago  Up 4 minutes             mgmt-framework
+    e92cfef2d1a7  docker-lldp:latest                 "/usr/bin/docker-lld…"  4 minutes ago  Up 4 minutes             lldp
+    e039e0c50696  docker-sonic-gnmi:latest           "/usr/local/bin/supe…"  4 minutes ago  Up 4 minutes             gnmi
+    0eb9d4243f43  docker-router-advertiser:latest    "/usr/bin/docker-ini…"  6 minutes ago  Up 6 minutes             radv
+    a802d70ada48  docker-fpm-frr:latest              "/usr/bin/docker_ini…"  6 minutes ago  Up 6 minutes             bgp
+    c6bd49fba18d  docker-syncd-vpp:latest            "/usr/local/bin/supe…"  6 minutes ago  Up 6 minutes             syncd
+    81ea6a8d2eba  docker-teamd:latest                "/usr/local/bin/supe…"  6 minutes ago  Up 6 minutes             teamd
+    98c4bb45296b  docker-orchagent:latest            "/usr/bin/docker-ini…"  6 minutes ago  Up 6 minutes             swss
+    5459d7bc624a  docker-eventd:latest               "/usr/local/bin/supe…"  6 minutes ago  Up 6 minutes             eventd
+    bab374f5a2b5  docker-database:latest             "/usr/local/bin/dock…"  6 minutes ago  Up 6 minutes             database
     ```
 
   ### SONiC Docker Containers
@@ -89,7 +89,7 @@ For a deep dive on SONiC architecture and containers please see: https://sonicfo
 | GNMI                 | SONiC gnmi/telemetry service |
 
 > [!NOTE]
-> **Control Plane**: SONiC leverages the open-source [Free Range Routing](https://frrouting.org/)(FRR) routing stack for its Control Plane. Currently the only supported routing protocol is BGP, however, FRR supports ISIS and OSPF, so in the future we could see SONiC incorporating those protocols as well.
+> **Control Plane**: SONiC leverages the open-source [Free Range Routing](https://frrouting.org/) (FRR) routing stack for its Control Plane. Currently the only supported routing protocol is BGP, however, FRR supports ISIS and OSPF, so in the future we could see SONiC incorporating those protocols as well.
 > 
 > The *docker ps* output above included a container named **bgp**. In reality this is FRR running as a container.
 
@@ -201,12 +201,6 @@ admin@sonic:~$ show runningconfiguration all
             "rate_limit_interval": "600",
             "state": "enabled"
         },
-        "database": {
-            "available_mem_threshold": "10.0",
-            "rate_limit_interval": "600",
-            "state": "enabled"
-        },
-        "dhcp_relay": {
 ```
 
 
@@ -227,7 +221,7 @@ Before we proceed with applying full fabric configurations via Ansible, we wante
 
 Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we only need to configure IPs for the host backend interface Ethernet16. The backend will be IPv6 only.
 
-3. Configure interface Ethernet16 IPv4 and IPv6
+3. Configure interface Ethernet16 IPv6 address
    ```
    sudo config interface ip add Ethernet16 fcbb:0:800::1/64
    ```
@@ -313,13 +307,10 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 
 * Copy each node's *config_db.json* file to the */etc/sonic/* directory [Example spine00/config_db.json](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/spine00/config_db.json)
 * Load the config to activate the new settings
-* Run SONiC's hostname shell script to apply the node's hostname
 * Copy over and run a loopback shell script that we've created for each node [Example spine00 loopback.sh](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/spine00/loopback.sh)
 * Save the config
 * Create and activate a loopback interface called **sr0** on each node. This loopback is needed for SONiC SRv6 functionality
-* Use the Ansible built-in command plugin to enter the FRR/BGP container and delete the pre-existing default BGP config
 * Copy and load FRR configs, which include BGP and SRv6 attributes, to each node; [Example spine00 frr.conf](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/spine00/frr.conf)
-
 
 
 1. Launch a terminal on the *topology host* using the visual code containerlab extension:
@@ -333,7 +324,7 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
     ansible-playbook -i hosts sonic-playbook.yaml -e "ansible_user=admin ansible_ssh_pass=admin ansible_sudo_pass=admin" -vv
     ```
 
-> [!CAUTION] 
+> [!Note] 
 > The sonic playbook produces a lot of console output. Don't worry about errors on the *vrf sysctl* task as those come from *spine* nodes where no VRFs are configured. By the time the playbook completes we expect to see something like this:
 
     ```
@@ -457,7 +448,7 @@ If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* usi
     ```diff
     leaf00# show bgp ipv6 uni fcbb:0:800:2::/64
     BGP routing table entry for fcbb:0:800:2::/64, version 27
-    +Paths: (4 available, best #1, table default)
+    +Paths: (3 available, best #1, table default)
       Advertised to non peer-group peers:
       Ethernet0 Ethernet4 Ethernet8 Ethernet12
     + 65000 65202
@@ -477,7 +468,7 @@ If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* usi
           Last update: Sun Jun  1 03:17:38 2025
     ```
 
-    FRR's BGP show command output again resembles IOS output. The prefix is known via *leaf00's* 4 BGP unnumbered neighbors.
+    FRR's BGP show command output again resembles IOS output. The prefix is known via *leaf00's* 3 BGP unnumbered neighbors.
 
     Exit vtysh and check the same route in the Linux table:
     ```
