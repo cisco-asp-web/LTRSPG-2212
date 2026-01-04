@@ -21,7 +21,7 @@ In lab 4 we'll work with our small SONiC CLOS topology; we'll explore the SONiC/
   - [Fabric Config Automation with Ansible](#fabric-config-automation-with-ansible)
     - [Verify SONiC BGP peering](#verify-sonic-bgp-peering)
     - [SONiC SRv6 configuration](#sonic-srv6-configuration)
-    - [Verify Host IPs and Routes](#verify-host-ips-and-routes)
+    - [Verify London VM backend network reachability](#verify-london-vm-backend-network-reachability)
   - [End of lab 4](#end-of-lab-4)
 
 ## Lab Objectives
@@ -341,16 +341,14 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
     leaf00   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
     leaf01   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
     leaf02   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-    leaf03   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
     spine00  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
     spine01  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
     spine02  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
-    spine03  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1 
     ``` 
 
 ### Verify SONiC BGP peering
 
-With BGP now configured on our DC fabric we will check to make sure that BGP peering was established. Use the below diagram as a reference to the ASN configured in the prior steps.
+With BGP now configured on our backend DC fabric we will check to make sure that BGP peering was established. Use the below diagram as a reference to the ASN configured in the prior steps.
 
 ![Lab 4 Topology](../topo_drawings/lab4-fabric-asn-topology.png)
 
@@ -374,13 +372,12 @@ With BGP now configured on our DC fabric we will check to make sure that BGP pee
     RIB entries 47, using 6016 bytes of memory
     Peers 4, using 80 KiB of memory
 
-    Neighbor        V         AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd   PfxSnt Desc
-    Ethernet0       4      65000        54        40       58    0    0 00:14:43           17       28 N/A
-    Ethernet4       4      65001        99        36       58    0    0 00:14:41           17       28 N/A
-    Ethernet8       4      65002        63        36       58    0    0 00:14:41           17       28 N/A
-    Ethernet12      4      65003        80        36       58    0    0 00:14:41           17       28 N/A
+    Neighbor     V       AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd  PfxSnt Desc
+    Ethernet0    4    65000        54        40       58    0    0 00:14:43           8       15 N/A
+    Ethernet4    4    65001        99        36       58    0    0 00:14:41           8       15 N/A
+    Ethernet8    4    65002        63        36       58    0    0 00:14:41          12       15 N/A
 
-    Total number of neighbors 4
+    Total number of neighbors 3
     ```
     
 ### SONiC SRv6 configuration
@@ -402,19 +399,19 @@ If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* usi
    segment-routing
     srv6
       static-sids
-   +   sid fc00:0:1200::/48 locator MAIN behavior uN                      <-- Locator behavior "uN"
-   +   sid fc00:0:1200:fe04::/64 locator MAIN behavior uDT4 vrf default   <-- static uDT4 function for prefixes in the default ipv4 table
-   +   sid fc00:0:1200:fe06::/64 locator MAIN behavior uDT6 vrf default   <-- static uDT6 function for prefixes in the default ipv6 table    
+   +   sid fc00:0:1004::/48 locator MAIN behavior uN                      <-- Locator behavior "uN"
+   +   sid fc00:0:1004:fe04::/64 locator MAIN behavior uDT4 vrf default   <-- static uDT4 function for prefixes in the default ipv4 table
+   +   sid fc00:0:1004:fe06::/64 locator MAIN behavior uDT6 vrf default   <-- static uDT6 function for prefixes in the default ipv6 table    
       exit
       !
     exit
     !
     srv6
       encapsulation
-      source-address fc00:0:1200::1
+      source-address fc00:0:1004::1
       locators
       locator MAIN
-        prefix fc00:0:1200::/48 block-len 32 node-len 16 func-bits 16
+        prefix fc00:0:1004::/48 block-len 32 node-len 16 func-bits 16
         behavior usid
       exit
       !
@@ -440,47 +437,42 @@ If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* usi
     Locator:
     Name                 ID      Prefix                   Status
     -------------------- ------- ------------------------ -------
-    MAIN                       1 fc00:0:1200::/48         Up
+    MAIN                       1 fc00:0:1004::/48         Up
 
     leaf00# show segment-routing srv6 manager 
     Parameters:
       Encapsulation:
         Source Address:
-          Configured: fc00:0:1200::1
+          Configured: fc00:0:1004::1
     ```
 
 3. Compare an FRR BGP route entry and its corresponding Linux route entry:
 
     From the FRR vtysh session:
     ```
-    show bgp ipv6 uni 2001:db8:1003::/64
+    show bgp ipv6 uni fcbb:0:800:2::/64
     ```
 
     Expected output:
     ```diff
-    leaf00# show bgp ipv6 uni 2001:db8:1003::/64
-    BGP routing table entry for 2001:db8:1003::/64, version 27
+    leaf00# show bgp ipv6 uni fcbb:0:800:2::/64
+    BGP routing table entry for fcbb:0:800:2::/64, version 27
     +Paths: (4 available, best #1, table default)
       Advertised to non peer-group peers:
       Ethernet0 Ethernet4 Ethernet8 Ethernet12
-    + 65000 65203
+    + 65000 65202
         fe80::20a3:c7ff:fe5e:5c58 from Ethernet0 (10.0.0.0)
         (fe80::20a3:c7ff:fe5e:5c58) (prefer-global)
           Origin IGP, valid, external, multipath, best (Older Path)
           Last update: Sun Jun  1 03:17:37 2025
-    + 65001 65203
+    + 65001 65202
         fe80::20dc:72ff:fe50:c026 from Ethernet4 (10.0.0.1)
         (fe80::20dc:72ff:fe50:c026) (prefer-global)
           Origin IGP, valid, external, multipath
           Last update: Sun Jun  1 03:17:38 2025
-    + 65002 65203
+    + 65002 65202
         fe80::20c8:3aff:fed9:1a10 from Ethernet8 (10.0.0.2)
         (fe80::20c8:3aff:fed9:1a10) (prefer-global)
-          Origin IGP, valid, external, multipath
-          Last update: Sun Jun  1 03:17:38 2025
-    + 65003 65203
-        fe80::20f6:30ff:fe5c:9180 from Ethernet12 (10.0.0.3)
-        (fe80::20f6:30ff:fe5c:9180) (prefer-global)
           Origin IGP, valid, external, multipath
           Last update: Sun Jun  1 03:17:38 2025
     ```
@@ -492,25 +484,22 @@ If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* usi
     exit
     ```
     ```
-    ip -6 route show 2001:db8:1003::/64
+    ip -6 route show fcbb:0:800:2::/64
     ```
 
     Example output:
-    ```
-    $ ip -6 route show 2001:db8:1003::/64
-    2001:db8:1003::/64 nhid 81 proto bgp src fc00:0:1200::1 metric 20 pref medium
+    ```yaml
+    $ ip -6 route show fcbb:0:800:2::/64
+    fcbb:0:800:2::/64 nhid 81 proto bgp src fc00:0:1004::1 metric 20 pref medium
 	  nexthop via fe80::20a3:c7ff:fe5e:5c58 dev Ethernet0 weight 1 
 	  nexthop via fe80::20dc:72ff:fe50:c026 dev Ethernet4 weight 1 
 	  nexthop via fe80::20c8:3aff:fed9:1a10 dev Ethernet8 weight 1 
-	  nexthop via fe80::20f6:30ff:fe5c:9180 dev Ethernet12 weight 1 
     ```
 
-    Note how the entry has the notation `*proto bgp src*` which indicates the route was learned from BGP. The route also has 4 ECMP paths via the BGP unnumbered / IPv6 link-local sessions.
+    Note how the entry has the notation `*proto bgp src*` which indicates the route was learned from BGP. The route also has 3 ECMP paths via the BGP unnumbered / IPv6 link-local sessions.
 
 
-### Verify Host IPs and Routes
-
-The containerlab topology file included a number of *`exec`* commands to be run inside the *ubuntu-host* containers. These commands gave the containers their IP addresses and some basic static routes for fabric reachability.
+### Verify London VM backend network reachability
 
 1. Verify host IPs and routes
 
