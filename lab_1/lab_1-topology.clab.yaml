@@ -77,49 +77,49 @@ topology:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.128
-      binds:
-        - ./lab_1-cloud-init.yaml:/config/cloud-init.yaml
-        - sonic-leaf-00-disk:/var/lib/vrnetlab
+      env:
+        USERNAME: cisco
+        PASSWORD: cisco123
 
     sonic-leaf-01:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.129
-      binds:
-        - ./lab_1-cloud-init.yaml:/config/cloud-init.yaml
-        - sonic-leaf-01-disk:/var/lib/vrnetlab
+      env:
+        USERNAME: cisco
+        PASSWORD: cisco123
 
     sonic-leaf-02:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.130
-      binds:
-        - ./lab_1-cloud-init.yaml:/config/cloud-init.yaml
-        - sonic-leaf-02-disk:/var/lib/vrnetlab
+      env:
+        USERNAME: cisco
+        PASSWORD: cisco123
 
     sonic-spine-00:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.192
-      binds:
-        - ./lab_1-cloud-init.yaml:/config/cloud-init.yaml
-        - sonic-spine-00-disk:/var/lib/vrnetlab
+      env:
+        USERNAME: cisco
+        PASSWORD: cisco123
 
     sonic-spine-01:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.193
-      binds:
-        - ./lab_1-cloud-init.yaml:/config/cloud-init.yaml
-        - sonic-spine-01-disk:/var/lib/vrnetlab
+      env:
+        USERNAME: cisco
+        PASSWORD: cisco123
 
     sonic-spine-02:
       kind: linux
       image: vrnetlab/sonic_sonic-vs:vpp20250422
       mgmt-ipv4: 172.20.6.194
-      binds:
-        - ./lab_1-cloud-init.yaml:/config/cloud-init.yaml
-        - sonic-spine-02-disk:/var/lib/vrnetlab
+      env:
+        USERNAME: cisco
+        PASSWORD: cisco123
 
     london-vm-00-fe:
       kind: bridge
