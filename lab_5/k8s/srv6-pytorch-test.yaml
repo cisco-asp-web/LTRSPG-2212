@@ -74,6 +74,7 @@ spec:
         ip -6 route show
         echo "Starting PyTorch distributed training..."
         exec python3 /app/examples/test_connectivity.py
+        sleep infinity
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
@@ -147,6 +148,7 @@ spec:
         ip -6 route show
         echo "Starting PyTorch distributed training..."
         exec python3 /app/examples/test_connectivity.py
+        sleep infinity
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
@@ -221,6 +223,7 @@ spec:
         ip -6 route show
         echo "Starting PyTorch distributed training..."
         exec python3 /app/examples/test_connectivity.py
+        sleep infinity
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
