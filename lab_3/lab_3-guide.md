@@ -1,7 +1,7 @@
 # Lab 3: SRv6 for Kubernetes with Cilium [30 Min]
 
 ### Description
-Now that we've established SRv6 L3VPNs across our network, we're going to transition from **router-based SRv6** to **host-based SRv6**. Our first step will be to enable SRv6 L3VPN for Kubernetes. The Berlin VM has Kubernetes pre-installed and is running the *Cilium CNI* (Container Network Interface). In this lab we'll review some basic Kubernetes commands (kubectl) and then we'll setup Cilium BGP peering with our XRd route reflectors. After that we'll configure Cilium SRv6 SID manager and Locator pool. Finally we'll add a couple containers to our Berlin K8s cluster and join them to the carrots VRF.
+Now that we've established SRv6 L3VPNs across our network, we're going to transition from **router-based SRv6** to **host-based SRv6**. Our first step will be to enable SRv6 L3VPN for Kubernetes. The London VMs have Kubernetes pre-installed and are running the *Cilium CNI* (Container Network Interface). In this lab we'll review some basic Kubernetes commands (kubectl) and then we'll setup Cilium BGP peering with our XRd route reflectors. After that we'll configure Cilium SRv6 SID manager and Locator pool. Finally we'll add a couple containers to our London K8s cluster and join them to the carrots VRF.
 
 > [!NOTE]
 > This portion of the lab makes use of Cilium Enterprise as the SRv6 features are not available in the open source version. If you are interested in SRv6 on Cilium or other Enterprise features, please contact the relevant Cisco Isovalent sales team.  
@@ -42,44 +42,58 @@ We will have achieved the following objectives upon completion of Lab 3:
   
 ## Verify pre-installed Kubernetes and Cilium are running
 
-Kubernetes and Cilium Enterprise are pre-installed on the **Berlin** VM. All of the following steps are to be performed on the **Berlin** VM unless otherwise specified.
+Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of the following steps are to be performed on the **london-vm-00** control plane node unless otherwise specified.
 
-1. From a **topology-host** terminal session SSH into the **Berlin VM** and cd into the lab_3/cilium directory
+1. From a **topology-host** terminal session SSH into the **london-vm-00** and cd into the lab_3/cilium directory
    ```
-   ssh cisco@berlin
+   ssh cisco@london-vm-00
 
    ```
    ```
    cd ~/LTRSPG-2212/lab_3/cilium/
    ```
 
-   We recommend doing a *`git pull`* to ensure Berlin is fully updated
-   ```
-   git pull
-   ```
+2. Run a couple commands to verify the K8s cluster and the Cilium Installation
 
-2. Run a couple commands to verify the Cilium Installation
+   Display k8s nodes:
+   ```
+   kubectl get nodes -o wide
+   ```
+   
+   The ouput should look something like:
+   ```yaml
+   $ kubectl get nodes -o wide
+   NAME           STATUS   ROLES           AGE     VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION       CONTAINER-RUNTIME
+   london-vm-00   Ready    control-plane   6d      v1.35.0   10.8.0.2      <none>        Ubuntu 22.04.5 LTS   5.15.0-164-generic   containerd://1.7.27
+   london-vm-01   Ready    <none>          2d23h   v1.31.8   10.8.1.2      <none>        Ubuntu 22.04.5 LTS   5.15.0-164-generic   containerd://1.7.27
+   london-vm-02   Ready    <none>          2d23h   v1.31.8   10.8.2.2      <none>        Ubuntu 22.04.5 LTS   5.15.0-164-generic   containerd://1.7.27
+   ```
 
    Display Cilium pods:
    ```
-   kubectl get pods -n kube-system
+   kubectl get pods -n kube-system | grep cilium
    ```
-   The Cilium portion of the output should look someething like this:
+   The output should look something like this:
    ```yaml
-   cisco@berlin:~/SRv6_dCloud_Lab/lab_4/cilium$    kubectl get pods -n kube-system
-   NAME                               READY   STATUS    RESTARTS   AGE
-   cilium-envoy-p6pgd               1/1     Running   0          2m36s
-   cilium-jbnmh                     1/1     Running   0          2m36s
-   cilium-node-init-2m6j8           1/1     Running   0          2m36s
-   cilium-operator-d6fc9cf7-7v2gt   1/1     Running   0          2m36s
-   cilium-operator-d6fc9cf7-ns6mc   0/1     Pending   0          2m36s
+   $ kubectl get pods -n kube-system | grep cilium
+   cilium-envoy-4nmml                     1/1     Running   3 (4h36m ago)   5d23h
+   cilium-envoy-5k2k7                     1/1     Running   2 (4h59m ago)   2d23h
+   cilium-envoy-6n7tg                     1/1     Running   2 (4h59m ago)   2d23h
+   cilium-h6f79                           1/1     Running   1 (4h59m ago)   2d10h
+   cilium-node-init-7fkxn                 1/1     Running   2 (4h59m ago)   2d23h
+   cilium-node-init-vqp5s                 1/1     Running   3 (4h36m ago)   5d23h
+   cilium-node-init-zcsh6                 1/1     Running   2 (4h59m ago)   2d23h
+   cilium-operator-74c5c6c5f6-cwjd7       1/1     Running   7 (4h9m ago)    5d23h
+   cilium-operator-74c5c6c5f6-hhd4n       1/1     Running   3 (4h36m ago)   5d23h
+   cilium-rc6cd                           1/1     Running   1 (4h59m ago)   2d10h
+   cilium-vslzk                           1/1     Running   2 (4h36m ago)   2d10h
    ```
 
   Notes on the pods:
   * `Cilium-envoy`: used as a host proxy for enforcing HTTP and other L7 policies as specified in network policies for the cluster. For further reading see: https://docs.cilium.io/en/latest/security/network/proxy/envoy/
   * `Cilium-node-init`: used to initialize the node and install the Cilium agent.
   * `Cilium-operator`: used to manage the Cilium agent on the node. The second operator pod is pending as its waiting for another node to join the cluster.
-  * `Cilium-jbnmh`: is the Cilium agent on the node, and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
+  * `Cilium-h6fz9`: is the Cilium agent on the node, and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
 
 
    Display Cilium DaemonSet status:
@@ -87,10 +101,10 @@ Kubernetes and Cilium Enterprise are pre-installed on the **Berlin** VM. All of 
    kubectl get ds -n kube-system cilium
    ```
    The output should show a single Cilium DaemonSet (ds) available, example:
-   ```
-   cisco@berlin:~$   kubectl get ds -n kube-system cilium
+   ```yaml
+   $ kubectl get ds -n kube-system cilium
    NAME     DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
-   cilium   1         1         1       1            1           kubernetes.io/os=linux   94m
+   cilium   3         3         3       3            3           kubernetes.io/os=linux   94m
    ```
 > [!NOTE]
 > A Kubernetes DaemonSet is a feature that ensures a pod runs on all or some nodes in a Kubernetes cluster. DaemonSets are used to deploy background services, such as monitoring agents, network agents (*such as Cilium/eBPF*), log collectors, and storage volumes.
@@ -112,9 +126,9 @@ CRDs come in YAML file format and in the next several sections of this lab we'll
 
 ### Cilium BGP CRD
 
-For the sake of simplicity in this lab we'll use iBGP peering between our Berlin K8s node and our route reflectors **xrd05** and **xrd06**. 
+For the sake of simplicity in this lab we'll use iBGP peering between our London K8s nodes and our route reflectors **paris xrd05** and **barcelona xrd06**. 
 
-On the **Berlin VM** change to the lab_3/cilium directory and check out the contents
+On **london-vm-00** change to the lab_3/cilium directory and check out the contents
    ```
    cd ~/LTRSPG-2212/lab_3/cilium/
    ll
@@ -139,8 +153,13 @@ metadata:
   name: cilium-bgp 
 spec:
   nodeSelector:
-    matchLabels:
-      kubernetes.io/hostname: berlin    # node to which this portion of config belongs
+    matchExpressions:
+    - key: kubernetes.io/hostname
+      operator: In                      # apply config to all nodes in the values list
+      values:
+      - london-vm-00
+      - london-vm-01
+      - london-vm-02   
   bgpInstances:                         # the k8s cluster could have multiple BGP instances
   - name: "asn65000"                    # for simplicity we're using a single ASN end-to-end
     localASN: 65000
@@ -159,13 +178,11 @@ spec:
 
 One of the great things about CRDs is you can combine all the configuration elements into a single file, or you can break it up into multiple files by configuration element: 
 
-In the next few steps we'll walk through applying the configuration one element at a time. For reference the [99-cilium-all.yaml](cilium/99-cilium-all.yaml) file, would apply all the elements at once.
-
 ### Establish the Cilium BGP global and peer configurations
 
 ![Cilium SRv6 L3VPN](/topo_drawings/lab3-cilium-l3vpn-topology.png)
 
-1. On the **Berlin** VM cd into the Lab 3 cilium directory and apply the *Cilium BGP Cluster Config CRD*. BGP Cluster config establishes our Cilium Node's BGP ASN and base BGP peering with the route reflectors **xrd05** and **xrd06**.
+1. On **london-vm-00** cd into the Lab 3 cilium directory and apply the *Cilium BGP Cluster Config CRD*. BGP Cluster config establishes our Cilium Node's BGP ASN and base BGP peering with the route reflectors **xrd05** and **xrd06**.
    ```
    cd ~/LTRSPG-2212/lab_3/cilium/
    kubectl apply -f 01-bgp-cluster.yaml

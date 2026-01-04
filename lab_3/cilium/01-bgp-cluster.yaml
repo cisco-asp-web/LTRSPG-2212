@@ -5,8 +5,13 @@ metadata:
   name: cilium-bgp
 spec:
   nodeSelector:
-    matchLabels:
-      kubernetes.io/hostname: berlin
+    matchExpressions:
+    - key: kubernetes.io/hostname
+      operator: In
+      values:
+      - london-vm-00
+      - london-vm-01
+      - london-vm-02
   bgpInstances:
   - name: "asn65000"
     localASN: 65000

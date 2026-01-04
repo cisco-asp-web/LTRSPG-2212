@@ -48,7 +48,7 @@ The *carrots* VRFs is setup on the two edge routers in our SP network: **xrd01**
 
 The VRF instances and their interfaces have been preconfigured, allowing us to focus on the SRv6 BGP configuration. 
 
-Optional: if you wish to see the existing VRF configurations run these commands on either *xrd01* or *xrd07*:
+Optional: if you wish to see the existing VRF configuration run these commands on *xrd07*:
 ```
 show run vrf
 show run interface GigabitEthernet 0/0/0/3
