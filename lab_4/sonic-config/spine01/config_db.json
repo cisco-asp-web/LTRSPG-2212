@@ -24,9 +24,6 @@
         },
         "Ethernet8": {
             "ipv6_use_link_local_only": "enable"
-        },
-        "Ethernet12": {
-            "ipv6_use_link_local_only": "enable"
         }
     }
 }

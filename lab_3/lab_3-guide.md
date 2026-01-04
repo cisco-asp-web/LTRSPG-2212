@@ -147,7 +147,7 @@ On **london-vm-00** change to the lab_3/cilium directory and check out the conte
 Here is a portion of our Cilium BGP configuration in CRD form and with notes:
 
 ```yaml
-apiVersion: isovalent.com/v1alpha1
+apiVersion: isovalent.com/v1
 kind: IsovalentBGPClusterConfig  # the BGP cluster configuration CRD  
 metadata:
   name: cilium-bgp 
@@ -216,7 +216,7 @@ One of the great things about CRDs is you can combine all the configuration elem
 
    Expected output:
    ```
-   isovalentbgppeeringpolicy.isovalent.com/cilium-peer created
+   isovalentbgppeerconfig.isovalent.com/cilium-peer created
    ```
    
    At this point our peer sessions are not yet established. Next we'll apply the *`localAddress`* parameter which tells Cilium which source address to use for its BGP peering sessions. This knob is comparable to IOS-XR's `update-source` parameter.
@@ -224,14 +224,14 @@ One of the great things about CRDs is you can combine all the configuration elem
    Here is a portion of the node override CRD with notes:
    ```yaml
     metadata:
-      name: berlin     # this CRD will only apply to the berlin node
+      name: london-vm-00     # this CRD will apply to the london-vm-00 node
     spec:
       bgpInstances:
         - name: "asn65000"        # required field, must match the name of the bgpInstance in the cluster config
           srv6Responder: true     # instructs BGP to advertise the node's SRv6 Locator (to be created a few steps after this)
           peers:
             - name: "xrd05-rr"                 # must match the name of the peer in the cluster config
-              localAddress: fc00:0:8888::2     # the source address to use for the peering session
+              localAddress: fc00:0:800::2     # the source address to use for the peering session
    ```
    
 3. Apply the node override CRD:
@@ -240,25 +240,27 @@ One of the great things about CRDs is you can combine all the configuration elem
    ```
 
    Expected output:
-   ```
-   isovalentbgpnodeconfigoverride.isovalent.com/berlin created
+   ```yaml
+   isovalentbgpnodeconfigoverride.isovalent.com/london-vm-00 created
+   isovalentbgpnodeconfigoverride.isovalent.com/london-vm-01 created
+   isovalentbgpnodeconfigoverride.isovalent.com/london-vm-02 created
    ```
 
 ### Verify Cilium BGP peering 
 
-1. Verify Cilium BGP has successfully established peering sessions with **xrd05** and **xrd06** with the following cilium CLI. Note, it may take a few seconds for the peering sessions to establish.
+1. Verify Cilium BGP has successfully established peering sessions with **paris xrd05** and **barcelona xrd06** with the following cilium CLI. Note, it may take a few seconds for the peering sessions to establish.
    
    ```
    cilium bgp peers
    ```
 
-   We expect to have two IPv6 BGP peering sessions established and receiving BGP NLRIs for IPv6 and IPv4/mpls_vpn (aka, SRv6 L3VPN).
+   We expect each london VM to have two IPv6 BGP peering sessions established and receiving BGP NLRIs for IPv6 and IPv4/mpls_vpn (aka, SRv6 L3VPN).
 
-   Example:
-   ```
-   cisco@berlin:~/LTRSPG-2212/lab_3/cilium$ cilium bgp peers
+   Partial output:
+   ```yaml
+   $ cilium bgp peers
    Node     Local AS   Peer AS   Peer Address     Session State   Uptime   Family          Received   Advertised
-   berlin   65000      65000     fc00:0:5555::1   established     9s       ipv6/unicast    5          0    
+   london-vm-00   65000      65000     fc00:0:5555::1   established     9s       ipv6/unicast    5          0    
                                                                            ipv4/mpls_vpn   5          0    
             65000      65000     fc00:0:6666::1   established     24s      ipv6/unicast    5          0    
                                                                            ipv4/mpls_vpn   5          0  
@@ -294,12 +296,12 @@ Here is a portion of the prefix advertisement CRD with notes:
    cilium bgp peers
    ```
    ```diff
-   cisco@berlin:~/LTRSPG-2212/lab_3/cilium$ cilium bgp peers
-   Node     Local AS   Peer AS   Peer Address     Session State   Uptime   Family          Received   Advertised
-   +berlin   65000      65000     fc00:0:5555::1   established     11m48s   ipv6/unicast    6          1
-                                                                            ipv4/mpls_vpn   4          0
-   +         65000      65000     fc00:0:6666::1   established     11m49s   ipv6/unicast    6          1
-                                                                            ipv4/mpls_vpn   4          0
+   $ cilium bgp peers
+   Node           Local AS   Peer AS   Peer Address     Session State   Uptime   Family          Received   Advertised
+   +london-vm-00   65000      65000     fc00:0:5555::1   established     3m13s    ipv6/unicast    7          1    
+                                                                              ipv4/mpls_vpn   4          0    
+               65000      65000     fc00:0:6666::1   established     3m13s    ipv6/unicast    7          1    
+                                                                              ipv4/mpls_vpn   4          0
    ```                                                                         
 
 3. Let's get a little more detail on advertised prefixes with the `cilium bgp routes` command. Let's first add a -h flag to see our options
@@ -310,8 +312,8 @@ Here is a portion of the prefix advertisement CRD with notes:
 
    Example output:
    ```
-   cisco@berlin:~/LTRSPG-2212/lab_3/cilium$ cilium bgp routes -h
-   Lists BGP routes from all nodes in the cluster - requires cilium >= v1.14.6
+   $ cilium bgp routes -h
+   Lists BGP routes from all nodes in the cluster
 
    Usage:
      cilium bgp routes <available | advertised> <afi> <safi> [vrouter <asn>] [peer|neighbor <address>] [flags]
@@ -322,15 +324,8 @@ Here is a portion of the prefix advertisement CRD with notes:
    cilium bgp routes advertised ipv6 unicast
    ```
 
-   Example output, as you can see we're currently only advertising the global table pod CIDR:
-   ```
-   cisco@berlin:~/LTRSPG-2212/lab_3/cilium$ cilium bgp routes advertised ipv6 unicast
-   Node     VRouter   Peer             Prefix             NextHop          Age   Attrs
-   berlin   65000     fc00:0:5555::1   2001:db8:42::/64   fc00:0:8888::2   18s   [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:8888::2, NLRIs: [2001:db8:42::/64]}}]   
-            65000     fc00:0:6666::1   2001:db8:42::/64   fc00:0:8888::2   18s   [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:8888::2, NLRIs: [2001:db8:42::/64]}}] 
-   ```
 > [!NOTE]
-> The advertised IPv6 network prefix is the assigned IPv6 used by Cilium on **Berlin**. In addtion the *NextHop* address listed in the above command lists the IPv6 interface address on **Berlin** that connects to **xrd02** in the topology. You can see this detail if you run the command *ip addr show dev cilium_host* and *ip addr show dev ens4* respectively.
+> The advertised IPv6 network prefix is the assigned IPv6 used by Cilium on each **london VM**. In addtion the *NextHop* address listed in the above command lists the IPv6 interface address that connects to **london xrd01**. You can see this detail if you run the command *ip addr show dev cilium_host* and *ip addr show dev ens4* respectively.
 
 
 ### Create the carrots BGP VRF
@@ -339,7 +334,7 @@ We are now going to apply the BGP configuration for *vrf carrots* per the yaml f
 Earlier you saw we broke the BGP peering and route advertisement configurations into two separate yaml files. For the VRF we've got both in single file to illustrate the point about config modularity, and to also have one less step to apply. Here is a brief overview of the BGP VRF CRD:
   ```yaml
   ---
-  apiVersion: isovalent.com/v1alpha1
+  apiVersion: isovalent.com/v1
   kind: IsovalentBGPVRFConfig      # the BGP VRF configuration CRD
   metadata:
     name: carrots-config   # a meta data label / name of the vrf config
@@ -352,7 +347,7 @@ Earlier you saw we broke the BGP peering and route advertisement configurations 
             advertise: "bgp-carrots"  # a meta data label / name for the route advertisement - this is analogous to a outbound route policy
 
   ---
-  apiVersion: isovalent.com/v1alpha1
+  apiVersion: isovalent.com/v1
   kind: IsovalentBGPAdvertisement      # BGP route advertisement CRD
   metadata:
     name: carrots-adverts     # a meta data label / name for the VRF route advertisement
@@ -406,15 +401,14 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    cilium bgp routes advertised ipv6 unicast
    ```
 
-   Example output, Cilium is now advertising the node's Locator:
+   Example parital output, Cilium is now advertising the node's Locator:
    ```yaml
-   Node   VRouter   Peer             Prefix             NextHop          Age          Attrs
-   berlin 65000     fc00:0:5555::1   2001:db8:42::/64   fc00:0:8888::2   104h21m6s    [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:8888::2, NLRIs: [2001:db8:42::/64]}}]   
-          65000     fc00:0:6666::1   2001:db8:42::/64   fc00:0:8888::2   104h21m6s    [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:8888::2, NLRIs: [2001:db8:42::/64]}}]   
-          65000     fc00:0:5555::1   fc00:0:a08c::/48   fc00:0:8888::2   104h20m12s   [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:8888::2, NLRIs: [fc00:0:a08c::/48]}}]   
-          65000     fc00:0:6666::1   fc00:0:a08c::/48   fc00:0:8888::2   104h20m12s   [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:8888::2, NLRIs: [fc00:0:a08c::/48]}}] 
+   Node           VRouter   Peer             Prefix               NextHop           Age     Attrs
+   london-vm-00   65000     fc00:0:5555::1   2001:db8:42::/64     fc00:0:800::2           
+                  65000     fc00:0:6666::1   2001:db8:42::/64     fc00:0:800::2            
+                  65000     fc00:0:5555::1   fc00:0:88f7::/48     fc00:0:800::2           
+                  65000     fc00:0:6666::1   fc00:0:88f7::/48     fc00:0:800::2    
    ```
-
 
 3. Now that we've created locator pool, let's validate it:
    ```
@@ -426,31 +420,15 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    kubectl get sidmanager -o custom-columns="NAME:.metadata.name,ALLOCATIONS:.spec.locatorAllocations"
    ```
 
-   The truncated output below shows Cilium having allocated the following Locator to Berlin:
-   **berlin: fc00:0:a0ba::/48**
+   The truncated output below shows the Cilium uSID locator allocation for each node:
 
    Example output:
 
    ```yaml
-   apiVersion: v1
-   items:
-   - apiVersion: isovalent.com/v1alpha1
-    kind: IsovalentSRv6SIDManager
-    metadata:
-      name: berlin
-      resourceVersion: "48034"
-      uid: dd82d5d0-6d84-4cc8-ac31-ed2f3ce857f7
-    spec:
-      locatorAllocations:
-      - locators:
-        - behaviorType: uSID
-          prefix: fc00:0:a01f::/48               # Berlin's dynamically allocated uSID prefix (Locator)
-          structure:
-            argumentLenBits: 0
-            functionLenBits: 16
-            locatorBlockLenBits: 32
-            locatorNodeLenBits: 16
-        poolRef: pool0
+   NAME           ALLOCATIONS
+   london-vm-00   [map[locators:[map[behaviorType:uSID prefix:fc00:0:88f7::/48
+   london-vm-01   [map[locators:[map[behaviorType:uSID prefix:fc00:0:88f6::/48 
+   london-vm-02   [map[locators:[map[behaviorType:uSID prefix:fc00:0:8804::/48
    ```
 
 ## Establish Cilium VRFs and Create Pods
@@ -470,7 +448,7 @@ metadata:
     name: veggies
 
 ---
-apiVersion: isovalent.com/v1alpha1
+apiVersion: isovalent.com/v1alpha
 kind: IsovalentVRF         # VRF CRD - analogous to the global VRF config on a router
 metadata:
   name: carrots
@@ -526,60 +504,32 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
 
 3. Let's get the pods' IP addresses as we'll need them in a few more steps:
    ```
-   kubectl get pod -n veggies carrots0 -o jsonpath="{.status.podIPs}" && echo
+   kubectl get pod -n veggies carrots0 -o jsonpath="Node: {.spec.nodeName} | IPs: {.status.podIPs[*].ip}" && echo
    ```
 
    Expected output should look something like:
    ```
-   [{"ip":"10.200.0.242"},{"ip":"2001:db8:42::2131"}]
+   Node: london-vm-02 | IPs: 10.200.3.46 2001:db8:42:4::af86
    ```
 
-4. Next we'll verify Cilium has allocated the carrots VRF a SRv6 L3VPN uDT4 SID on Berlin:
+4. Next we'll verify Cilium has allocated the carrots VRF a SRv6 L3VPN uDT4 SID:
    ```
-   kubectl get sidmanager berlin -o yaml
+   kubectl get sidmanager london-vm-02 -o yaml
    ```
 
-    Example output from sidmanager:
-    ```diff
-    apiVersion: isovalent.com/v1alpha1
-    kind: IsovalentSRv6SIDManager
-    metadata:
-      creationTimestamp: "2025-01-16T22:16:38Z"
-      generation: 3
-      name: berlin
-      resourceVersion: "49944"
-      uid: d0f2730f-ffe9-4282-b457-01ed94b16307
-    spec:
-      locatorAllocations:
-      - locators:
-        - behaviorType: uSID
-    +     prefix: fc00:0:a0ba::/48     # Berlin's dynamically allocated uSID prefix (Locator)
-          structure:
-            argumentLenBits: 0
-            functionLenBits: 16
-            locatorBlockLenBits: 32
-            locatorNodeLenBits: 16
-        poolRef: pool0
-    status:
-      sidAllocations:
-      - poolRef: pool0
-        sids:
-    +   - behavior: uDT4                # uDT4 is uSID 'End' with IPv4 table lookup behavior
-          behaviorType: uSID
-    +     metadata: carrots             # table to perform the lookup in
-          owner: srv6-manager
-          sid:
-    +       addr: 'fc00:0:a0ba:ec7::'   # Berlin VRF carrots SRv6 Locator + uDT4 Function (ec7)
-            structure:
-              argumentLenBits: 0
-              functionLenBits: 16
-              locatorBlockLenBits: 32
-              locatorNodeLenBits: 16
-    ```
+   Or for abbreviated output:
+   ```
+   echo && kubectl get sidmanager london-vm-02 -o jsonpath="Host: {.metadata.name} | VRF: {.status.sidAllocations[*].sids[*].metadata} | SID: {.status.sidAllocations[*].sids[*].sid.addr} | Behavior: {.status.sidAllocations[*].sids[*].behavior}" && echo
+   ```
+
+   Example output:
+   ```
+   Host: london-vm-02 | VRF: carrots | SID: fc00:0:8804:9747:: | Behavior: uDT4
+   ```
 
 ### Verify Cilium advertised L3vpn prefixes are reaching remote xrd nodes
 
-1. Using the containerlab extension,  ssh to **xrd01** and run some BGP verification commands.
+1. Using the containerlab extension, ssh to **rome xrd07** and run some BGP verification commands.
 
    ```
    show bgp vpnv4 unicast
@@ -588,65 +538,56 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
 
    Somewhere in the output of the first command we expect to find the Cilium advertised L3VPN prefix:
    ```
-   *>i10.200.0.0/24      fc00:0:8888::2                100      0 ?
+   *>i10.200.0.0/24      fc00:0:800::2                100      0 ?
    ```
 
    In the output of the second command we expect to see detailed information. Here is truncated output, note due to Cilium's dynamic allocation, your *Received Label* and *Sid* values will most likely differ from this example:
    ```diff
-   Path #1: Received by speaker
-   Not advertised to any peer
-   Local
-       fc00:0:8888::2 (metric 2) from fc00:0:5555::1 (198.18.4.104)
-   +     Received Label 0xec70      # uDT4 function bits (ec7) match the SRv6 SID manager output from Cilium
-         Origin incomplete, localpref 100, valid, internal, best, group-best, import-candidate, not-in-vrf
-         Received Path ID 0, Local Path ID 1, version 20
-         Extended community: RT:9:9
-         Originator: 198.18.4.104, Cluster list: 10.0.0.5
-       PSID-Type:L3, SubTLV Count:1
-         SubTLV:
-   +    T:1(Sid information), Sid:fc00:0:a0ba::(Transposed), Behavior:63, SS-TLV Count:1  # Sid value matches Berlin's SRv6 Locat
-         SubSubTLV:
-          T:1(Sid structure):
+     Local
+      fc00:0:800::2 (metric 4) from fc00:0:6666::1 (10.8.0.2)
+   +     Received Label 0x4fd00                              # uDT4 function
+        Origin incomplete, localpref 100, valid, internal, not-in-vrf
+        Received Path ID 0, Local Path ID 0, version 0
+        Extended community: RT:9:9 
+        Originator: 10.8.0.2, Cluster list: 10.0.0.6
+        PSID-Type:L3, SubTLV Count:1
+        SubTLV:
+   +      T:1(Sid information), Sid:fc00:0:88f7::(Transposed), Behavior:63, SS-TLV Count:1
+          SubSubTLV:
+            T:1(Sid structure):
    ```
 
-2. Back on the **Berlin** VM, verify SRv6 Egress Policies. This command will give you a rough equivalent to the SRv6 L3VPN FIB table
+2. Back on **london-vm-00**, verify SRv6 Egress Policies. This command will give you a rough equivalent to the SRv6 L3VPN FIB table
    ```
    kubectl get IsovalentSRv6EgressPolicy -o yaml
    ```
 
+   Or for abbreviated output:
+   ```
+   kubectl get IsovalentSRv6EgressPolicy -o jsonpath="{.items[*].spec}" | jq
+   ```
+
    Example of partial output:
-   ```diff
-     - apiVersion: isovalent.com/v1alpha1
-       kind: IsovalentSRv6EgressPolicy
-       metadata:
-         creationTimestamp: "2025-01-17T06:49:36Z"
-         generation: 1
-         name: bgp-control-plane-31cc5366b9918e658bada220b4232aa252f16e3f93572d69131a842239bbcce5
-         resourceVersion: "49954"
-         uid: e47b55f9-095d-4b45-a163-522b8f7d6f9a
-       spec:
-         destinationCIDRs:
-         - 40.0.0.0/24
-   +     destinationSID: 'fc00:0:7777:e007::'  # SRv6 SID for prefix 40.0.0.0/24 in vrfID 99 (carrots) on xrd07
-         vrfID: 99
-     - apiVersion: isovalent.com/v1alpha1
-       kind: IsovalentSRv6EgressPolicy
-       metadata:
-         creationTimestamp: "2025-01-17T06:49:36Z"
-         generation: 1
-         name: bgp-control-plane-46ef5ca48abb5cee93f383fe8966f85194a398116bea35fdf49b17cd1d5fbe79
-         resourceVersion: "49948"
-         uid: d786342b-9edd-4610-8f78-b11354714c6a
-       spec:
-         destinationCIDRs:
-         - 10.200.0.0/24
-   +     destinationSID: 'fc00:0:a0ba:ec7::' # SRv6 SID for local prefix 10.200.0.0/24 in vrfID 99 (carrots)
-         vrfID: 99
+   ```
+   {
+      "destinationCIDRs": [
+        "10.101.1.0/24"
+      ],
+      "destinationSID": "fc00:0:1111:e009::",
+      "vrfID": 99
+   }
+   {
+      "destinationCIDRs": [
+        "10.107.2.0/24"
+      ],
+      "destinationSID": "fc00:0:7777:e006::",
+      "vrfID": 99
+   }
    ```
 
 ### Run a ping test!
 
-1. On the Berlin VM exec into one of the carrots pods and ping Rome's interface in the carrots VRF:
+1. From **london-vm-00** exec into one of the carrots pods and ping Rome's interface in the carrots VRF:
     ```
     kubectl exec -it -n veggies carrots0 -- sh
     ```
@@ -661,7 +602,7 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
 
 ### Optional - Traffic capture using Edgeshark
 
-Berlin is a virtual machine connected to the Containerlab topology via a Linux bridge. You can inspect traffic either at the source (on the bridge) or at the destination (Rome container’s eth2).
+The London VMs are connected to the Containerlab topology via Linux bridge instances. You can inspect traffic either at the source (on the bridge) or at the destination (Rome container’s eth2).
 
 To capture traffic near the source:
    - Open Firefox

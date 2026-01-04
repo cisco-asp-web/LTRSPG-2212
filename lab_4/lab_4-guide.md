@@ -5,14 +5,14 @@ From the SONiC homepage: https://sonicfoundation.dev/
 
 *Software for Open Networking in the Cloud (SONiC) is an open source network operating system (NOS) based on Linux that runs on switches from multiple vendors and ASICs. SONiC offers a full suite of network functionality, like BGP and RDMA, that has been production-hardened in the data centers of some of the largest cloud service providers. It offers teams the flexibility to create the network solutions they need while leveraging the collective strength of a large ecosystem and community.*
  
-In lab 4 we'll deploy a CLOS topology of SONiC nodes, we'll explore the SONiC/Linux and FRR CLIs, and we'll use Ansible scripts to configure interfaces, BGP, and finally SRv6.
+In lab 4 we'll work with our small SONiC CLOS topology; we'll explore the SONiC/Linux and FRR CLIs, and we'll use Ansible scripts to configure interfaces, BGP, and finally SRv6.
 
 ## Contents
 - [Lab 4: SRv6 on SONiC \[20 Min\]](#lab-4-srv6-on-sonic-20-min)
     - [Description](#description)
   - [Contents](#contents)
   - [Lab Objectives](#lab-objectives)
-  - [Deploy containerlab SONiC topology](#deploy-containerlab-sonic-topology)
+  - [Containerlab SONiC topology](#containerlab-sonic-topology)
   - [SONiC: A Very Quick Tour](#sonic-a-very-quick-tour)
     - [SONiC Docker Containers](#sonic-docker-containers)
   - [SONiC Configuration Files](#sonic-configuration-files)
@@ -32,37 +32,24 @@ We will have achieved the following objectives upon completion of Lab 4:
 * Understanding of SONiC's SRv6 configuration and capabilities
 
 
-## Deploy containerlab SONiC topology
+## Containerlab SONiC topology
 
-We'll return to the containerlab visual code extension to launch lab 4:
+In lab 1 our containerlab script deployed both the XRd topology and the SONiC nodes in our London data center. 
 
-![connected visual code](../topo_drawings/lab4-launch-topology.png)
-
-
-Right after launching the topology, the sonic icons will be yellow since the containers services will still boot up :
-
-
-![connected visual code](../topo_drawings/lab4-topology-launching.png)
-
-After one minute, the icons should turn green to visually indicate that the topology has been successfully deployed in Containerlab.
-
-![connected visual code](../topo_drawings/lab4-topology-launched.png)
-
-
-Once deployed our ML Training Fabric topology looks like this:
+Our SONiC ML Training Fabric topology looks like this:
 ![Lab 4 Topology](../topo_drawings/lab4-topology-diagram.png)
 
 
 ## SONiC: A Very Quick Tour
 
-SONiC is Linux plus a microservices-style architecture comprised of various modules running as Docker containers. These containers comprise what can be thought of as a highly modular *router application suite*. The containers interact and communicate with each other through the Switch State Service (*`swss`*) container. The infrastructure also relies on the use of a *redis-database* engine: a key-value database to provide a language independent interface, a method for data persistence, replication and multi-process communication among all SONiC subsystems.
+SONiC is Linux plus a microservices-style architecture with modules running as Docker containers. These containers comprise what can be thought of as a highly modular *router application suite*. The containers interact and communicate with each other through the Switch State Service (*`swss`*) container. The infrastructure also relies on the use of a *redis-database* engine: a key-value database to provide a language independent interface, a method for data persistence, replication and multi-process communication among all SONiC subsystems.
 
 For a deep dive on SONiC architecture and containers please see: https://sonicfoundation.dev/deep-dive-into-sonic-architecture-design/
 
 
-1. ssh to leaf00 in our topology using the visual code extenstion  (note: password is *`admin`*)
+1. ssh to leaf00 in our topology using the visual code extension (note: password is *`admin`*)
 
-2. List SONiC's docker containers. Note, it takes 2-3 minutes from topology deployment for all 12 docker containers to come up. 
+2. List SONiC's docker containers.
     ```
     docker ps
     ```
@@ -102,7 +89,7 @@ For a deep dive on SONiC architecture and containers please see: https://sonicfo
 | GNMI                 | SONiC gnmi/telemetry service |
 
 > [!NOTE]
-> **Control Plane**: SONiC leverages the open-source [Free Range Routing](https://frrouting.org/)(FRR) routing stack for its Control Plane. Currently the only supported routing protocol is BGP, however, FRR supports ISIS and OSPF, so someday in the future we could see SONiC incorporating those protocols as well.
+> **Control Plane**: SONiC leverages the open-source [Free Range Routing](https://frrouting.org/)(FRR) routing stack for its Control Plane. Currently the only supported routing protocol is BGP, however, FRR supports ISIS and OSPF, so in the future we could see SONiC incorporating those protocols as well.
 > 
 > The *docker ps* output above included a container named **bgp**. In reality this is FRR running as a container.
 
@@ -231,19 +218,18 @@ Before we proceed with applying full fabric configurations via Ansible, we wante
 1. Using the containerlab visual code extension, ssh to *leaf00* (password is `admin`) and configure hostname and *Loopback0* IPv4 and IPv6 addresses
    ```
    sudo config hostname leaf00
-   sudo config interface ip add Loopback0 10.0.0.200/32
-   sudo config interface ip add Loopback0 fc00:0:1200::1/128
+   sudo config interface ip add Loopback0 10.0.0.4/32
+   sudo config interface ip add Loopback0 fc00:0:1004::1/128
    ```
 
 > [!NOTE]
 > Logout and log back in to *leaf00* to see the hostname change take effect
 
-Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we only need to configure IPs for the host-facing interface Ethernet16.
+Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we only need to configure IPs for the host backend interface Ethernet16. The backend will be IPv6 only.
 
 3. Configure interface Ethernet16 IPv4 and IPv6
    ```
-   sudo config interface ip add Ethernet16 200.0.100.1/24
-   sudo config interface ip add Ethernet16 2001:db8:1000:1::1/64
+   sudo config interface ip add Ethernet16 fcbb:0:800::1/64
    ```
 
 4. Save configuration
@@ -256,23 +242,26 @@ Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we 
 6. Do a quick verification of interface IP:
    ```
    show ip interfaces 
+   show ipv6 interfaces
    ```
 
-   Example output:
+   Example truncated output:
    ```
-   admin@leaf00:~$ show ip int
-   Interface    Master    IPv4 address/mask    Admin/Oper    BGP Neighbor    Neighbor IP
-   -----------  --------  -------------------  ------------  --------------  -------------
-   Ethernet16             200.0.100.1/24       up/up         N/A             N/A
-   Loopback0              10.0.0.200/32        up/up         N/A             N/A
-   docker0                240.127.1.1/24       up/down       N/A             N/A
-   eth0                   10.0.0.15/24         up/up         N/A             N/A
-   lo                     127.0.0.1/16         up/up         N/A             N/A
+   admin@leaf00:~$ show ipv6 interfaces
+   Interface    Master    IPv6 address/mask                        Admin/Oper    BGP Neighbor    Neighbor IP
+   -----------  --------  ---------------------------------------  ------------  --------------  -------------
+   Ethernet0              fe80::203d:a9ff:fe5d:83c6%Ethernet0/64   up/up         N/A             N/A
+   Ethernet4              fe80::203d:a9ff:fe5d:83c6%Ethernet4/64   up/up         N/A             N/A
+   Ethernet8              fe80::203d:a9ff:fe5d:83c6%Ethernet8/64   up/up         N/A             N/A
+   Ethernet12             fe80::203d:a9ff:fe5d:83c6%Ethernet12/64  up/up         N/A             N/A
+   Ethernet16             fcbb:0:800::1/64                         up/up         N/A             N/A
+                          fe80::203d:a9ff:fe5d:83c6%Ethernet16/64                N/A             N/A
+   Loopback0              fc00:0:1004::1/128                       up/up         N/A             N/A
    ```
 
 **Manual Configuration of FRR**
 
-Configuring SONiC's BGP container can be done from the command line and is very much like IOS.
+Configuring SONiC's BGP container can be done from FRR's command line and is very much like IOS.
 
 1. Invoke FRR's VTY shell
    ```
@@ -316,7 +305,6 @@ Config example from leaf00:
    neighbor Ethernet0 interface remote-as 65000
    neighbor Ethernet4 interface remote-as 65001
    neighbor Ethernet8 interface remote-as 65002
-   neighbor Ethernet12 interface remote-as 65003
    ```
 
 ## Fabric Config Automation with Ansible 
