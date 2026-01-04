@@ -1,0 +1,14 @@
+#cloud-config
+users:
+  - name: cisco
+    groups: [sudo]
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: false
+
+chpasswd:
+  list: |
+    cisco:cisco123
+  expire: false
+
+ssh_pwauth: true

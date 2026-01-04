@@ -1,0 +1,16 @@
+[Unit]
+Description=Cisco Live LTRSPG-2212 auto-update lab Git repo from GitHub at boot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ciscolive-ltrspg2212-update-lab-repo.sh
+User=cisco
+Group=cisco
+WorkingDirectory=/home/cisco/LTRSPG-2212
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

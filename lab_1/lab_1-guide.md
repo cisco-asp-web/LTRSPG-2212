@@ -17,7 +17,7 @@ https://containerlab.dev/
   - [Accessing the routers](#accessing-the-routers)
   - [Launch and Validate XRD Topology](#launch-and-validate-xrd-topology)
     - [Connect to the Topology Host and SSH to Containers.](#connect-to-the-topology-host-and-ssh-to-containers)
-    - [Accessing Berlin VM](#accessing-berlin-vm)
+    - [Accessing the London K8s Control Plane VM](#accessing-the-london-k8s-control-plane-vm)
   - [Validate ISIS Topology](#validate-isis-topology)
     - [Add Synthetic Latency to the Links](#add-synthetic-latency-to-the-links)
   - [Validate BGP Peering](#validate-bgp-peering)
@@ -170,7 +170,7 @@ sudo containerlab inspect --all
 
 
 > [!IMPORTANT]
-> The XRd router instances should be available for SSH access about 2 minutes after spin up.
+> The XRd router instances should be available for SSH access about 1 - 2 minutes after spin up.
 
 
 To SSH into a router, you can use the containerlab visual code extension
@@ -183,39 +183,39 @@ To get terminal access into the Amsterdam or Rome containers, you can use the co
 ![Attach terminal](../topo_drawings/lab1-attach-terminal.png)
 
 
-### Accessing Berlin VM
+### Accessing the London K8s Control Plane VM
 
-In our lab the **Berlin VM** is an Ubuntu Kubernetes node running the **Cilium** Container Network Interface (CNI) and connected to the **xrd02** router.
+In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Cilium** Container Network Interface (CNI) and connected to the **london** router.
 
 
 1. From a Visual Code terminal SSH to *Berlin VM* 
     ```
-    ssh cisco@berlin
+    ssh cisco@london-vm-00
     ```
    
-2. Check IPv6 connectivity from **Berlin** to **xrd02**
+2. Check IPv6 connectivity from **london-vm-00** to **london xrd01**
 
     ![berlin xrd02](../topo_drawings/lab1-berlin-xrd02.png)
 
     ```
-    ping fc00:0:8888::1 -c 2
+    ping fc00:0:800::1 -c 2
     ```
     ```
-    cisco@berlin:~$ ping fc00:0:8888::1 -c 2
-    PING fc00:0:8888::1 (fc00:0:8888::1) 56 data bytes
-    64 bytes from fc00:0:8888::1: icmp_seq=1 ttl=64 time=1.28 ms
-    64 bytes from fc00:0:8888::1: icmp_seq=2 ttl=64 time=1.20 ms
+    cisco@london-vm-00:~$ ping fc00:0:800::1 -c 2
+    PING fc00:0:800::1(fc00:0:800::1) 56 data bytes
+    64 bytes from fc00:0:800::1: icmp_seq=1 ttl=64 time=1.61 ms
+    64 bytes from fc00:0:800::1: icmp_seq=2 ttl=64 time=1.81 ms
 
-    --- fc00:0:8888::1 ping statistics ---
+    --- fc00:0:800::1 ping statistics ---
     2 packets transmitted, 2 received, 0% packet loss, time 1001ms
-    rtt min/avg/max/mdev = 1.203/1.242/1.282/0.039 ms
+    rtt min/avg/max/mdev = 1.611/1.709/1.808/0.098 ms
     ```
 
     Visual representation:
 
     ![berlin connectivity](../topo_drawings/lab1-berlin-connectivity.png)
 
-    You can now logout of the Berlin VM 
+    You can now logout of the London VM 
 
 
 ## Validate ISIS Topology
