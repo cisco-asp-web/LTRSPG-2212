@@ -73,8 +73,10 @@ spec:
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/examples/test_connectivity.py
-        sleep infinity
+        python3 /app/examples/test_connectivity.py
+        echo "Test complete. Container will stay running for 1 hour for manual testing."
+        echo "Use: kubectl exec -it srv6-pytorch-0 -- bash"
+        sleep 3600
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
@@ -147,8 +149,10 @@ spec:
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/examples/test_connectivity.py
-        sleep infinity
+        python3 /app/examples/test_connectivity.py
+        echo "Test complete. Container will stay running for 1 hour for manual testing."
+        echo "Use: kubectl exec -it srv6-pytorch-0 -- bash"
+        sleep 3600
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
@@ -222,8 +226,10 @@ spec:
         echo "Routing table:"
         ip -6 route show
         echo "Starting PyTorch distributed training..."
-        exec python3 /app/examples/test_connectivity.py
-        sleep infinity
+        python3 /app/examples/test_connectivity.py
+        echo "Test complete. Container will stay running for 1 hour for manual testing."
+        echo "Use: kubectl exec -it srv6-pytorch-0 -- bash"
+        sleep 3600
     envFrom:
     - configMapRef:
         name: pytorch-distributed-config
