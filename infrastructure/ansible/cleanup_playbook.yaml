@@ -2,6 +2,28 @@
 
 # ansible-playbook -i hosts cleanup_playbook.yaml -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" -vv
 
+- name: jalapeno cleanup
+  hosts: jalapeno
+  become: false
+  tasks:
+
+    - name: clear fabric_graph load
+      command: python3 clear-load.py
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_5/jalapeno/backend
+      ignore_errors: yes
+
+- name: cleanup cilium
+  hosts: london-k8s-cp
+  become: false
+  tasks:
+
+    - name: cleanup cilium
+      command: kubectl delete -f 99-cilium-all.yaml
+      args:
+        chdir: /home/cisco/LTRSPG-2212/lab_3/cilium
+      ignore_errors: no
+
 - name: topology-host cleanup
   hosts: topology-host
   become: true
@@ -31,24 +53,17 @@
         chdir: /home/cisco/LTRSPG-2212/lab_4
       ignore_errors: yes
 
-- name: jalapeno cleanup
-  hosts: jalapeno
-  become: false
-  tasks:
-
-    - name: clear fabric_graph load
-      command: python3 clear-load.py
+    - name: virsh shutdown
+      command: virsh shutdown london-vm-00
       args:
-        chdir: /home/cisco/LTRSPG-2212/lab_5/jalapeno/sonic-network
-      ignore_errors: yes
+        ignore_errors: yes
 
-- name: berlin cleanup cilium
-  hosts: berlin
-  become: false
-  tasks:
-
-    - name: cleanup cilium
-      command: kubectl delete -f 99-cilium-all.yaml
+    - name: virsh shutdown
+      command: virsh shutdown london-vm-01
       args:
-        chdir: /home/cisco/LTRSPG-2212/lab_3/cilium
-      ignore_errors: no
+        ignore_errors: yes
+
+    - name: virsh shutdown
+      command: virsh shutdown london-vm-02
+      args:
+        ignore_errors: yes
