@@ -32,7 +32,7 @@ https://containerlab.dev/
 We will have achieved the following objectives upon completion of Lab 1:
 
 * Access all devices in the lab
-* Deployed the XRd network topology
+* Deployed the full network topology (XRd frontend, SONiC backend)
 * Basic familiarity with containerlab
 * Confirm IPv4 and IPv6 connectivity
 * Familiarity with base SRv6 configuration 
@@ -40,14 +40,14 @@ We will have achieved the following objectives upon completion of Lab 1:
 
 ## Topology 
 
-For Labs 1 - 3 we will use the topology shown below. In the topology we have 7 XRd routers providing SRv6 transport services to a pair of Ubuntu containers (Amsterdam and Rome) and an Ubuntu VM (Berlin).
+For Labs 1 - 3 we will use the topology shown below. In this network we have 7 XRd routers providing SRv6 transport services to a pair of Ubuntu containers (Amsterdam and Rome) and a Kubernetes cluster running on Ubuntu VMs (London).
 ![Lab Topology](../topo_drawings/overview-topology-large.png)
 
 ## Accessing the routers 
 
 ⚠️⚠️⚠️  Note: This section is provided for reference only. We will walk through router access during the live demo. ⚠️⚠️⚠️ 
 
-Lab attendees can interact with the routers in multiple ways. They may choose to use the **topology host** VM as a jumpbox to:
+Lab attendees can interact with the routers in multiple ways. They may choose to ssh to the **topology host** VM and use it as a jumpbox to:
 
 - Launch topologies  
 - SSH into routers  
@@ -338,36 +338,6 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
         Origin IGP, metric 0, localpref 100, valid, internal
         Received Path ID 0, Local Path ID 0, version 0
         Originator: 10.0.0.7, Cluster list: 10.0.0.6                          <------ route reflector xrd06
-    ```
-
-4. SSH to **xrd07** an verify it has received route ```fc00:0:101:1::/64``` from the route reflectors **xrd05** and **xrd06**. Look for ```Paths: (2 available)```
-    ```
-    show bgp ipv6 unicast fc00:0:101:1::/64
-    ```
-    ```
-    RP/0/RP0/CPU0:xrd07#show bgp ipv6 unicast fc00:0:101:1::/64
-    Tue Jan 10 21:48:45.627 UTC
-    BGP routing table entry for fc00:0:101:1::/64
-    Versions:
-    Process           bRIB/RIB  SendTblVer
-    Speaker                  18           18
-    Last Modified: Jan 10 21:40:29.922 for 00:08:15
-    Paths: (2 available, best #1)
-    Not advertised to any peer
-    Path #1: Received by speaker 0
-    Not advertised to any peer
-    Local
-        fc00:0:1111::1 (metric 3) from fc00:0:5555::1 (10.0.0.1)              <------ origin from xrd01
-        Origin IGP, metric 0, localpref 100, valid, internal, best, group-best
-        Received Path ID 0, Local Path ID 1, version 18
-        Originator: 10.0.0.1, Cluster list: 10.0.0.5                          <------ route reflector xrd05
-    Path #2: Received by speaker 0
-    Not advertised to any peer
-    Local
-        fc00:0:1111::1 (metric 3) from fc00:0:6666::1 (10.0.0.1)              <------ origin from xrd01
-        Origin IGP, metric 0, localpref 100, valid, internal
-        Received Path ID 0, Local Path ID 0, version 0
-        Originator: 10.0.0.1, Cluster list: 10.0.0.6                          <------ route reflector xrd06
     ```
 
 ## Configure and Validate SRv6

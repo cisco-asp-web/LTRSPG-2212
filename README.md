@@ -33,11 +33,11 @@ Each of the labs is designed to be completed in the order presented. Lab 1 will 
 
 ### Root Directory
 
-| File Name      | Description                                                         |
-|:---------------|:--------------------------------------------------------------------|
-| infrasstructure| Base configurations for the non-router containers and VMs in the    |
-| topo_drawings  | Lab diagrams folder                                                 |
-| lab_1 -> lab_5 | Individual lab folders                                              |
+| File Name      | Description                                                          |
+|:---------------|:---------------------------------------------------------------------|
+| infrastructure | Base configurations for the non-router containers and VMs in the lab |
+| topo_drawings  | Lab diagrams folder                                                  |
+| lab_1 -> lab_5 | Individual lab folders                                               |
 
 
 ### Individual Lab Directories
