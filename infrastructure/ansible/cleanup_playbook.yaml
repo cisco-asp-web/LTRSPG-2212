@@ -67,19 +67,13 @@
       community.libvirt.virt:
         name: london-vm-00
         state: shutdown
-      args:
-        ignore_errors: yes
 
     - name: shutdown london-vm-01
       community.libvirt.virt:
         name: london-vm-01
         state: shutdown
-      args:
-        ignore_errors: yes
 
     - name: shutdown london-vm-02
       community.libvirt.virt:
         name: london-vm-02
         state: shutdown
-      args:
-        ignore_errors: yes
