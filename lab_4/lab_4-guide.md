@@ -490,42 +490,44 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
 
 ### Verify London VM backend network reachability
 
-1. Verify host IPs and routes
+1. SSH to the **london-vm-00** from the **topology-host**
 
-    From the topology host execute *docker exec* commands to display the ip addresses and routing table of ubuntu-host00:
-
+    **old diagram**
     ![terminal](../topo_drawings/lab4-host00-ipaddr.png)
 
+    ```
+    ssh london-vm-00
+    ```
 
+2. Disply the VM's ipv6 routing table:
+   
     ```
-    docker exec -it clab-sonic-host00 ip addr show dev eth1 | grep inet
+    ip -6 route 
     ```
+
+    Or to see *`Backend`* specific routes:
     ```
-    docker exec -it clab-sonic-host00 ip -6 route
+    ip -6 route | grep ens5
     ```
 
     Expected output:
     ```
-    cisco@topology-host:~$ docker exec -it clab-sonic-host00 ip addr show dev eth1 | grep inet
-    inet 200.0.100.2/24 scope global eth1
-    inet6 2001:db8:1000::2/64 scope global 
-    inet6 fe80::a8c1:abff:fe7c:fbbd/64 scope link 
-
-    cisco@topology-host:~$ docker exec -it clab-sonic-host00 ip -6 route
-    2001:db8:1000::/64 dev eth1 proto kernel metric 256 pref medium
-    2001:db8::/32 via 2001:db8:1000::1 dev eth1 metric 1024 pref medium
-    fc00::/32 via 2001:db8:1000::1 dev eth1 metric 1024 pref medium
-    fe80::/64 dev eth1 proto kernel metric 256 pref medium
-    fe80::/64 dev eth2 proto kernel metric 256 pref medium
+    $ ip -6 route | grep ens5
+    fcbb:0:800::/64 dev ens5 proto kernel metric 256 pref medium
+    fcbb::/32 via fcbb:0:800::1 dev ens5 proto static metric 1024 pref medium
+    fe80::/64 dev ens5 proto kernel metric 256 pref medium
     ```
 
-2. Ping test from *ubuntu-host00* to *ubuntu-host03*:
+3. Ping **london-vm-01** and **london-vm-02** over the *`Backend/SONiC`* network:
 
     ```
-    docker exec -it clab-sonic-host00 ping 2001:db8:1003::2 -i .3 -c 100
+    ping fcbb:0:800:1::2 -i .3 -c 100
+    ```
+    ```
+    ping fcbb:0:800:2::2 -i .3 -c 100
     ```
 
-    While the ping is running we can launch edgeshark using the visual code containerlab extension and inspect the traffic on the eth1 interface. Note the traffic is not SRv6 encapsulated at this time:
+    While the ping is running we can launch edgeshark using the visual code containerlab extension and inspect the traffic on the **SONiC Leaf00 eth5 ???** interface. Note the traffic is not SRv6 encapsulated at this time:
 
     ![edgeshark-host00](../topo_drawings/lab4-host00-edgeshark.png)
 
