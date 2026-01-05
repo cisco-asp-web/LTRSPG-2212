@@ -47,7 +47,11 @@ SONiC is Linux plus a microservices-style architecture with modules running as D
 For a deep dive on SONiC architecture and containers please see: https://sonicfoundation.dev/deep-dive-into-sonic-architecture-design/
 
 
-1. ssh to leaf00 in our topology using the visual code extension (note: user/password is *`admin/admin`*)
+1. ssh to **leaf00** in our topology using the visual code extension (note: user/password is *`admin/admin`*)
+
+   ```
+   ssh admin@clab-cleu26-sonic-leaf-00
+   ```
 
 2. List SONiC's docker containers.
     ```
@@ -57,19 +61,19 @@ For a deep dive on SONiC architecture and containers please see: https://sonicfo
     Expected output:
     ```
     admin@sonic:~$ docker ps
-    CONTAINER ID  IMAGE                              COMMAND                 CREATED        STATUS        PORTS     NAMES
-    fd325f9f71a3  docker-snmp:latest                 "/usr/bin/docker-snm…"  4 minutes ago  Up 4 minutes             snmp
-    83abaaeb0eda  docker-platform-monitor:latest     "/usr/bin/docker_ini…"  4 minutes ago  Up 4 minutes             pmon
-    07b16407200a  docker-sonic-mgmt-framework:latest "/usr/local/bin/supe…"  4 minutes ago  Up 4 minutes             mgmt-framework
-    e92cfef2d1a7  docker-lldp:latest                 "/usr/bin/docker-lld…"  4 minutes ago  Up 4 minutes             lldp
-    e039e0c50696  docker-sonic-gnmi:latest           "/usr/local/bin/supe…"  4 minutes ago  Up 4 minutes             gnmi
-    0eb9d4243f43  docker-router-advertiser:latest    "/usr/bin/docker-ini…"  6 minutes ago  Up 6 minutes             radv
-    a802d70ada48  docker-fpm-frr:latest              "/usr/bin/docker_ini…"  6 minutes ago  Up 6 minutes             bgp
-    c6bd49fba18d  docker-syncd-vpp:latest            "/usr/local/bin/supe…"  6 minutes ago  Up 6 minutes             syncd
-    81ea6a8d2eba  docker-teamd:latest                "/usr/local/bin/supe…"  6 minutes ago  Up 6 minutes             teamd
-    98c4bb45296b  docker-orchagent:latest            "/usr/bin/docker-ini…"  6 minutes ago  Up 6 minutes             swss
-    5459d7bc624a  docker-eventd:latest               "/usr/local/bin/supe…"  6 minutes ago  Up 6 minutes             eventd
-    bab374f5a2b5  docker-database:latest             "/usr/local/bin/dock…"  6 minutes ago  Up 6 minutes             database
+    CONTAINER ID  IMAGE                              COMMAND                CREATED        STATUS       PORTS  NAMES
+    fd325f9f71a3  docker-snmp:latest                 "/usr/bin/docker-snm…" 4 minutes ago  Up 4 minutes        snmp
+    83abaaeb0eda  docker-platform-monitor:latest     "/usr/bin/docker_ini…" 4 minutes ago  Up 4 minutes        pmon
+    07b16407200a  docker-sonic-mgmt-framework:latest "/usr/local/bin/supe…" 4 minutes ago  Up 4 minutes        mgmt-framework
+    e92cfef2d1a7  docker-lldp:latest                 "/usr/bin/docker-lld…" 4 minutes ago  Up 4 minutes        lldp
+    e039e0c50696  docker-sonic-gnmi:latest           "/usr/local/bin/supe…" 4 minutes ago  Up 4 minutes        gnmi
+    0eb9d4243f43  docker-router-advertiser:latest    "/usr/bin/docker-ini…" 6 minutes ago  Up 6 minutes        radv
+    a802d70ada48  docker-fpm-frr:latest              "/usr/bin/docker_ini…" 6 minutes ago  Up 6 minutes        bgp
+    c6bd49fba18d  docker-syncd-vpp:latest            "/usr/local/bin/supe…" 6 minutes ago  Up 6 minutes        syncd
+    81ea6a8d2eba  docker-teamd:latest                "/usr/local/bin/supe…" 6 minutes ago  Up 6 minutes        teamd
+    98c4bb45296b  docker-orchagent:latest            "/usr/bin/docker-ini…" 6 minutes ago  Up 6 minutes        swss
+    5459d7bc624a  docker-eventd:latest               "/usr/local/bin/supe…" 6 minutes ago  Up 6 minutes        eventd
+    bab374f5a2b5  docker-database:latest             "/usr/local/bin/dock…" 6 minutes ago  Up 6 minutes        database
     ```
 
   ### SONiC Docker Containers
@@ -209,7 +213,7 @@ admin@sonic:~$ show runningconfiguration all
 Before we proceed with applying full fabric configurations via Ansible, we wanted to demonstrate SONiC CLI by partially configuring **leaf00**
 
 
-1. Using the containerlab visual code extension, ssh to *leaf00* (password is `admin`) and configure hostname and *Loopback0* IPv4 and IPv6 addresses
+1. Using the containerlab visual code extension, ssh to **leaf00** (password is `admin`) and configure hostname and *Loopback0* IPv4 and IPv6 addresses
    ```
    sudo config hostname leaf00
    sudo config interface ip add Loopback0 10.0.0.4/32
@@ -219,7 +223,7 @@ Before we proceed with applying full fabric configurations via Ansible, we wante
 > [!NOTE]
 > Logout and log back in to *leaf00* to see the hostname change take effect
 
-Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we only need to configure IPs for the host backend interface Ethernet16. The backend will be IPv6 only.
+Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we only need to configure IPv6 addresses for the London VM facing interface Ethernet16. Note: the backend network will be IPv6 only.
 
 3. Configure interface Ethernet16 IPv6 address
    ```
@@ -228,7 +232,7 @@ Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we 
 
 4. Save configuration
    ```
-   sudo config save
+   sudo config save -y
    ```
    
 5. Exit the sonic node and ssh back in to see the hostname change in effect
@@ -240,7 +244,7 @@ Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we 
    ```
 
    Example truncated output:
-   ```
+   ```diff
    admin@leaf00:~$ show ipv6 interfaces
    Interface    Master    IPv6 address/mask                        Admin/Oper    BGP Neighbor    Neighbor IP
    -----------  --------  ---------------------------------------  ------------  --------------  -------------
@@ -248,9 +252,9 @@ Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we 
    Ethernet4              fe80::203d:a9ff:fe5d:83c6%Ethernet4/64   up/up         N/A             N/A
    Ethernet8              fe80::203d:a9ff:fe5d:83c6%Ethernet8/64   up/up         N/A             N/A
    Ethernet12             fe80::203d:a9ff:fe5d:83c6%Ethernet12/64  up/up         N/A             N/A
-   Ethernet16             fcbb:0:800::1/64                         up/up         N/A             N/A
+   +Ethernet16             fcbb:0:800::1/64                         up/up         N/A             N/A
                           fe80::203d:a9ff:fe5d:83c6%Ethernet16/64                N/A             N/A
-   Loopback0              fc00:0:1004::1/128                       up/up         N/A             N/A
+   +Loopback0              fc00:0:1004::1/128                       up/up         N/A             N/A
    ```
 
 **Manual Configuration of FRR**
@@ -277,23 +281,16 @@ Configuring SONiC's BGP container can be done from FRR's command line and is ver
 5. Exit out of config mode and save the config
    ```
    write mem
-   ```
+   ``` 
 
-6. Optional: run some *show* commands
-   ```
-   show run
-   show bgp summary
-   show interface brief
-   ```   
-
-7. Exit FRR vtysh
+6. Exit FRR vtysh
    ```
    exit
    ```
 
-You may have noticed in the FRR config or show command output that SONiC supports eBGP unnumbered peering over its Ethernet interfaces. This is a huge advantage for deploying, automating, and managing hyperscale fabrics, and we wanted to highlight it here. 
+You may have noticed in the FRR config or show command output that SONiC supports BGP unnumbered peering over its Ethernet interfaces. This is a huge advantage for deploying, automating, and managing hyperscale fabrics, and we wanted to highlight it here. 
 
-Config example from leaf00:
+Config example from [leaf00](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf#L25):
 
    ```
    neighbor Ethernet0 interface remote-as 65000
@@ -303,9 +300,9 @@ Config example from leaf00:
 
 ## Fabric Config Automation with Ansible 
 
-We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/ansible/sonic-playbook.yaml) to complete the configuration of our SONiC fabric. This playbook executes a number of tasks including:
+We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/ansible/sonic-playbook.yaml) to complete the configuration of our SONiC fabric. This playbook performs a number of tasks including:
 
-* Copy each node's *config_db.json* file to the */etc/sonic/* directory [Example spine00/config_db.json](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/spine00/config_db.json)
+* Copy each node's *config_db.json* file to the */etc/sonic/* directory [Example spine00 config_db.json](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/spine00/config_db.json)
 * Load the config to activate the new settings
 * Copy over and run a loopback shell script that we've created for each node [Example spine00 loopback.sh](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/spine00/loopback.sh)
 * Save the config
@@ -320,7 +317,8 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 2. cd into the lab_4 directory and execute the *sonic-playbook.yaml*
     ```
     cd ~/LTRSPG-2212/lab_4/ansible
-
+    ```
+    ```
     ansible-playbook -i hosts sonic-playbook.yaml -e "ansible_user=admin ansible_ssh_pass=admin ansible_sudo_pass=admin" -vv
     ```
 
@@ -339,7 +337,7 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 
 ### Verify SONiC BGP peering
 
-With BGP now configured on our backend DC fabric we will check to make sure that BGP peering was established. Use the below diagram as a reference to the ASN configured in the prior steps.
+With our backend DC fabric now configured we will check to make sure that BGP peering was established. Use the below diagram as a reference to the ASN configured in the prior steps.
 
 ![Lab 4 Topology](../topo_drawings/lab4-fabric-asn-topology.png)
 
@@ -364,8 +362,8 @@ With BGP now configured on our backend DC fabric we will check to make sure that
     Peers 4, using 80 KiB of memory
 
     Neighbor     V       AS   MsgRcvd   MsgSent   TblVer  InQ OutQ  Up/Down State/PfxRcd  PfxSnt Desc
-    Ethernet0    4    65000        54        40       58    0    0 00:14:43           8       15 N/A
-    Ethernet4    4    65001        99        36       58    0    0 00:14:41           8       15 N/A
+    Ethernet0    4    65000        54        40       58    0    0 00:14:43          12       15 N/A
+    Ethernet4    4    65001        99        36       58    0    0 00:14:41          12       15 N/A
     Ethernet8    4    65002        63        36       58    0    0 00:14:41          12       15 N/A
 
     Total number of neighbors 3
@@ -377,10 +375,10 @@ Our SONiC topology has now been configured for SRv6 uSID forwarding with each no
 
 ![Topology with Locators](../topo_drawings/lab4-topology-with-locators.png)
 
-If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* using the visual code containerlab extension and invoke vtysh for the next few tasks:
+If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00** using the visual code containerlab extension and invoke vtysh for the next few tasks:
 
 
-1. Check SONiC SRv6 configuration on *leaf00*
+1. Check SONiC SRv6 configuration on **leaf00**
    ```
    show run
    ```
@@ -468,7 +466,7 @@ If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* usi
           Last update: Sun Jun  1 03:17:38 2025
     ```
 
-    FRR's BGP show command output again resembles IOS output. The prefix is known via *leaf00's* 3 BGP unnumbered neighbors.
+    FRR's BGP show command output again resembles IOS output. The prefix is known via **leaf00's** 3 BGP unnumbered neighbors.
 
     Exit vtysh and check the same route in the Linux table:
     ```
@@ -487,7 +485,7 @@ If your *vtysh* session is on *leaf00* keep it open. If not, ssh to *leaf00* usi
 	  nexthop via fe80::20c8:3aff:fed9:1a10 dev Ethernet8 weight 1 
     ```
 
-    Note how the entry has the notation `*proto bgp src*` which indicates the route was learned from BGP. The route also has 3 ECMP paths via the BGP unnumbered / IPv6 link-local sessions.
+    Note how the entry has the notation *`proto bgp src`* which indicates the route was learned from BGP. The route also has 3 ECMP paths via the BGP unnumbered / IPv6 link-local sessions.
 
 
 ### Verify London VM backend network reachability
