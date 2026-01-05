@@ -182,7 +182,7 @@ The plugin includes a simple demo that uses a *`gloo`* backend because *`gloo`* 
 
 Upon deployment the nodes will perform all the PyTorch ML setup steps, including SRv6 plugin functionality, but will not perform actual ML training...in a future version of this lab we'll try and integrate a small dataset to train on.
 
-1. Using the visual code containerlab extension, connect to our Kubernetes control plane node *`london-vm-00`* and cd into the lab_5/srv6-pytorch/ directory
+1. Using the visual code containerlab extension, connect to our Kubernetes control plane node **london-vm-00** and cd into the lab_5/srv6-pytorch/ directory
 
    ```
    cd ~/LTRSPG-2212/lab_5/srv6-pytorch/
@@ -204,7 +204,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    service/srv6-pytorch created
    ```
 
-   As the pods deploy and the PyTorch job initializes the srv6-plugin takes action. It should create SRv6 routes for each *pod* to each other *pod* participating in the workload.
+   As the pods deploy and the PyTorch job initializes the *`srv6-plugin`* takes action. It should create SRv6 routes for each *pod* to each other *pod* participating in the workload.
 
    - *`srv6-pytorch-0`* --> *`srv6-pytorch-1`* and *`srv6-pytorch-2`*
    - *`srv6-pytorch-1`* --> *`srv6-pytorch-0`* and *`srv6-pytorch-2`*
@@ -235,16 +235,18 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 
    ![srv6-pytorch-0](../topo_drawings/lab5-pytorch-output.png)
 
-4. Optional: exec into a pod and manually check the Linux ipv6 routes:
+4. Optional: exec into a pod and manually check the Linux ipv6 routes and run some pings:
     ```
     kubectl exec -it srv6-pytorch-0 -- bash
+    ```
+    ```
     ip -6 route
     ```
-
-5. Optional: run some pop-to-pod pings and capture with Edgeshark
-
     ```
-    kubectl exec -it srv6-pytorch-0 -- ping fcbb:0:800:1::2 -i .3 -c 100
+    ping fcbb:0:800:1::2 -i .3 -c 100
+    ```
+    ```
+    ping fcbb:0:800:2::2 -i .3 -c 100
     ```
 
 **Congratulations, you have reached the end of Cisco Live Lab LTRSPG-2212, hurray!!**
