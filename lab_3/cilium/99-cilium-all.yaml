@@ -106,9 +106,9 @@ spec:
     - name: "asn65000"
       srv6Responder: true
       peers:
-        - name: "xrd05-rr"
+        - name: "paris-rr"
           localAddress: fc00:0:800::2
-        - name: "xrd06-rr"
+        - name: "barcelona-rr"
           localAddress: fc00:0:800::2
 
 ---
@@ -121,9 +121,9 @@ spec:
     - name: "asn65000"
       srv6Responder: true
       peers:
-        - name: "xrd05-rr"
+        - name: "paris-rr"
           localAddress: fc00:0:800:1::2
-        - name: "xrd06-rr"
+        - name: "barcelona-rr"
           localAddress: fc00:0:800:1::2
 
 ---
@@ -136,9 +136,9 @@ spec:
     - name: "asn65000"
       srv6Responder: true
       peers:
-        - name: "xrd05-rr"
+        - name: "paris-rr"
           localAddress: fc00:0:800:2::2
-        - name: "xrd06-rr"
+        - name: "barcelona-rr"
           localAddress: fc00:0:800:2::2
 
 ---
@@ -174,12 +174,12 @@ spec:
   - name: "asn65000"
     localASN: 65000
     peers:
-    - name: "xrd05-rr"
+    - name: "paris-rr"
       peerASN: 65000
       peerAddress: fc00:0:5555::1
       peerConfigRef:
         name: "cilium-peer"
-    - name: "xrd06-rr"
+    - name: "barcelona-rr"
       peerASN: 65000
       peerAddress: fc00:0:6666::1
       peerConfigRef:

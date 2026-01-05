@@ -8,9 +8,9 @@ spec:
     - name: "asn65000"
       srv6Responder: true
       peers:
-        - name: "xrd05-rr"
+        - name: "paris-rr"
           localAddress: fc00:0:800::2
-        - name: "xrd06-rr"
+        - name: "barcelona-rr"
           localAddress: fc00:0:800::2
 
 ---
@@ -23,9 +23,9 @@ spec:
     - name: "asn65000"
       srv6Responder: true
       peers:
-        - name: "xrd05-rr"
+        - name: "paris-rr"
           localAddress: fc00:0:800:1::2
-        - name: "xrd06-rr"
+        - name: "barcelona-rr"
           localAddress: fc00:0:800:1::2
 
 ---
@@ -38,7 +38,7 @@ spec:
     - name: "asn65000"
       srv6Responder: true
       peers:
-        - name: "xrd05-rr"
+        - name: "paris-rr"
           localAddress: fc00:0:800:2::2
-        - name: "xrd06-rr"
+        - name: "barcelona-rr"
           localAddress: fc00:0:800:2::2

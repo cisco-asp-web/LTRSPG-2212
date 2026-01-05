@@ -1,12 +1,12 @@
 # Lab 3: SRv6 for Kubernetes with Cilium [30 Min]
 
 ### Description
-Now that we've established SRv6 L3VPNs across our network, we're going to transition from **router-based SRv6** to **host-based SRv6**. Our first step will be to enable SRv6 L3VPN for Kubernetes. The London VMs have Kubernetes pre-installed and are running the *Cilium CNI* (Container Network Interface). In this lab we'll review some basic Kubernetes commands (kubectl) and then we'll setup Cilium BGP peering with our XRd route reflectors. After that we'll configure Cilium SRv6 SID manager and Locator pool. Finally we'll add a couple containers to our London K8s cluster and join them to the carrots VRF.
+Now that we've established SRv6 L3VPNs across our network, we're going to transition from **router-based SRv6** to **host-based SRv6**. Our first step will be to enable *SRv6 L3VPN for Kubernetes*. The London VMs have Kubernetes pre-installed and are running the *Cilium CNI* (Container Network Interface). In this lab we'll review some basic Kubernetes commands (kubectl) and then we'll setup Cilium BGP peering with our XRd route reflectors. After that we'll configure Cilium's SRv6 SID manager and Locator pool. Finally we'll add a couple containers to our London K8s cluster and join them to the carrots VRF.
 
 > [!NOTE]
-> This portion of the lab makes use of Cilium Enterprise as the SRv6 features are not available in the open source version. If you are interested in SRv6 on Cilium or other Enterprise features, please contact the relevant Cisco Isovalent sales team.  
+> This portion of the lab makes use of Cilium Enterprise as the SRv6 features are in Beta and not available in the open source version. If you are interested in SRv6 on Cilium or other Enterprise features, please contact the relevant Cisco Isovalent sales team.  
 
-Isovalent has also published a number of labs covering a wide range of Cilium, Hubble, and Tetragon features here:
+Isovalent has also published a number of labs covering a wide range of Cilium, Hubble, Tetragon, and Isovalent Load Balancer products and capabilities here:
 
 https://cilium.io/labs/
 
@@ -92,7 +92,7 @@ Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of
   Notes on the pods:
   * `Cilium-envoy`: used as a host proxy for enforcing HTTP and other L7 policies as specified in network policies for the cluster. For further reading see: https://docs.cilium.io/en/latest/security/network/proxy/envoy/
   * `Cilium-node-init`: used to initialize the node and install the Cilium agent.
-  * `Cilium-operator`: used to manage the Cilium agent on the node. The second operator pod is pending as its waiting for another node to join the cluster.
+  * `Cilium-operator`: used to manage the Cilium agent on the node.
   * `Cilium-h6fz9`: is the Cilium agent on the node, and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
 
 
@@ -100,7 +100,7 @@ Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of
    ```
    kubectl get ds -n kube-system cilium
    ```
-   The output should show a single Cilium DaemonSet (ds) available, example:
+   The output should show three Cilium DaemonSets (ds) available, example:
    ```yaml
    $ kubectl get ds -n kube-system cilium
    NAME     DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
@@ -126,7 +126,7 @@ CRDs come in YAML file format and in the next several sections of this lab we'll
 
 ### Cilium BGP CRD
 
-For the sake of simplicity in this lab we'll use iBGP peering between our London K8s nodes and our route reflectors **paris xrd05** and **barcelona xrd06**. 
+For the sake of simplicity we'll use iBGP peering between our London K8s nodes and our route reflectors **paris xrd05** and **barcelona xrd06**. 
 
 On **london-vm-00** change to the lab_3/cilium directory and check out the contents
    ```
@@ -164,25 +164,25 @@ spec:
   - name: "asn65000"                    # for simplicity we're using a single ASN end-to-end
     localASN: 65000
     peers:
-    - name: "xrd05-rr"                  # base peering config
+    - name: "paris-rr"                  # base peering config
       peerASN: 65000                   
       peerAddress: fc00:0:5555::1       
       peerConfigRef:
         name: "cilium-peer"             # reference to additional peer config in another CRD
-    - name: "xrd06-rr"
+    - name: "barcelona-rr"
       peerASN: 65000
       peerAddress: fc00:0:6666::1
       peerConfigRef:
         name: "cilium-peer"
 ```
 
-One of the great things about CRDs is you can combine all the configuration elements into a single file, or you can break it up into multiple files by configuration element: 
+One of the great things about CRDs is you can combine all the configuration elements into a single file, or you can break it up into multiple files by configuration element; see [99-cilium-all.yaml](./cilium/99-cilium-all.yaml)
 
 ### Establish the Cilium BGP global and peer configurations
 
 ![Cilium SRv6 L3VPN](/topo_drawings/lab3-cilium-l3vpn-topology.png)
 
-1. On **london-vm-00** cd into the Lab 3 cilium directory and apply the *Cilium BGP Cluster Config CRD*. BGP Cluster config establishes our Cilium Node's BGP ASN and base BGP peering with the route reflectors **xrd05** and **xrd06**.
+1. On **london-vm-00** cd into the Lab 3 cilium directory and apply the *Cilium BGP Cluster Config CRD*. BGP Cluster config establishes our Cilium Node's BGP ASN and base BGP peering with the route reflectors **paris-xrd05** and **barcelona-xrd06**.
    ```
    cd ~/LTRSPG-2212/lab_3/cilium/
    kubectl apply -f 01-bgp-cluster.yaml
@@ -230,7 +230,7 @@ One of the great things about CRDs is you can combine all the configuration elem
         - name: "asn65000"        # required field, must match the name of the bgpInstance in the cluster config
           srv6Responder: true     # instructs BGP to advertise the node's SRv6 Locator (to be created a few steps after this)
           peers:
-            - name: "xrd05-rr"                 # must match the name of the peer in the cluster config
+            - name: "paris-rr"                 # must match the name of the peer in the cluster config
               localAddress: fc00:0:800::2     # the source address to use for the peering session
    ```
    
