@@ -13,8 +13,10 @@ In Lab 5 we will explore this use case with our SONiC backend fabric and the att
   - [Lab Objectives](#lab-objectives)
   - [Host-Based SRv6 for Intelligent Fabric Load Balancing](#host-based-srv6-for-intelligent-fabric-load-balancing)
     - [SRv6 Linux Kernel Routes](#srv6-linux-kernel-routes)
-  - [Jalapeno and Modeling Networks as Graphss](#jalapeno-and-modeling-networks-as-graphss)
-  - [SRv6 PyTorch Plugin](#srv6-pytorch-plugin)
+  - [Jalapeno and Modeling Networks as Graphs](#jalapeno-and-modeling-networks-as-graphs)
+  - [AI/ML Workloads and Kubernetes](#aiml-workloads-and-kubernetes)
+  - [PyTorch Distributed Training](#pytorch-distributed-training)
+  - [SRv6 for AI Backend: Introducing the SRv6 PyTorch Plugin](#srv6-for-ai-backend-introducing-the-srv6-pytorch-plugin)
   - [End of lab 5](#end-of-lab-5)
 
 
@@ -41,7 +43,7 @@ The key problem to solve:
 
 The solution: *coordination of all senders source routing their traffic over disjoint paths through the fabric.*
 
-Cisco doesn't currently have a controller product for host-based SRv6 and the Hyperscalers build their own SDN control infrastructure, so to simulate this capability in the lab we've built a *`demo PyTorch SRv6 plugin`* which programs SRv6 routes in the Linux kernel, and which leverages the open-source *`project Jalapeno`* as its backend data repository.
+Cisco doesn't currently have a controller product for host-based SRv6 and the Hyperscalers build their own SDN control infrastructure, so to simulate this capability in the lab we've built a *`demo SRv6 PyTorch plugin`* which programs SRv6 routes in the Linux kernel, and which leverages the open-source *`project Jalapeno`* as its backend data repository.
 
  - SRv6 PyTorch plugin: https://github.com/segmentrouting/srv6-pytorch-plugin
 
@@ -56,24 +58,24 @@ Cisco doesn't currently have a controller product for host-based SRv6 and the Hy
 
 Before we get into PyTorch and automation, let's manually add a Linux route with SRv6 encapsulation:
 
-1. From VSCode open an ssh session to **london-vm-00** and add a Linux SRv6 route to *`london-vm-02`* that will take the path *`leaf00`* -> *`spine01`* -> *`leaf02`*:
+1. Using the visual code containerlab extension open an ssh session to **london-vm-00** and add a Linux SRv6 route to *`london-vm-02`* that will take the path *`leaf00`* -> *`spine01`* -> *`leaf02`*:
 
    ```
-   ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap.red segs  fcbb:0:1004:1001:1006:fe06:: dev net1
+   sudo ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap segs fcbb:0:1004:1001:1006:fe06:: dev ens5
    ```
 
-2. Display the Linux route on *host00*:
+2. Display the Linux route on **london-vm-00**:
    ```
-   docker exec -it clab-sonic-host00 ip -6 route show 2001:db8:1002::/64
+   ip -6 route show fcbb:0:0800:2::/64
    ```
 
    Expected output:
    ```
-   $ docker exec -it clab-sonic-host00 ip -6 route show 2001:db8:1002::/64
-   2001:db8:1002::/64  encap seg6 mode encap.red segs 1 [ fc00:0:1200:1001:1202:fe06:: ] dev eth1 metric 1024 pref medium
+   $ ip -6 route show fcbb:0:0800:2::/64
+   fcbb:0:800:2::/64  encap seg6 mode encap segs 1 [ fcbb:0:1004:1001:1006:fe06:: ] dev ens5 metric 1024 pref medium
    ```
 
-   The SRv6 uSID combination in the above will route traffic to *`host02`* via *`leaf00`*, *`spine01`*, and *`leaf02`*. The uSID shift-and-forward at *leaf00* and *spine01* will result in an ipv6 destination address of **fc00:0:1202:fe06::** when the packet arrives at *leaf02*. *leaf02* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address **2001:db8:1002::/64**. *leaf02* will then forward the traffic to *`host02`*
+   The SRv6 uSID combination in the above will route traffic to *`london-vm-00`* via *`leaf00`*, *`spine01`*, and *`leaf02`*. The uSID shift-and-forward at *leaf00* and *spine01* will result in an ipv6 destination address of **fc00:0:1006:fe06::** when the packet arrives at *leaf02*. *leaf02* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address **fcbb:0:0800:2::/64**. *leaf02* will then forward the traffic to *`london-vm-02`*
 
    ![Linux SRv6 Route](../topo_drawings/lab5-host00-host02-static-route.png)
 
@@ -86,20 +88,10 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
    show run
    ```
 
-   Partial output:
-   ```
-   segment-routing
-   srv6
-     static-sids
-      sid fc00:0:1202::/48 locator MAIN behavior uN
-      sid fc00:0:1202:fe04::/64 locator MAIN behavior uDT4 vrf default
-      sid fc00:0:1202:fe06::/64 locator MAIN behavior uDT6 vrf default
-   exit
-   ```
 > [!NOTE]
 > To inspect specific parts of the configuration, you can also run the following command from the shell (outside of vtysh mode):
 >
-> sudo vtysh -c "show running-config" | grep -A 10 "segment-routing"
+> vtysh -c "show running-config" | grep -A 10 "segment-routing"
 >
 > This filters and displays the Segment Routing configuration along with the 10 lines that follow.
 ```
@@ -118,57 +110,44 @@ segment-routing
  ```
 
 
-1. Using the visual code containerlab extension, attach to **clab-sonic-host00** shell and run a ping from *host00* to *host02*
+## Jalapeno and Modeling Networks as Graphs
 
-   ![host00-ping](../topo_drawings/lab5-host00-attach-ping.png)
-   
-   ```
-   # ping 2001:db8:1002::2
-   PING 2001:db8:1002::2(2001:db8:1002::2) 56 data bytes
-   64 bytes from 2001:db8:1002::2: icmp_seq=2 ttl=61 time=2.62 ms
-   64 bytes from 2001:db8:1002::2: icmp_seq=3 ttl=61 time=0.920 ms
-   ```
+Using the [Lab 5 scripts and data](./jalapeno/backend/) we've created a model of our SONiC fabric topology with relevant SRv6 data in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
 
-2. Optional: while the ping is running perform Edgeshark capture(s) to see the encapsulated packets and shift-and-forward in action. Recommended interfaces for Wireshark capture:
-   - clab-sonic-host00 eth1
-   - clab-sonic-spine01 eth1
-   **Example packet capture at Spine01**
-
-     The example packet capture below is taken from *spine01* eth1. As you can see the outer IPv6 destination address has been shifted-and-forwarded by *leaf00*. We don't need to worry about the Linux SRH because when it arrives at *leaf02* that node will see its local uDT6 entry *fc00:0:1202:fe06* and will decapsulate the entire outer header and do a lookup on the inner IPv6 destination address. *Leaf02* will then forward the inner packet to *host02*.
-     <br><br>
-     ![host00-ping](../topo_drawings/lab5-spine01-edgeshark.png)
-     <br><br>
-     <img src="../topo_drawings/lab5-wireshark-linux-srh-spine01.png" width="1200">
-
-## Jalapeno and Modeling Networks as Graphss
-
-Using the [Lab 5 scripts and data](./scripts/sonic-network/) we've created a model of our SONiC fabric topology with relevant SRv6 data in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
-
-Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new tab/window. First select "Topology Viewer", second "fabric graph", and third click the "layout" dropdown select "Clos"
+Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new tab/window. First select "Topology Viewer", second "fabric graph".
 
 ![Topology Graph](../topo_drawings/lab5-fabric-topology-graph.png)
 
 After completing **Lab 5** feel free to checkout the [Lab 5 Bonus Section](./lab_5-bonus.md) that explores the Jalapeno GraphDB, API, UI, and other host-based SRv6 scenarios in more detail.
 
-## SRv6 PyTorch Plugin
+## AI/ML Workloads and Kubernetes
+
+Its very common for operators to use Kubernetes to orchestrate ML workloads and have them communicate over dedicated backend networks. We have our Kubernetes cluster with the **London VMs**, which all happen to have a 2nd interface plugged into our SRv6 enabled SONiC backend fabric.
+
+## PyTorch Distributed Training
 
 From https://pytorch.org/projects/pytorch/
 
 *PyTorch is an open source machine learning framework that accelerates the path from research prototyping to production deployment. Built to offer maximum flexibility and speed...its Pythonic design and deep integration with native Python tools make it an accessible and powerful platform for building and training deep learning models at scale.*
 
-**PyTorch Distributed Training:**
 
 When you start a distributed training workload, PyTorch initializes a process group. It uses a backend like [NCCL](https://developer.nvidia.com/nccl) or [Gloo](https://github.com/pytorch/gloo) for communication between nodes. Each node gets a rank and knows about other nodes through the process group
 
-**Pytorch-srv6-plugin's Workflow:**
+## SRv6 for AI Backend: Introducing the SRv6 PyTorch Plugin
 
-Before NCCL/Gloo starts communicating, the SRv6 plugin will:
+We recently built and open-sourced an srv6-pytorch-plugin to help demonstrate the use of SRv6 for AI backend fabrics:
+
+https://github.com/segmentrouting/srv6-pytorch-plugin
+
+**SRv6 PyTorch Plugin Workflow**
+
+Before NCCL/Gloo starts communicating, the SRv6 PyTorch plugin will:
 
   - Get the list of nodes from the distributed workload setup
   - Query the Jalapeno API for a shortest-path (lowest *`load`* metric) for each *source/destination* pair
   - The API returns an SRv6 uSID encapsulation instruction for each *source/destination* pair that will pin traffic to a specific path in the fabric
-  - The *plugin* then programs local Linux SRv6 routes, similar to the route we manually programmed earlier, on each node. 
-  - The distributed workload's traffic is SRv6 encapsulated as it egresses the source *host*
+  - The *plugin* then programs local Linux SRv6 routes on each node, similar to the route we manually programmed earlier on *`london-vm-00`*. 
+  - The distributed workload's traffic is SRv6 encapsulated as it egresses the source *pod*
 
 The effect is the workload's traffic is intelligently load balanced across the fabric and no longer subject to the potential imbalances and congestion associated with ECMP
 
@@ -196,72 +175,72 @@ Here's a typical flow:
 
 **Pytorch-srv6-plugin demo**
 
-The plugin includes a simple demo that uses a *`gloo`* backend because it doesn't require GPUs and still provides distributed training functionality. We'll run the demo on three of our four *host* containers:
+For the final step in our lab we're going to deploy a set of K8s pods (*`PyTorch nodes`*) pre-loaded with our SRv6-PyTorch plugin, and test node-to-node SRv6 communication. 
 
- - host00
- - host01
- - host03
+The plugin includes a simple demo that uses a *`gloo`* backend because *`gloo`* doesn't require GPUs and still provides distributed training functionality. 
 
-**the 'copy files' step is not needed with newly built pytorch ubuntu container image**
-1. From a *topology-host* terminal session copy updated pytorch-srv6-plugin files to the Ubuntu *host* containers. 
-   
+Upon deployment the nodes will perform all the PyTorch ML setup steps, including SRv6 plugin functionality, but will not perform actual ML training...in a future version of this lab we'll try and integrate a small dataset to train on.
+
+1. Using the visual code containerlab extension, connect to our Kubernetes control plane node *`london-vm-00`* and cd into the lab_5/srv6-pytorch/ directory
+
    ```
-   cd ~/LTRSPG-2212/lab_5/pytorch-plugin/
-   ./copy-files.sh
+   cd ~/LTRSPG-2212/lab_5/srv6-pytorch/
    ```
 
-It is most effective to run the plugin-demo from three separate terminal sessions on *topology-host*. This will show us how the plugin operates and programs SRv6 routes on each host running the distributed workload.
+2. Use the *kubectl apply* command to deploy the *srv6-plugin* test pods:
 
-In the spirit of transparency, the demo initializes PyTorch and the SRv6 functionality, however, it doesn't train anything. But where the demo lacks in training functionality it makes up for in pings! 
-
-2. Open three terminal sessions on *topology-host*
-
-   ![terminal sessions](../topo_drawings/lab5-terminal-sessions.png)
-
-3. In the first terminal session initialize the test run on *host00*
    ```
-   docker exec clab-sonic-host00 bash -c "RANK=0 MASTER_PORT=29500 python3 /app/test_plugin.py"
+   kubectl apply -f srv6-pytorch-test.yaml
    ```
 
-4. In the second terminal session initialize the test run on *host01*
+   Expected output:
    ```
-   docker exec clab-sonic-host01 bash -c "RANK=1 MASTER_PORT=29500 python3 /app/test_plugin.py"
+   $ kubectl apply -f srv6-pytorch-test.yaml 
+   configmap/pytorch-distributed-config created
+   pod/srv6-pytorch-0 created
+   pod/srv6-pytorch-1 created
+   pod/srv6-pytorch-2 created
+   service/srv6-pytorch created
    ```
 
-5. In the third terminal session initialize the test run on *host03*
-   ```
-   docker exec clab-sonic-host03 bash -c "RANK=2 MASTER_PORT=29500 python3 /app/test_plugin.py"
-   ```
+   As the pods deploy and the PyTorch job initializes the srv6-plugin takes action. It should create SRv6 routes for each *pod* to each other *pod* participating in the workload.
 
-   As the PyTorch job initializes the srv6-plugin takes action. It should create SRv6 routes for each *host* to each other *host* participating in the workload.
-
-   - *`host00`* --> *`host01`* and *`host03`*
-   - *`host01`* --> *`host00`* and *`host03`*
-   - *`host03`* --> *`host00`* and *`host01`*
+   - *`srv6-pytorch-0`* --> *`srv6-pytorch-1`* and *`srv6-pytorch-2`*
+   - *`srv6-pytorch-1`* --> *`srv6-pytorch-0`* and *`srv6-pytorch-2`*
+   - *`srv6-pytorch-2`* --> *`srv6-pytorch-0`* and *`srv6-pytorch-1`*
 
    The "job" completes with some pings from each host to each host.
 
-   Screenshot of output from *`host00`* with comments (each terminal should have similar output):
+3. Use *kubectl logs* command to see the plugin's log output from the *srv6-pytorch* pods:
 
-   ![host00 pytorch](../topo_drawings/lab5-pytorch-output.png)
+   ```
+   kubectl logs -f srv6-pytorch-0
+   ```
 
-7. Optional: check the Linux ipv6 routes on *hosts*:
+   Look for successful pings and a log statement something like this:
+   ```
+   Adding route to fcbb:0:800:1::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1001:1005:fe06::']} to table 254
+   Adding route to fcbb:0:800:2::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1002:1006:fe06::']} to table 254
+   ```
+
+   Optional: the other two *srv6-pytorch* pods should have very similar log output
+   ```
+   kubectl logs -f srv6-pytorch-1
+   kubectl logs -f srv6-pytorch-2
+   ```
+
+**need updated screenshot**
+   Screenshot of output from *`srv6-pytorch-0`* pod with comments (each terminal should have similar output):
+
+   ![srv6-pytorch-0](../topo_drawings/lab5-pytorch-output.png)
+
+4. Optional: exec into a pod and manually check the Linux ipv6 routes:
     ```
-    docker exec -it clab-sonic-host00 ip -6 route
+    kubectl exec -it srv6-pytorch-0 -- bash
+    ip -6 route
     ```
 
-    *host00* output (note the route to *host02* that we manually added earlier in lab 5 is still in place):
-    ```
-    $ docker exec -it clab-sonic-host00 ip -6 route
-    2001:db8:1000::/64 dev eth1 proto kernel metric 256 pref medium
-    2001:db8:1001::/64  encap seg6 mode encap segs 1 [ fc00:0:1200:1000:1201:fe06:: ] dev eth1 proto static metric 1024 pref medium
-    2001:db8:1002::/64  encap seg6 mode encap segs 1 [ fc00:0:1200:1001:1202:fe06:: ] dev eth1 metric 1024 pref medium
-    2001:db8:1003::/64  encap seg6 mode encap segs 1 [ fc00:0:1200:1002:1203:fe06:: ] dev eth1 proto static metric 1024 pref medium
-    2001:db8::/32 via 2001:db8:1000::1 dev eth1 metric 1024 pref medium
-    fc00::/32 via 2001:db8:1000::1 dev eth1 metric 1024 pref medium
-    fe80::/64 dev eth1 proto kernel metric 256 pref medium
-    fe80::/64 dev eth2 proto kernel metric 256 pref medium
-    ```
+5. Optional: run some pop-to-pod pings and capture with Edgeshark
 
 **Congratulations, you have reached the end of Cisco Live Lab LTRSPG-2212, hurray!!**
 
