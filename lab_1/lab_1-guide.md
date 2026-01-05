@@ -349,7 +349,7 @@ With SRv6 uSID:
  - The outer IPv6 destination address becomes the uSID carrier with the first 32-bits representing the uSID block, and the 6 remaining 16-bit chunks of the address become uSIDs or instructions
  - The existing ISIS and BGP Control Plane is leveraged without any change
  - The SRH can be used if our uSID instruction set extends beyond the 6 available in the outer IPv6 destination address
- - SRv6 uSID is based on the Compressed SRv6 Segment List Encoding in SRH [I-D.ietf-spring-srv6-srh-compression] framework
+ - SRv6 uSID is based on the Compressed SRv6 Segment List Encoding in [RFC 9080](https://datatracker.ietf.org/doc/rfc9800/)
 
 For reference one of the most recent IOS-XR Configuration guides for SR/SRv6 and ISIS can be found here: [LINK](https://www.cisco.com/c/en/us/td/docs/iosxr/cisco8000/segment-routing/24xx/configuration/guide/b-segment-routing-cg-cisco8000-24xx/configuring-segment-routing-over-ipv6-srv6-micro-sids.html)
 
@@ -357,13 +357,13 @@ SRv6 uSID locator and source address information for nodes in the lab:
 
 | Router Name | Loopback Int|    Locator Prefix    |  Source-address     |                                           
 |:------------|:-----------:|:--------------------:|:--------------------:|                          
-| xrd01       | loopback 0  | fc00:0000:1111::/48  | fc00:0000:1111::1    |
-| xrd02       | loopback 0  | fc00:0000:2222::/48  | fc00:0000:2222::1    |
-| xrd03       | loopback 0  | fc00:0000:3333::/48  | fc00:0000:3333::1    |
-| xrd04       | loopback 0  | fc00:0000:4444::/48  | fc00:0000:4444::1    |
-| xrd05       | loopback 0  | fc00:0000:5555::/48  | fc00:0000:5555::1    |
-| xrd06       | loopback 0  | fc00:0000:6666::/48  | fc00:0000:6666::1    |
-| xrd07       | loopback 0  | fc00:0000:7777::/48  | fc00:0000:7777::1    |
+| london-xrd01     | loopback 0  | fc00:0000:1111::/48  | fc00:0000:1111::1    |
+| amsterdam-xrd02  | loopback 0  | fc00:0000:2222::/48  | fc00:0000:2222::1    |
+| berlin-xrd03     | loopback 0  | fc00:0000:3333::/48  | fc00:0000:3333::1    |
+| zurich-xrd04     | loopback 0  | fc00:0000:4444::/48  | fc00:0000:4444::1    |
+| paris-xrd05      | loopback 0  | fc00:0000:5555::/48  | fc00:0000:5555::1    |
+| barcelona-xrd06  | loopback 0  | fc00:0000:6666::/48  | fc00:0000:6666::1    |
+| rome-xrd07       | loopback 0  | fc00:0000:7777::/48  | fc00:0000:7777::1    |
 
 
 > [!NOTE]
@@ -500,7 +500,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
     show isis segment-routing srv6 locator detail 
     ```
 
-    ```
+    ```diff
     RP/0/RP0/CPU0:xrd01#show isis segment-routing srv6 locators detail 
 
     IS-IS 100 SRv6 Locators
@@ -511,7 +511,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
     Level: level-1      Metric: 1        Administrative Tag: 0         
     Level: level-2-only Metric: 1        Administrative Tag: 0         
     SID behavior: uN (PSP/USD)
-    SID value:    fc00:0000:1111::                      <------------ HERE
+    +SID value:    fc00:0000:1111::                      <------------ HERE
     Block Length: 32, Node Length: 16, Func Length: 0, Args Length: 80
     ```
 
