@@ -59,6 +59,10 @@
         chdir: /home/cisco/LTRSPG-2212/lab_4
       ignore_errors: yes
 
+- name: virsh shutdown london VMs
+  hosts: topology-host
+  tasks:
+
     - name: virsh shutdown
       command: virsh shutdown london-vm-00
       args:
