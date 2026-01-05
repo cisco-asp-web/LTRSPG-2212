@@ -278,6 +278,10 @@ Configuring SONiC's BGP container can be done from FRR's command line and is ver
 
 4. Copy **leaf00's** FRR config [LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf) and paste it into the terminal.
 
+4. Copy **leaf00's** FRR config <a href="https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf" target="_blank">LINK</a> and paste it into the terminal.
+
+4. Copy **leaf00's** <a href="https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf" target="_blank">FRR config</a> and paste it into the terminal.
+
 5. Exit out of config mode and save the config
    ```
    write mem
