@@ -369,13 +369,13 @@ Our Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 S
 Per Cilium Enterprise documentation:
 *The SID Manager manages a cluster-wide pool of SRv6 locator prefixes. You can define a prefix pool using the IsovalentSRv6LocatorPool resource. The Cilium Operator assigns a locator for each node from this prefix.*
 
-So essentially we're going to configure a /40 range from which Cilium will allocate a /48 bit uSID-based locator to each node in the K8s cluster.
+So essentially we're going to configure a /40 range from which Cilium will allocate a /48 bit uSID-based locator to each node in the London K8s cluster.
 
 Cilium also supports /64 locators, but for simplicity and consistency with our *xrd* nodes we're going to use the very commonly deployed /48 bit locators. Here is a portion of the yaml file CRD with notes:
 
    ```yaml
    behaviorType: uSID          # options are uSID or SRH
-   prefix: fc00:0:A000::/40    # the larger /40 block from which a /48 would be allocated to each node in the cluster
+   prefix: fc00:0:8800::/40    # the larger /40 block from which a /48 would be allocated to each node in the cluster
    structure:
      locatorBlockLenBits: 32   # the uSID block length
      locatorNodeLenBits: 16    # the uSID node length - here 32 + 16 results in our /48 bit Locator
@@ -388,12 +388,12 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    ```
 
    Recall the BGP prefix advertisement CRD included a spec for advertising the SRv6 locator pool as well:
-   ```yaml
+   ```diff
      advertisements:
        - advertisementType: "SRv6LocatorPool"  
          selector:
            matchLabels:
-             export: "pool0"
+   +          export: "pool0"
    ```
 
 2. Now that we have a local pool to advertise, let's check our BGP advertised prefixes again:
@@ -401,13 +401,13 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    cilium bgp routes advertised ipv6 unicast
    ```
 
-   Example parital output, Cilium is now advertising the node's Locator:
-   ```yaml
+   Example partial output, Cilium is now advertising the node's Locator:
+   ```diff
    Node           VRouter   Peer             Prefix               NextHop           Age     Attrs
    london-vm-00   65000     fc00:0:5555::1   2001:db8:42::/64     fc00:0:800::2           
                   65000     fc00:0:6666::1   2001:db8:42::/64     fc00:0:800::2            
-                  65000     fc00:0:5555::1   fc00:0:88f7::/48     fc00:0:800::2           
-                  65000     fc00:0:6666::1   fc00:0:88f7::/48     fc00:0:800::2    
+   +               65000     fc00:0:5555::1   fc00:0:88f7::/48     fc00:0:800::2           
+   +               65000     fc00:0:6666::1   fc00:0:88f7::/48     fc00:0:800::2    
    ```
 
 3. Now that we've created locator pool, let's validate it:
@@ -433,7 +433,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
 
 ## Establish Cilium VRFs and Create Pods
 
-In the next step we've combined creation of both the *carrots* VRF and kubernetes namespace, and we've included a couple CRDs to spin up a couple Alpine linux container pods in the VRF/namespace. The goal is to create a forwarding policy so that packets from our container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
+In the next step we've combined creation of both the *carrots* VRF and kubernetes namespace, and we've included a couple CRDs to spin up an Alpine linux container in the VRF/namespace. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
 
 ![Cilium SRv6 L3VPN](/topo_drawings/cilium-packet-forwarding.png)
 
@@ -449,7 +449,7 @@ metadata:
 
 ---
 apiVersion: isovalent.com/v1alpha
-kind: IsovalentVRF         # VRF CRD - analogous to the global VRF config on a router
+kind: IsovalentVRF         
 metadata:
   name: carrots
 spec:
@@ -532,16 +532,18 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
 1. Using the containerlab extension, ssh to **rome xrd07** and run some BGP verification commands.
 
    ```
-   show bgp vpnv4 unicast
+   show bgp vpnv4 unicast | include 10.200.
+   ```
+   ```
    show bgp vpnv4 unicast rd 9:9 10.200.0.0/24
    ```
 
-   Somewhere in the output of the first command we expect to find the Cilium advertised L3VPN prefix:
+   In the output of the first command we expect to find the Cilium advertised L3VPN prefixes, example:
    ```
    *>i10.200.0.0/24      fc00:0:800::2                100      0 ?
    ```
 
-   In the output of the second command we expect to see detailed information. Here is truncated output, note due to Cilium's dynamic allocation, your *Received Label* and *Sid* values will most likely differ from this example:
+   In the output of the second command we expect to see detailed information for the prefix. Below is truncated output. Note, due to Cilium's dynamic allocation, your *Received Label* and *Sid* values will most likely differ from this example:
    ```diff
      Local
       fc00:0:800::2 (metric 4) from fc00:0:6666::1 (10.8.0.2)

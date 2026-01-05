@@ -12,7 +12,7 @@ spec:
           advertise: "bgp-carrots"
 
 ---
-apiVersion: isovalent.com/v1alpha1
+apiVersion: isovalent.com/v1
 kind: IsovalentBGPAdvertisement
 metadata:
   name: carrots-adverts
