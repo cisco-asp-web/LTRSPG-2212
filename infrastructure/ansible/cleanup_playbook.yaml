@@ -14,7 +14,7 @@
       ignore_errors: yes
 
 - name: cleanup K8s
-  hosts: london-k8s-cp
+  hosts: london_k8s_cp
   become: false
   tasks:
 
