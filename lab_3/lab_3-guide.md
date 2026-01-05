@@ -269,7 +269,7 @@ One of the great things about CRDs is you can combine all the configuration elem
    
 ### Cilium BGP prefix advertisement
 
-We have not added IPv6 prefix advertisements yet, hence a zero value in the *Advertised* output above. Also, **xrd05** and **xrd06**'s peering sessions with Cilium inherited the vpnv4 address family configuration during Lab 3 so we don't need to update their configs. 
+We have not added IPv6 prefix advertisements yet, hence a zero value in the *Advertised* output above. Also, **paris-xrd05** and **barcelona-xrd06**'s peering sessions with Cilium inherited the vpnv4 address family configuration during Lab 3 so we don't need to update their configs. 
 
 Here is a portion of the prefix advertisement CRD with notes:
    ```yaml
@@ -325,7 +325,7 @@ Here is a portion of the prefix advertisement CRD with notes:
    ```
 
 > [!NOTE]
-> The advertised IPv6 network prefix is the assigned IPv6 used by Cilium on each **london VM**. In addtion the *NextHop* address listed in the above command lists the IPv6 interface address that connects to **london xrd01**. You can see this detail if you run the command *ip addr show dev cilium_host* and *ip addr show dev ens4* respectively.
+> The advertised IPv6 network prefix is the assigned IPv6 used by Cilium on each **london VM**. In addtion the *NextHop* address in the output lists the IPv6 interface address that connects to **london xrd01**. You can see this detail if you run the command *`ip addr show dev cilium_host`* and *`ip addr show dev ens4`* respectively.
 
 
 ### Create the carrots BGP VRF
