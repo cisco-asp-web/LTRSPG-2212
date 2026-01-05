@@ -276,7 +276,7 @@ Configuring SONiC's BGP container can be done from FRR's command line and is ver
    no router bgp 65100
    ```
 
-4. Copy **leaf00's** FRR config [CTRL/CMD-Click this LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf) and paste it into the terminal.
+4. Copy **leaf00's** FRR config and paste it into the terminal [CTRL/CMD-Click this LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf).
 
 
 5. Exit out of config mode and save the config
@@ -538,5 +538,5 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
 
     
 ## End of lab 4
-Please proceed to [Lab 5: Host Based SRv6](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_5/lab_5-guide.md)
+Please proceed to [Lab 5: Host Based SRv6 and SRv6 for AI Backend Networks](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_5/lab_5-guide.md)
 

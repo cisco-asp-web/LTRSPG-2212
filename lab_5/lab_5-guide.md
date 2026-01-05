@@ -3,7 +3,7 @@
 ### Description
 In recent months a few Hyperscalers have expressed interest in running SRv6 over their AI training fabrics. The idea would be to offer their customers the ability to do intelligent and deterministic load balancing of large, long-lived flows, by pinning them to specific paths thru the fabric. The goal is for SRv6 encapsulation right at the host stack or RDMA NIC: *`host-based SRv6!`*
 
-In Lab 5 we will explore this use case with our SONiC backend fabric and the attached *london VMs* simulating an AI Training infrastructure. 
+In Lab 5 we will explore this use case with our SONiC backend fabric and the attached *`london VMs`* simulating an AI Training infrastructure. 
 
 
 ## Contents
@@ -13,10 +13,12 @@ In Lab 5 we will explore this use case with our SONiC backend fabric and the att
   - [Lab Objectives](#lab-objectives)
   - [Host-Based SRv6 for Intelligent Fabric Load Balancing](#host-based-srv6-for-intelligent-fabric-load-balancing)
     - [SRv6 Linux Kernel Routes](#srv6-linux-kernel-routes)
-  - [Jalapeno and Modeling Networks as Graphs](#jalapeno-and-modeling-networks-as-graphs)
-  - [AI/ML Workloads and Kubernetes](#aiml-workloads-and-kubernetes)
-  - [PyTorch Distributed Training](#pytorch-distributed-training)
-  - [SRv6 for AI Backend: Introducing the SRv6 PyTorch Plugin](#srv6-for-ai-backend-introducing-the-srv6-pytorch-plugin)
+  - [SRv6 for AI Backend Demo Lab](#srv6-for-ai-backend-demo-lab)
+    - [Jalapeno and Modeling Networks as Graphs](#jalapeno-and-modeling-networks-as-graphs)
+    - [AI/ML Workloads and Kubernetes](#aiml-workloads-and-kubernetes)
+    - [PyTorch Distributed Training](#pytorch-distributed-training)
+    - [SRv6 PyTorch Plugin](#srv6-pytorch-plugin)
+    - [Deploying the SRv6 PyTorch Pods](#deploying-the-srv6-pytorch-pods)
   - [End of lab 5](#end-of-lab-5)
 
 
@@ -43,7 +45,7 @@ The key problem to solve:
 
 The solution: *coordination of all senders source routing their traffic over disjoint paths through the fabric.*
 
-Cisco doesn't currently have a controller product for host-based SRv6 and the Hyperscalers build their own SDN control infrastructure, so to simulate this capability in the lab we've built a *`demo SRv6 PyTorch plugin`* which programs SRv6 routes in the Linux kernel, and which leverages the open-source *`project Jalapeno`* as its backend data repository.
+Cisco doesn't currently have a controller product for host-based SRv6 and the Hyperscalers build their own SDN control infrastructure. So to simulate this capability in the lab we've built a *`demo SRv6 PyTorch plugin`* which programs SRv6 routes in the Linux kernel, and which leverages the open-source *`project Jalapeno`* as its backend data repository.
 
  - SRv6 PyTorch plugin: https://github.com/segmentrouting/srv6-pytorch-plugin
 
@@ -95,6 +97,10 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
 >
 > This filters and displays the Segment Routing configuration along with the 10 lines that follow.
 ```
+vtysh -c "show running-config" | grep -A 10 "segment-routing"
+```
+
+```
 admin@leaf02:~$ sudo vtysh -c "show running-config" | grep -A 10 "segment-routing"
 segment-routing
  srv6
@@ -109,8 +115,9 @@ segment-routing
  srv6
  ```
 
+## SRv6 for AI Backend Demo Lab
 
-## Jalapeno and Modeling Networks as Graphs
+### Jalapeno and Modeling Networks as Graphs
 
 Using the [Lab 5 scripts and data](./jalapeno/backend/) we've created a model of our SONiC fabric topology with relevant SRv6 data in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
 
@@ -120,11 +127,11 @@ Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new 
 
 After completing **Lab 5** feel free to checkout the [Lab 5 Bonus Section](./lab_5-bonus.md) that explores the Jalapeno GraphDB, API, UI, and other host-based SRv6 scenarios in more detail.
 
-## AI/ML Workloads and Kubernetes
+### AI/ML Workloads and Kubernetes
 
 Its very common for operators to use Kubernetes to orchestrate ML workloads and have them communicate over dedicated backend networks. We have our Kubernetes cluster with the **London VMs**, which all happen to have a 2nd interface plugged into our SRv6 enabled SONiC backend fabric.
 
-## PyTorch Distributed Training
+### PyTorch Distributed Training
 
 From https://pytorch.org/projects/pytorch/
 
@@ -133,13 +140,7 @@ From https://pytorch.org/projects/pytorch/
 
 When you start a distributed training workload, PyTorch initializes a process group. It uses a backend like [NCCL](https://developer.nvidia.com/nccl) or [Gloo](https://github.com/pytorch/gloo) for communication between nodes. Each node gets a rank and knows about other nodes through the process group
 
-## SRv6 for AI Backend: Introducing the SRv6 PyTorch Plugin
-
-We recently built and open-sourced an srv6-pytorch-plugin to help demonstrate the use of SRv6 for AI backend fabrics:
-
-https://github.com/segmentrouting/srv6-pytorch-plugin
-
-**SRv6 PyTorch Plugin Workflow**
+### SRv6 PyTorch Plugin
 
 Before NCCL/Gloo starts communicating, the SRv6 PyTorch plugin will:
 
@@ -173,7 +174,7 @@ Here's a typical flow:
 [Training continues normally]
 ```
 
-**Pytorch-srv6-plugin demo**
+### Deploying the SRv6 PyTorch Pods
 
 For the final step in our lab we're going to deploy a set of K8s pods (*`PyTorch nodes`*) pre-loaded with our SRv6-PyTorch plugin, and test node-to-node SRv6 communication. 
 
@@ -241,6 +242,10 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
     ```
 
 5. Optional: run some pop-to-pod pings and capture with Edgeshark
+
+    ```
+    kubectl exec -it srv6-pytorch-0 -- ping fcbb:0:800:1::2 -i .3 -c 100
+    ```
 
 **Congratulations, you have reached the end of Cisco Live Lab LTRSPG-2212, hurray!!**
 
