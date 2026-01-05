@@ -19,7 +19,7 @@
   tasks:
 
     - name: cleanup pytorch pods
-      command: kubectl delete -f srv6-pytorch-training-test.yaml
+      command: kubectl delete -f srv6-pytorch-test.yaml
       args:
         chdir: /home/cisco/LTRSPG-2212/lab_5/srv6-pytorch
       ignore_errors: no
