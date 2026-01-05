@@ -27,7 +27,7 @@ network:
         - demo.dcloud.cisco.com
     ens5:
       addresses:
-      - fcbb:0:0800:2::/64
+      - fcbb:0:0800:2::2/64
       routes:
         - to: fcbb:0::/32
           via: fcbb:0:0800:2::1

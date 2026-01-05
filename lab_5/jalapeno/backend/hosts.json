@@ -2,7 +2,7 @@
     {
         "_key": "srv6-pytorch-0",
         "name": "srv6-pytorch-0",
-        "ipv6_address": "fcbb:0:0800:0::2",
+        "ipv6_address": "fcbb:0:0800:0::10",
         "prefix": "fcbb:0:0800:0::",
         "prefix_len": 64,
         "interface": "net1",
@@ -22,7 +22,7 @@
     {
         "_key": "srv6-pytorch-1",
         "name": "srv6-pytorch-1",
-        "ipv6_address": "fcbb:0:0800:1::2",
+        "ipv6_address": "fcbb:0:0800:1::10",
         "prefix": "fcbb:0:0800:1::",
         "prefix_len": 64,
         "interface": "net1",
@@ -42,7 +42,7 @@
     {
         "_key": "srv6-pytorch-2",
         "name": "srv6-pytorch-2",
-        "ipv6_address": "fcbb:0:0800:2::2",
+        "ipv6_address": "fcbb:0:0800:2::10",
         "prefix": "fcbb:0:0800:2::",
         "prefix_len": 64,
         "interface": "net1",
