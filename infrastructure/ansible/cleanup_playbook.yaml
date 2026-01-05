@@ -63,17 +63,23 @@
   hosts: topology-host
   tasks:
 
-    - name: virsh shutdown
-      command: virsh shutdown london-vm-00
+    - name: shutdown london-vm-00
+      community.libvirt.virt:
+        name: london-vm-00
+        state: shutdown
       args:
         ignore_errors: yes
 
-    - name: virsh shutdown
-      command: virsh shutdown london-vm-01
+    - name: shutdown london-vm-01
+      community.libvirt.virt:
+        name: london-vm-01
+        state: shutdown
       args:
         ignore_errors: yes
 
-    - name: virsh shutdown
-      command: virsh shutdown london-vm-02
+    - name: shutdown london-vm-02
+      community.libvirt.virt:
+        name: london-vm-02
+        state: shutdown
       args:
         ignore_errors: yes
