@@ -30,6 +30,14 @@
         chdir: /home/cisco/LTRSPG-2212/lab_3/cilium
       ignore_errors: no
 
+    - name: verify cilium cleanup
+      command: cilium bgp peers
+      register: cilium_peers
+      ignore_errors: yes
+    - name: show cilium peers
+      debug:
+        msg: "{{ cilium_peers.stdout_lines }}"
+
 - name: topology-host cleanup
   hosts: topology-host
   become: true

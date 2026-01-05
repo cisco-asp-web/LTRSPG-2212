@@ -235,7 +235,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 
    ![srv6-pytorch-0](../topo_drawings/lab5-pytorch-output.png)
 
-4. Optional: exec into a pod and manually check the Linux ipv6 routes and run some pings:
+4. Optional: exec into a pod and manually check the Linux ipv6 routes, run some pings, do some Edgshark-ing!
     ```
     kubectl exec -it srv6-pytorch-0 -- bash
     ```
