@@ -160,6 +160,13 @@ for p in outbound k_shortest_paths  'hosts/amsterdam'
                         percent_util_out: avg(p.edges[*].percent_util_out)}
 ```
 
+#### Fabric Graph
+```
+for v, e in outbound shortest_path 'hosts/srv6-pytorch-0' 
+    TO 'hosts/srv6-pytorch-1' fabric_graph 
+    return  { node: v.name, srv6sid: v.sids[*].srv6_sid }
+```
+
 To reset load value:
 ```
 FOR doc IN ipv4_graph

@@ -10,7 +10,12 @@
         "tier": "dc-endpoint",
         "sids": [
             {
-              "srv6_sid": "fcbb:0:fe06::"
+              "srv6_sid": "fcbb:0:fe06::",
+              "srv6_endpoint_behavior": {
+                "endpoint_behavior": 48,
+                "flag": 0,
+                "algo": 0
+              }
             }
           ]
     },
@@ -25,7 +30,12 @@
         "tier": "dc-endpoint",
         "sids": [
             {
-              "srv6_sid": "fcbb:0:fe06::"
+              "srv6_sid": "fcbb:0:fe06::",
+              "srv6_endpoint_behavior": {
+                "endpoint_behavior": 48,
+                "flag": 0,
+                "algo": 0
+              }
             }
           ]
     },
@@ -40,7 +50,12 @@
         "tier": "dc-endpoint",
         "sids": [
             {
-              "srv6_sid": "fcbb:0:fe06::"
+              "srv6_sid": "fcbb:0:fe06::",
+              "srv6_endpoint_behavior": {
+                "endpoint_behavior": 48,
+                "flag": 0,
+                "algo": 0
+              }
             }
           ]
     }
