@@ -276,11 +276,8 @@ Configuring SONiC's BGP container can be done from FRR's command line and is ver
    no router bgp 65100
    ```
 
-4. Copy **leaf00's** FRR config [LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf) and paste it into the terminal.
+4. Copy **leaf00's** FRR config [CTRL/CMD-Click this LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf) and paste it into the terminal.
 
-4. Copy **leaf00's** FRR config <a href="https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf" target="_blank">LINK</a> and paste it into the terminal.
-
-4. Copy **leaf00's** <a href="https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf" target="_blank">FRR config</a> and paste it into the terminal.
 
 5. Exit out of config mode and save the config
    ```
@@ -294,7 +291,7 @@ Configuring SONiC's BGP container can be done from FRR's command line and is ver
 
 You may have noticed in the FRR config or show command output that SONiC supports BGP unnumbered peering over its Ethernet interfaces. This is a huge advantage for deploying, automating, and managing hyperscale fabrics, and we wanted to highlight it here. 
 
-Config example from [leaf00](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf#L25):
+Config example from **leaf00** [CTRL/CMD-Click this LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf#L25):
 
    ```
    neighbor Ethernet0 interface remote-as 65000
