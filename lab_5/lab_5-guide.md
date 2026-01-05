@@ -59,7 +59,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
 1. From VSCode open an ssh session to **london-vm-00** and add a Linux SRv6 route to *`london-vm-02`* that will take the path *`leaf00`* -> *`spine01`* -> *`leaf02`*:
 
    ```
-   ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap.red segs  fc00:0:1004:1001:1006:fe06:: dev net1
+   ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap.red segs  fcbb:0:1004:1001:1006:fe06:: dev net1
    ```
 
 2. Display the Linux route on *host00*:

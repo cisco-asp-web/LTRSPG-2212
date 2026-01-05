@@ -7,7 +7,12 @@
         "prefix_len": 64,
         "interface": "net1",
         "dataplane": "linux",
-        "tier": "dc-endpoint"
+        "tier": "dc-endpoint",
+        "sids": [
+            {
+              "srv6_sid": "fcbb:0:fe06::"
+            }
+          ]
     },
     {
         "_key": "srv6-pytorch-1",
@@ -17,7 +22,12 @@
         "prefix_len": 64,
         "interface": "net1",
         "dataplane": "linux",
-        "tier": "dc-endpoint"
+        "tier": "dc-endpoint",
+        "sids": [
+            {
+              "srv6_sid": "fcbb:0:fe06::"
+            }
+          ]
     },
     {
         "_key": "srv6-pytorch-2",
@@ -27,6 +37,11 @@
         "prefix_len": 64,
         "interface": "net1",
         "dataplane": "linux",
-        "tier": "dc-endpoint"
+        "tier": "dc-endpoint",
+        "sids": [
+            {
+              "srv6_sid": "fcbb:0:fe06::"
+            }
+          ]
     }
 ]
