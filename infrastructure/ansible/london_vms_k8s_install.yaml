@@ -1,15 +1,4 @@
-# ansible-playbook -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" -i hosts build_k8s_worker_playbook.yaml -vv
-
-- name: Update the Git Repo
-  hosts: localhost
-  become: false
-  tasks:
-
-    - name: git pull to update repo on localhost
-      command: git pull
-      args:
-        chdir: /home/cisco/LTRSPG-2212
-      ignore_errors: yes
+# ansible-playbook -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" -i hosts london_vms_k8s_install.yaml -vv
 
 - name: install k8s on london VMs
   hosts: london_vms
@@ -209,59 +198,18 @@
       debug:
         msg: "kubelet status: {{ kubelet_status.stdout }}"
 
-# Join workers to k8s cluster
-- name: join london-vm-01 to cluster
-  hosts: 192.168.122.101
-  become: true
-  tasks:
-
-    - name: copy k8s-join.yaml for london-vm-01
-      copy:
-        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-01/london-vm-01-k8s-join.yaml
-        dest: /tmp/k8s-join.yaml
-      ignore_errors: yes
-
-    - name: kubeadm join
-      command: kubeadm join --config /tmp/k8s-join.yaml --v=5
-      ignore_errors: yes
-
-- name: join london-vm-02 to cluster
-  hosts: 192.168.122.102
-  become: true
-  tasks:
-
-    - name: copy k8s-join.yaml for london-vm-02
-      copy:
-        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-02/london-vm-02-k8s-join.yaml
-        dest: /tmp/k8s-join.yaml
-      ignore_errors: yes
-
-    - name: kubeadm join
-      command: kubeadm join --config /tmp/k8s-join.yaml
-      ignore_errors: yes
-
-- name: k8s control plane
+# Initialize london-vm-00 as k8s control plane
+- name: initialize london-vm-00 as k8s control plane
   hosts: london_k8s_cp
+  become: true
   tasks:
 
-    - name: get nodes -o wide
-      command: kubectl get nodes -o wide
-      register: nodes
+    - name: copy k8s-cp-init.yaml for london-vm-00
+      copy:
+        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-00/k8s/k8s-cp-init.yaml
+        dest: /tmp/k8s-cp-init.yaml
       ignore_errors: yes
 
-    - name: show nodes -o wide
-      debug:
-        msg: "{{ nodes.stdout_lines }}"
-
-    - name: get pods status
-      command: kubectl get pods --all-namespaces
-      register: pods
-      ignore_errors: yes
-
-    - name: show pods status
-      debug:
-        msg: "{{ pods.stdout_lines }}"
-
-    - name: untaint control plane
-      command: kubectl taint nodes --all node-role.kubernetes.io/control-plane-
+    - name: kubeadm init
+      command: kubeadm init --config /tmp/k8s-cp-init.yaml
       ignore_errors: yes

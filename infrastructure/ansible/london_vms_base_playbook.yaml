@@ -1,0 +1,60 @@
+# ansible-playbook -e "ansible_user=cisco ansible_ssh_pass=cisco123 ansible_sudo_pass=cisco123" -i hosts london_vms_base_playbook.yaml -vv
+
+- name: Update the Git Repo
+  hosts: localhost
+  become: false
+  tasks:
+
+    - name: git pull to update repo on localhost
+      command: git pull
+      args:
+        chdir: /home/cisco/LTRSPG-2212
+      ignore_errors: yes
+
+- name: london VM 00 setup
+  hosts: london_vm_00
+  become: true
+  tasks:
+
+    - name: copy hosts file for london-vm-00
+      copy:
+        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-00/hosts
+        dest: /etc/hosts
+      ignore_errors: yes
+
+    - name: hostnamectl set london-vm-00
+      command: hostnamectl hostname london-vm-00
+      ignore_errors: yes
+
+- name: london VM 01 setup
+  hosts: london_vm_01
+  become: true
+  tasks:
+
+    - name: copy hosts file for london-vm-01
+      copy:
+        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-01/hosts
+        dest: /etc/hosts
+      ignore_errors: yes
+
+    - name: hostnamectl set london-vm-01
+      command: hostnamectl hostname london-vm-01
+      ignore_errors: yes
+
+- name: london VM 02 setup
+  hosts: london_vm_02
+  become: true
+  tasks:
+
+    - name: copy hosts file for london-vm-02
+      copy:
+        src: /home/cisco/LTRSPG-2212/infrastructure/vms/london-vm-02/hosts
+        dest: /etc/hosts
+      ignore_errors: yes
+
+    - name: hostnamectl set london-vm-02
+      command: hostnamectl hostname london-vm-02
+      ignore_errors: yes
+
+# Import the k8s installation playbook
+- import_playbook: london_vms_k8s_install.yaml
