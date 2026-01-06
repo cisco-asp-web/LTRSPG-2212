@@ -7,6 +7,15 @@ jalapeno ansible_host=198.18.128.101
 192.168.122.101 ansible_python_interpreter=/usr/bin/python3
 192.168.122.102 ansible_python_interpreter=/usr/bin/python3
 
+[london_vm_00]
+192.168.122.100 ansible_python_interpreter=/usr/bin/python3
+
+[london_vm_01]
+192.168.122.101 ansible_python_interpreter=/usr/bin/python3
+
+[london_vm_02]
+192.168.122.102 ansible_python_interpreter=/usr/bin/python3
+
 [london_k8s_cp]
 192.168.122.100 ansible_python_interpreter=/usr/bin/python3
 
