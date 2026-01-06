@@ -1,13 +1,17 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-cd /home/cisco/LTRSPG-2212
+REPO_DIR="/home/cisco/LTRSPG-2212"
+BRANCH="main"
+
+cd "$REPO_DIR"
 
 # Ensure correct branch
-git checkout main
+git checkout "$BRANCH"
 
-# Discard local changes and untracked files
+# Discard local changes and untracked files (LAB MODE - destructive)
 git reset --hard HEAD
 git clean -fd
 
-# Pull latest commits from GitHub
-git pull origin main
+# Pull latest commits
+git pull origin "$BRANCH"

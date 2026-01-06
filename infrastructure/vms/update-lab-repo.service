@@ -1,5 +1,5 @@
 [Unit]
-Description=Cisco Live LTRSPG-2212 auto-update lab Git repo from GitHub at boot
+Description=Cisco Live LTRSPG2212 - auto-update lab Git repo at boot
 After=network-online.target
 Wants=network-online.target
 

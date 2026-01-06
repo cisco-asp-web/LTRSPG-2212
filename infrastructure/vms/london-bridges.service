@@ -1,0 +1,11 @@
+[Unit]
+Description=Cisco Live LTRSPG2212 – create London host bridges for containerlab
+Wants=network-pre.target
+After=network-pre.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ciscolive-ltrspg2212-create-london-bridges.sh
+RemainAfterExit=yes
+
+[Install]
