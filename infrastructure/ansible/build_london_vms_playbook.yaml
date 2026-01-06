@@ -11,8 +11,8 @@
         chdir: /home/cisco/LTRSPG-2212
       ignore_errors: yes
 
-- name: install k8s on workers
-  hosts: london_k8s_workers
+- name: install k8s on london VMs
+  hosts: london_vms
   become: true
   tasks:
 
