@@ -147,7 +147,7 @@ On **london-vm-00** change to the lab_3/cilium directory and check out the conte
 Here is a portion of our Cilium BGP configuration in CRD form and with notes:
 
 ```yaml
-apiVersion: isovalent.com/v1
+apiVersion: isovalent.com/v1alpha1
 kind: IsovalentBGPClusterConfig  # the BGP cluster configuration CRD  
 metadata:
   name: cilium-bgp 
