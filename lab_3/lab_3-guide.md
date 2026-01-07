@@ -227,7 +227,7 @@ One of the great things about CRDs is you can combine all the configuration elem
       name: london-vm-00     # this CRD will apply to the london-vm-00 node
     spec:
       bgpInstances:
-        - name: "asn65000"        # required field, must match the name of the bgpInstance in the cluster config
+        - name: "asn65000"        
           srv6Responder: true     # instructs BGP to advertise the node's SRv6 Locator (to be created a few steps after this)
           peers:
             - name: "paris-rr"                 # must match the name of the peer in the cluster config
