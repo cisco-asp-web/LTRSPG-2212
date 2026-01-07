@@ -278,7 +278,7 @@ Here is a portion of the prefix advertisement CRD with notes:
       labels:
         advertise: bgpv6unicast     # this label will be used by the peer config CRD for prefixes to advertise
     spec:
-      advertisements:                            # the list of elements to be advertised
+      advertisements:                           
         - advertisementType: "SRv6LocatorPool"   # advertise the SRv6 locator pool (to be created a few steps after this)
           selector:
             matchLabels:
