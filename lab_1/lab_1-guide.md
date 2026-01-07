@@ -2,7 +2,7 @@
 
 We use of containerlab to orchestrate the XRd and SONiC virtual network topologies in this lab. If you wish to explore XRd and its uses beyond the scope of this lab the xrdocs team has posted a number of tutorials here: 
 
-https://xrdocs.io/virtual-routing/tags/#xrd-tutorial-series
+https://xrdocs.io/virtual-routing/tutorials
 
 For more information on containerlab see:
 
