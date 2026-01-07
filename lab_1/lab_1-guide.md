@@ -71,7 +71,7 @@ This setup simplifies lab operations and significantly enhances usability.
 
 RDP to the Windows Virtual machine from the lab attendee laptop:
 
-The lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 **(admin / C1sco12345)**
+The lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 **(admin / cisco123)**
 
 ![windows-rdp](.././topo_drawings/windows-rdp.png)
 
