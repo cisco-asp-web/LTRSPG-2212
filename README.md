@@ -84,7 +84,7 @@ This lab environment consists of three virtual machines, each with a specific ro
 
 | VM Name               | Username   | Password       |
 |-----------------------|------------|----------------|
-| **Windows Management**| `admin`    | `C1sco12345`   | 
+| **Windows Management**| `admin`    | `cisco123`     | 
 | **Topology Host**     | `cisco`    | `cisco123`     | 
 | **Jalapeno Host**     | `cisco`    | `cisco123`     | 
 
@@ -95,7 +95,7 @@ This lab environment consists of three virtual machines, each with a specific ro
 
 ![VPN](./topo_drawings/anyconnect.png)
 
-Once you've connected to VPN all nodes in the lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 (admin / C1sco12345)
+Once you've connected to VPN all nodes in the lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 (admin / cisco123)
 
 ![windows-rdpy](./topo_drawings/windows-rdp.png)
 
