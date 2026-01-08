@@ -300,8 +300,11 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
 ### Add Synthetic Latency to the Links
 
 > [!NOTE]
-> Normally pinging xrd-to-xrd in this dockerized environment would result in ping times of ~1-3ms. However, we wanted to simulate something a little more real-world so we built a shell script to add synthetic latency to the underlying Linux links. 
+> In a default containerized environment, direct XRd-to-XRd pings typically result in round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions, we intentionally move away from these values. As part of the lab setup, an Ansible playbook invokes a shell script that injects synthetic latency on the underlying Linux links, using the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later traffic engineering and path-selection exercises.
    
+![WAN Latencies](../topo_drawings/lab1-latencies)
+
+
 1. From a *topology-host* terminal session run the `add-latency.sh` script:
    ```
    ~/LTRSPG-2212/lab_1/add-latency.sh
