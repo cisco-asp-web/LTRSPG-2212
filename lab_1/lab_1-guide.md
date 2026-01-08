@@ -267,11 +267,11 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
     ```
       RP/0/RP0/CPU0:london#show isis topology 
       Thu Jan  8 04:38:00.817 UTC
-      
+
       IS-IS 100 paths to IPv4 Unicast (Level-1) routers
       System Id          Metric    Next-Hop           Interface       SNPA          
       london             --      
-      
+
       IS-IS 100 paths to IPv4 Unicast (Level-2) routers
       System Id          Metric    Next-Hop           Interface       SNPA          
       london             --      
@@ -286,6 +286,10 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
       RP/0/RP0/CPU0:london#
 
     ```
+
+    From London’s perspective, the IS-IS topology shows a pure Level-2 backbone design, with no active Level-1 adjacencies and full reachability achieved through L2 SPF computation. 
+    Overall, the SPF results confirm a healthy, loop-free WAN core with consistent metrics and deterministic path selection, suitable for advanced traffic engineering mechanisms such as SRv6.
+
 
 2. On **xrd01** validate end-to-end ISIS reachability by pinging **xrd07**:
    ```
