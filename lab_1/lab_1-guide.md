@@ -263,26 +263,28 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
     show isis topology
     ```
 
-    You should expect to see an entry for each xrd router 01 -> 07
+    You should expect to see an entry for each xrd router 01 (London) -> 07 (Rome)
     ```
-    RP/0/RP0/CPU0:xrd01#show isis topology 
-    Fri May  9 03:11:23.663 UTC
+      RP/0/RP0/CPU0:london#show isis topology 
+      Thu Jan  8 04:38:00.817 UTC
+      
+      IS-IS 100 paths to IPv4 Unicast (Level-1) routers
+      System Id          Metric    Next-Hop           Interface       SNPA          
+      london             --      
+      
+      IS-IS 100 paths to IPv4 Unicast (Level-2) routers
+      System Id          Metric    Next-Hop           Interface       SNPA          
+      london             --      
+      amsterdam          1         amsterdam          Gi0/0/0/1       *PtoP*        
+      berlin             2         amsterdam          Gi0/0/0/1       *PtoP*        
+      zurich             2         paris              Gi0/0/0/2       *PtoP*        
+      paris              1         paris              Gi0/0/0/2       *PtoP*        
+      barcelona          2         paris              Gi0/0/0/2       *PtoP*        
+      barcelona          2         amsterdam          Gi0/0/0/1       *PtoP*        
+      rome               3         paris              Gi0/0/0/2       *PtoP*        
+      rome               3         amsterdam          Gi0/0/0/1       *PtoP*        
+      RP/0/RP0/CPU0:london#
 
-    IS-IS 100 paths to IPv4 Unicast (Level-1) routers
-    System Id          Metric    Next-Hop           Interface       SNPA          
-    xrd01              --      
-
-    IS-IS 100 paths to IPv4 Unicast (Level-2) routers
-    System Id          Metric    Next-Hop           Interface       SNPA          
-    xrd01              --      
-    xrd02              1         xrd02              Gi0/0/0/1       *PtoP*        
-    xrd03              2         xrd02              Gi0/0/0/1       *PtoP*        
-    xrd04              2         xrd05              Gi0/0/0/2       *PtoP*        
-    xrd05              1         xrd05              Gi0/0/0/2       *PtoP*        
-    xrd06              2         xrd05              Gi0/0/0/2       *PtoP*        
-    xrd06              2         xrd02              Gi0/0/0/1       *PtoP*        
-    xrd07              3         xrd05              Gi0/0/0/2       *PtoP*        
-    xrd07              3         xrd02              Gi0/0/0/1       *PtoP* 
     ```
 
 2. On **xrd01** validate end-to-end ISIS reachability by pinging **xrd07**:
