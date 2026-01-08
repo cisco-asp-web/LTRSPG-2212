@@ -302,7 +302,7 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
 > [!NOTE]
 > In a default containerized environment, direct XRd-to-XRd pings typically result in round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions, we intentionally move away from these values. As part of the lab setup, an Ansible playbook invokes a shell script that injects synthetic latency on the underlying Linux links, using the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later traffic engineering and path-selection exercises.
    
-[WAN Latencies](../topo_drawings/lab1-latencies)
+![WAN Latencies](../topo_drawings/lab1-latencies)
 
 
 1. From a *topology-host* terminal session run the `add-latency.sh` script:
