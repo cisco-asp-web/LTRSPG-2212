@@ -43,6 +43,8 @@ We will have achieved the following objectives upon completion of Lab 1:
 For Labs 1 - 3 we will use the topology shown below. In this network we have 7 XRd routers providing SRv6 transport services to a pair of Ubuntu containers (London and Rome) and a Kubernetes cluster running on Ubuntu VMs (London).
 ![Lab Topology](../topo_drawings/overview-topology-large.png)
 
+Although the topology includes several SONiC routers and virtual machines, this lab focuses exclusively on the WAN network, which is built using IOS-XRd routers.
+
 ## Accessing the routers 
 
 ⚠️⚠️⚠️  Note: This section is provided for reference only. We will walk through router access during the live demo. ⚠️⚠️⚠️ 
