@@ -239,6 +239,13 @@ In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Ci
 
     You can now logout of the London VM 
 
+    ```
+    cisco@london-vm-00:~$ exit
+    logout
+    Connection to london-vm-00 closed.
+    cisco@topology-host:~/LTRSPG-2212$ 
+    ```
+
 
 ## Validate ISIS Topology
 
