@@ -21,6 +21,9 @@ https://containerlab.dev/
   - [Validate ISIS Topology](#validate-isis-topology)
     - [Add Synthetic Latency to the Links](#add-synthetic-latency-to-the-links)
   - [Validate BGP Peering](#validate-bgp-peering)
+  - [Configure and Validate SRv6](#configure-and-validate-srv6)
+    - [Configure SRv6 on xrd01](#configure-srv6-on-xrd01)
+    - [Configure SRv6 on xrd07](#configure-srv6-on-xrd07)
     - [Validate SRv6 configuration and reachability](#validate-srv6-configuration-and-reachability)
   - [End-to-End Connectivity - Edgeshark](#end-to-end-connectivity---edgeshark)
   - [End of Lab 1](#end-of-lab-1)
@@ -335,6 +338,7 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
     ```
     show bgp ipv6 unicast advertised summary
     ```
+
     ```
     RP/0/RP0/CPU0:london#show bgp ipv6 unicast advertised summary 
     Thu Jan  8 16:03:29.698 UTC
@@ -344,7 +348,7 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
 
     Processed 1 prefixes, 2 paths
     RP/0/RP0/CPU0:london#
-```
+    ```
 
 3. Verify that router **xrd01** has received route ```fc00:0:107:1::/64``` from the route reflectors **xrd05** and **xrd06**. Look for ```Paths: (2 available)```
     ```
