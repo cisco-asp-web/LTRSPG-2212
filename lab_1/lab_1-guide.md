@@ -80,11 +80,11 @@ Launch Visual Code:
 
 ![launch visual code](../topo_drawings/lab1-visual-code-launch.png)
 
-visual code will connect to the topology host and lab attendees should enter the "cisco123" password 
+Visual code will connect to the topology host and lab attendees should enter the "cisco123" password 
 
 ![connect using visual code](../topo_drawings/lab1-visual-code-connect.png)
 
-you are now connected to the topology host and can start topologies and inspect traffic.
+You are now connected to the topology host and can start topologies and inspect traffic. At the moment, no topology is started. Make sure you click on the containerlab extension before you can start a topology.
 
 ![connected visual code](../topo_drawings/lab1-visual-code-connected.png)
 
@@ -111,40 +111,59 @@ We can also verify the containerlab logs in the visual code output window. Trunc
 
 ```
 [DEBUG] Containerlab extension activated.
-[stderr] 16:41:28 INFO Created link: xrd07:Gi0-0-0-3 ▪┄┄▪ rome:eth2
-[stderr] 16:41:28 INFO Adding host entries path=/etc/hosts
-[stderr] 16:41:28 INFO Adding SSH config for nodes path=/etc/ssh/ssh_config.d/clab-clus25.conf
+ 00:13:37 INFO Created link: sonic-leaf-02:eth3 ▪┄┄▪ sonic-spine-02:eth3
+ 00:13:37 INFO Created link: sonic-leaf-02:eth5 ▪┄┄▪ london-vm-02-be:sonic-leaf02-eth5
+ 00:13:37 INFO Adding host entries path=/etc/hosts
+ 00:13:37 INFO Adding SSH config for nodes path=/etc/ssh/ssh_config.d/clab-cleu26.conf
+ ╭──────────────────────────────────┬─────────────────────────────────────┬────────────────────┬────────────────╮
+ │               Name               │              Kind/Image             │        State       │ IPv4/6 Address │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-app-container-london │ linux                               │ running            │ 172.20.6.108   │
+ │                                  │ cl-london-container:latest          │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-app-container-rome   │ linux                               │ running            │ 172.20.6.109   │
+ │                                  │ cl-rome-container:latest            │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-sonic-leaf-00        │ linux                               │ running            │ 172.20.6.128   │
+ │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-sonic-leaf-01        │ linux                               │ running            │ 172.20.6.129   │
+ │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-sonic-leaf-02        │ linux                               │ running            │ 172.20.6.130   │
+ │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-sonic-spine-00       │ linux                               │ running            │ 172.20.6.192   │
+ │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-sonic-spine-01       │ linux                               │ running            │ 172.20.6.193   │
+ │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-sonic-spine-02       │ linux                               │ running            │ 172.20.6.194   │
+ │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-xrd-amsterdam        │ cisco_xrd                           │ running            │ 172.20.6.102   │
+ │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-xrd-barcelona        │ cisco_xrd                           │ running            │ 172.20.6.106   │
+ │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-xrd-berlin           │ cisco_xrd                           │ running            │ 172.20.6.103   │
+ │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-xrd-london           │ cisco_xrd                           │ running            │ 172.20.6.101   │
+ │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-xrd-paris            │ cisco_xrd                           │ running            │ 172.20.6.105   │
+ │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-xrd-rome             │ cisco_xrd                           │ running            │ 172.20.6.107   │
+ │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
+ ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
+ │ clab-cleu26-xrd-zurich           │ cisco_xrd                           │ running            │ 172.20.6.104   │
+ │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
+ ╰──────────────────────────────────┴─────────────────────────────────────┴────────────────────┴────────────────╯
 
-╭───────────────────────┬────────────────────────────────┬─────────┬────────────────╮
-│          Name         │           Kind/Image           │  State  │ IPv4/6 Address │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-amsterdam │ linux                          │ running │ 172.20.6.108 │
-│                       │ amsterdam:latest               │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-rome      │ linux                          │ running │ 172.20.6.109 │
-│                       │ rome:latest                    │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd01     │ cisco_xrd                      │ running │ 172.20.6.101 │
-│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd02     │ cisco_xrd                      │ running │ 172.20.6.102 │
-│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd03     │ cisco_xrd                      │ running │ 172.20.6.103 │
-│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd04     │ cisco_xrd                      │ running │ 172.20.6.104 │
-│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd05     │ cisco_xrd                      │ running │ 172.20.6.105 │
-│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd06     │ cisco_xrd                      │ running │ 172.20.6.106 │
-│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
-├───────────────────────┼────────────────────────────────┼─────────┼────────────────┤
-│ clab-clus25-xrd07     │ cisco_xrd                      │ running │ 172.20.6.107 │
-│                       │ cisco-xrd-control-plane:24.4.1 │         │ N/A            │
-╰───────────────────────┴────────────────────────────────┴─────────┴────────────────╯
 ```
 
 > [!NOTE]
