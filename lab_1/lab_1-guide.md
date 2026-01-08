@@ -235,7 +235,7 @@ In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Ci
 
     Visual representation:
 
-    ![berlin connectivity](../topo_drawings/lab1-berlin-connectivity.png)
+    ![berlin connectivity](../topo_drawings/lab1-london-connectivity.png)
 
     You can now logout of the London VM 
 
