@@ -194,29 +194,30 @@ sudo containerlab inspect --all
 > The XRd router instances should be available for SSH access about 1 - 2 minutes after spin up.
 
 
-To SSH into a router, you can use the containerlab visual code extension
+To establish an SSH session to an IOS-XRd router, use the Containerlab Visual Studio Code extension. Right-click on the router and select SSH from the context menu.
 
 ![ssh into xrd01](../topo_drawings/lab1-ssh-xrd01.png)
 
 
-To get terminal access into the Amsterdam or Rome containers, you can use the containerlab visual code extension and click on "Attach Shell" instead of "SSH"
+The London and Rome sites host Linux-based containers that will be used to generate traffic and run validation tests throughout the lab. To access these containers, use the same method as for an IOS-XRd router: right-click on the container in the Containerlab VS Code extension, select SSH, and repeat the same procedure.
+The same credentials used for the IOS-XRd routers apply.
 
 ![Attach terminal](../topo_drawings/lab1-attach-terminal.png)
 
 
 ### Accessing the London K8s Control Plane VM
 
-In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Cilium** Container Network Interface (CNI) and connected to the **london** router.
+In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Cilium** Container Network Interface (CNI) and connected to the **London** router.
 
 
-1. From a Visual Code terminal SSH to *Berlin VM* 
+1. From the topology host terminal in visual code, SSH to *London-vm-00* 
     ```
     ssh cisco@london-vm-00
     ```
    
 2. Check IPv6 connectivity from **london-vm-00** to **london xrd01**
 
-    ![berlin xrd02](../topo_drawings/lab1-berlin-xrd02.png)
+    ![London xrd01](../topo_drawings/lab1-london-xrd01.png)
 
     ```
     ping fc00:0:800::1 -c 2
