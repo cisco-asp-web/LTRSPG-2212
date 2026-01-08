@@ -21,9 +21,6 @@ https://containerlab.dev/
   - [Validate ISIS Topology](#validate-isis-topology)
     - [Add Synthetic Latency to the Links](#add-synthetic-latency-to-the-links)
   - [Validate BGP Peering](#validate-bgp-peering)
-  - [Configure and Validate SRv6](#configure-and-validate-srv6)
-    - [Configure SRv6 on xrd01](#configure-srv6-on-xrd01)
-    - [Configure SRv6 on xrd07](#configure-srv6-on-xrd07)
     - [Validate SRv6 configuration and reachability](#validate-srv6-configuration-and-reachability)
   - [End-to-End Connectivity - Edgeshark](#end-to-end-connectivity---edgeshark)
   - [End of Lab 1](#end-of-lab-1)
@@ -318,35 +315,36 @@ In the topology we are running a single ASN 65000 with BGP running on **xrd01**,
 
 For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
 
-1. SSH into **xrd01** using the visual code extension and verify its neighbor state
+1. SSH into **London-xrd01** using the visual code extension and verify its neighbor state
     ```
     show ip bgp neighbors brief
     ```
     ```
-    RP/0/RP0/CPU0:xrd01#show ip bgp neighbors brief
+      RP/0/RP0/CPU0:london#show ip bgp neighbors brief 
+      Thu Jan  8 05:12:54.585 UTC
 
-    Neighbor                Spk    AS Description                        Up/Down  NBRState
-    10.0.0.5                0 65000 iBGP to xrd05 RR                     00:18:07 Established 
-    10.0.0.6                0 65000 iBGP to xrd06 RR                     00:18:24 Established 
-    fc00:0000:5555::1       0 65000 iBGPv6 to xrd05 RR                   00:22:02 Established 
-    fc00:0000:6666::1       0 65000 iBGPv6 to xrd06 RR                   00:21:16 Established 
+      Neighbor         Spk    AS  Description                         Up/Down  NBRState
+      10.0.0.5          0 65000 iBGP to xrd05 RR                     01:13:08 Established 
+      10.0.0.6          0 65000 iBGP to xrd06 RR                     01:13:09 Established 
+      fc00:0:5555::1    0 65000 iBGPv6 to xrd05 RR                   01:13:10 Established 
+      fc00:0:6666::1    0 65000 iBGPv6 to xrd06 RR                   01:13:05 Established 
+      RP/0/RP0/CPU0:london#
     ``` 
 
-2. Verify that router **xrd01** is advertising the attached ipv6 network ```fc00:0:101:1::/64``` 
+2. Verify that router **london-xrd01** is advertising the attached ipv6 network ```fc00:0:1111::1/128``` 
     ```
     show bgp ipv6 unicast advertised summary
     ```
     ```
-    RP/0/RP0/CPU0:xrd01#show bgp ipv6 unicast advertised summary
-    Tue Jan 10 21:40:56.812 UTC
+    RP/0/RP0/CPU0:london#show bgp ipv6 unicast advertised summary 
+    Thu Jan  8 16:03:29.698 UTC
     Network            Next Hop        From            Advertised to
-    fc00:0:101:1::/64  fc00:0:1111::1  Local           fc00:0:5555::1
-                                       Local           fc00:0:6666::1
     fc00:0:1111::1/128 fc00:0:1111::1  Local           fc00:0:5555::1
                                        Local           fc00:0:6666::1
 
-    Processed 2 prefixes, 4 paths
-    ```
+    Processed 1 prefixes, 2 paths
+    RP/0/RP0/CPU0:london#
+```
 
 3. Verify that router **xrd01** has received route ```fc00:0:107:1::/64``` from the route reflectors **xrd05** and **xrd06**. Look for ```Paths: (2 available)```
     ```
