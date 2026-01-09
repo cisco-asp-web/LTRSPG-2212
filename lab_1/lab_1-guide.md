@@ -537,25 +537,26 @@ SRv6 uSID locator and source address information for nodes in the lab:
 > [!NOTE]
 > The bottom two entries. These SIDs belong to BGP and represent End.DT behaviors. Any packet arriving with either of these SIDs as the outer IPv6 destination address will be decapsulated and then an LPM lookup in the global/default routing table will be performed on the inner destination address. 
 
-2. Validate the SRv6 prefix-SID configuration. As example for **xrd01** look for *SID value: fc00:0000:1111::*
+2. Validate the SRv6 prefix-SID configuration. As example for **London-xrd01** look for *SID value: fc00:0000:1111::*
     ```
     show isis segment-routing srv6 locator detail 
     ```
-
     ```diff
-    RP/0/RP0/CPU0:xrd01#show isis segment-routing srv6 locators detail 
+    RP/0/RP0/CPU0:london#show isis segment-routing srv6 locators detail  
+    Fri Jan  9 04:28:37.293 UTC
 
     IS-IS 100 SRv6 Locators
     Name                  ID       Algo  Prefix                    Status
     ------                ----     ----  ------                    ------
-    MyLocator             1        0     fc00:0000:1111::/48       Active
-    Advertised Level: level-1-2   
-    Level: level-1      Metric: 1        Administrative Tag: 0         
-    Level: level-2-only Metric: 1        Administrative Tag: 0         
-    SID behavior: uN (PSP/USD)
-    +SID value:    fc00:0000:1111::                      <------------ HERE
-    Block Length: 32, Node Length: 16, Func Length: 0, Args Length: 80
+    MyLocator             1        0     fc00:0:1111::/48          Active
+      Advertised Level: level-1-2   
+      Level: level-1      Metric: 1        Administrative Tag: 0         
+      Level: level-2-only Metric: 1        Administrative Tag: 0         
+      SID behavior: uN (PSP/USD)
+      +SID value:    fc00:0:1111::                                   <------------ HERE
+      Block Length: 32, Node Length: 16, Func Length: 0, Args Length: 80
     ```
+
 
 ## End-to-End Connectivity - Edgeshark
 
@@ -563,11 +564,11 @@ SRv6 uSID locator and source address information for nodes in the lab:
 EdgeShark is a browser-based packet capture and analysis tool built into Containerlab. Key features of Edgeshark for our lab.
 * Support for Docker containers
 * Integrated with Visual Studio Code through Containerlab extensions
-* Within Visual Studio Code you can highlight an XRd router link and launch directly
+* Within Visual Studio Code you can highlight an XRd router link and launch a capture directly
 
 We will use this tool within the labs to allow the students to see actual SRv6 packets on the wire.
 
-To launch EdgeShark and inspect traffic, simply click on the interface you want to capture packets from in the Containerlab tab within Visual Studio Code. In this case, we want to capture traffic on interface Gi0/0/0/0 of *xrd01*.
+To launch EdgeShark and inspect traffic, simply click on the interface you want to capture packets from in the Containerlab tab within Visual Studio Code. In this case, we want to capture traffic on interface Gi0/0/0/1 of *London-xrd01*.
 
 ![Edgeshark launch](../topo_drawings/lab1-edgeshark-launch.png)
 
