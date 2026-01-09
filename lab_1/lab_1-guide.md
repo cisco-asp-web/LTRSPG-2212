@@ -392,7 +392,7 @@ With SRv6 uSID:
  - The SRH can be used if our uSID instruction set extends beyond the 6 available in the outer IPv6 destination address
  - SRv6 uSID is based on the Compressed SRv6 Segment List Encoding in [RFC 9080](https://datatracker.ietf.org/doc/rfc9800/)
 
-For reference one of the most recent IOS-XR Configuration guides for SR/SRv6 and ISIS can be found here: [LINK](https://www.cisco.com/c/en/us/td/docs/iosxr/cisco8000/segment-routing/24xx/configuration/guide/b-segment-routing-cg-cisco8000-24xx/configuring-segment-routing-over-ipv6-srv6-micro-sids.html)
+For reference one of the most recent IOS-XR Configuration guides for SR/SRv6 and ISIS can be found here: [LINK](https://www.cisco.com/c/en/us/td/docs/iosxr/cisco8000/segment-routing/25xx/configuration/guide/b-segment-routing-cg-cisco8000-25xx.html)
 
 SRv6 uSID locator and source address information for nodes in the lab:
 
