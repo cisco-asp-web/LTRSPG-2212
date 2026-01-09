@@ -411,7 +411,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
 > We've preconfigured SRv6 on **xrd02** thru **xrd06**, so you'll only need to configure **xrd01** and **xrd07**
 
 ### Configure SRv6 on xrd01
-1. SSH to **xrd01** and enable SRv6 globally and define SRv6 locator and source address for outbound encapsulation 
+1. SSH to **London-xrd01** and enable SRv6 globally and define SRv6 locator and source address for outbound encapsulation 
 
 
     ```
@@ -464,7 +464,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
 ### Configure SRv6 on xrd07
 
 
-1. Using the Visual Code extension ssh to **xrd07** and apply the below config in a single shot:
+1. Using the Visual Code extension ssh to **Rome-xrd07** and apply the below config in a single shot:
 
 ![ssh into xrd07](../topo_drawings/lab1-ssh-xrd07.png)
 
@@ -513,13 +513,13 @@ SRv6 uSID locator and source address information for nodes in the lab:
 
 ### Validate SRv6 configuration and reachability
 
-1. On **xrd01** run validation commands
+1. On **London-xrd01** run validation commands
     ```
     show segment-routing srv6 sid
     ```
     ```diff
-    RP/0/RP0/CPU0:xrd01#show segment-routing srv6 sid
-    Fri Dec 15 22:37:40.028 UTC
+    RP/0/RP0/CPU0:london#show segment-routing srv6 sid
+    Fri Jan  9 04:18:55.955 UTC
 
     *** Locator: 'MyLocator' *** 
 
@@ -530,9 +530,10 @@ SRv6 uSID locator and source address information for nodes in the lab:
     fc00:0:1111:e001::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0         isis-100            InUse  Y 
     fc00:0:1111:e002::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0:P       isis-100            InUse  Y 
     fc00:0:1111:e003::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0         isis-100            InUse  Y 
-    +fc00:0:1111:e004::         uDT4              'default'                         bgp-65000           InUse  Y 
-    +fc00:0:1111:e005::         uDT6              'default'                         bgp-65000           InUse  Y
+    fc00:0:1111:e004::          uDT4              'default'                         bgp-65000           InUse  Y 
+    fc00:0:1111:e005::          uDT6              'default'                         bgp-65000           InUse  Y 
     ```
+    
 > [!NOTE]
 > The bottom two entries. These SIDs belong to BGP and represent End.DT behaviors. Any packet arriving with either of these SIDs as the outer IPv6 destination address will be decapsulated and then an LPM lookup in the global/default routing table will be performed on the inner destination address. 
 
