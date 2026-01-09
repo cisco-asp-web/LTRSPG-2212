@@ -347,7 +347,6 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
                                        Local           fc00:0:6666::1
 
     Processed 1 prefixes, 2 paths
-    RP/0/RP0/CPU0:london#
     ```
 
 3. Verify that router **London-xrd01** has received route ```fc00:0:107:1::/64``` from the route reflectors **Paris-xrd05** and **Barcelona-xrd06**. Look for ```Paths: (2 available)```
