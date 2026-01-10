@@ -24,6 +24,7 @@ metadata:
   labels:
     app: srv6-pytorch
     role: master
+    vrf: carrots
   annotations:
     k8s.v1.cni.cncf.io/networks: |
       [{
@@ -89,6 +90,7 @@ metadata:
   labels:
     app: srv6-pytorch
     role: worker
+    vrf: carrots
   annotations:
     k8s.v1.cni.cncf.io/networks: |
       [{
@@ -155,6 +157,7 @@ metadata:
   labels:
     app: srv6-pytorch
     role: worker
+    vrf: carrots
   annotations:
     k8s.v1.cni.cncf.io/networks: |
       [{
