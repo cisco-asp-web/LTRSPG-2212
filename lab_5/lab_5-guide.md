@@ -120,7 +120,7 @@ segment-routing
 
 ### Jalapeno and Modeling Networks as Graphs
 
-Using the [Lab 5 scripts and data](./jalapeno/backend/) we've created a model of our SONiC fabric topology with relevant SRv6 data in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
+Using the [Lab 5 scripts and data](./jalapeno/backend/) we've created a model of our SONiC fabric/SRv6 topology data in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
 
 Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new tab/window. First select "Topology Viewer", second "fabric graph".
 
@@ -143,13 +143,15 @@ When you start a distributed training workload, PyTorch initializes a process gr
 
 ### SRv6 PyTorch Plugin
 
-Before NCCL/Gloo starts communicating, the SRv6 PyTorch plugin will:
+We built an SRv6 Plugin for Pytorch!
+
+In a few moments we'll launch a PyTorch test in our London K8s cluster. Immediately after the containers deploy PyTorch will initialize. Then before NCCL/Gloo starts communicating, the SRv6 PyTorch plugin will:
 
   - Get the list of nodes from the distributed workload setup
   - Query the Jalapeno API for a shortest-path (lowest *`load`* metric) for each *source/destination* pair
   - The API returns an SRv6 uSID encapsulation instruction for each *source/destination* pair that will pin traffic to a specific path in the fabric
-  - The *plugin* then programs local Linux SRv6 routes on each node, similar to the route we manually programmed earlier on *`london-vm-00`*. 
-  - The distributed workload's traffic is SRv6 encapsulated as it egresses the source *pod*
+  - The *`srv6 plugin`* then programs Linux SRv6 routes on the *container*, similar to the route we manually programmed earlier on *`london-vm-00`*. 
+  - The distributed workload's traffic is SRv6 encapsulated as it egresses the source *container*
 
 The effect is the workload's traffic is intelligently load balanced across the fabric and no longer subject to the potential imbalances and congestion associated with ECMP
 
