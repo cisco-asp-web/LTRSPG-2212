@@ -19,6 +19,7 @@ In Lab 5 we will explore this use case with our SONiC backend fabric and the att
     - [PyTorch Distributed Training](#pytorch-distributed-training)
     - [SRv6 PyTorch Plugin](#srv6-pytorch-plugin)
     - [Deploying the SRv6 PyTorch Pods](#deploying-the-srv6-pytorch-pods)
+      - [Should we have them startup Edgshark on sonic spine01 in advance of container deployment and automatic pinging?](#should-we-have-them-startup-edgshark-on-sonic-spine01-in-advance-of-container-deployment-and-automatic-pinging)
   - [End of lab 5](#end-of-lab-5)
 
 
@@ -188,6 +189,8 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    cd ~/LTRSPG-2212/lab_5/srv6-pytorch/
    ```
 
+#### Should we have them startup Edgshark on sonic spine01 in advance of container deployment and automatic pinging?
+
 2. Use the *kubectl apply* command to deploy the *srv6-plugin* test pods:
 
    ```
@@ -224,18 +227,54 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    Adding route to fcbb:0:800:2::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1002:1006:fe06::']} to table 254
    ```
 
-   Optional: the other two *srv6-pytorch* pods should have very similar log output
+   Optional: the other two *`srv6-pytorch`* pods should have very similar log output
    ```
    kubectl logs -f srv6-pytorch-1
    kubectl logs -f srv6-pytorch-2
    ```
+
+We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at the first few lines of the pod spec you'll see that in addition to the default Cilium-provided frontend interface, the pod has been configured to have a backend, Multus provided, interface. And we've configured the pods to join *VRF carrots*:
+
+   ```diff
+   kind: Pod
+   metadata:
+   name: srv6-pytorch-0
+   labels:
+      app: srv6-pytorch
+      role: master
+   +   vrf: carrots
+   annotations:
+      k8s.v1.cni.cncf.io/networks: |
+         [{
+   +      "name": "backend-network",
+   +      "ips": ["fcbb:0:0800:0::10/64"]
+         }]
+   ```
+
+4. Run a *kubectl* command to get the first worker pod's IP and VRF info:
+   ```
+   kubectl get pod srv6-pytorch-1 -o jsonpath="Node: {.spec.nodeName} | IPs: {.status.podIPs[*].ip} | VRF: {.metadata.labels.vrf}" && echo
+   ```
+
+   Expected output should be something like:
+   ```
+   Node: london-vm-01 | IPs: 10.200.1.71 2001:db8:42:2::da42 | VRF: carrots
+   ```
+
+5. Run a ping from an *`srv6-pytorch`* worker pod to the remote Rome container in *VRF carrots*
+   
+   ```
+   kubectl exec -it srv6-pytorch-1 -- ping 10.107.2.2 -i .4
+   ```
+
+   An Edgeshark capture on the **london xrd01** router's core facing interfaces (Gi0/0/0/1 and/or Gi0/0/0/2) should show the pings as SRv6 encapsulated L3VPN packets
 
 **need updated screenshot**
    Screenshot of output from *`srv6-pytorch-0`* pod with comments (each terminal should have similar output):
 
    ![srv6-pytorch-0](../topo_drawings/lab5-pytorch-output.png)
 
-4. Optional: exec into a pod and manually check the Linux ipv6 routes, run some pings, do some Edgshark-ing!
+6. Optional: exec into one of the *`srv6-pytorch`* pods and manually check the Linux ipv6 routes, run some backend network pings, do some Edgshark-ing!
     ```
     kubectl exec -it srv6-pytorch-0 -- bash
     ```
