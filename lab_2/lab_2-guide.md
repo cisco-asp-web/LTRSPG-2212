@@ -94,7 +94,7 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
    
      The *carrots* L3VPN is dual-stack so we will be adding both vpnv4 and vpnv6 address-families to the BGP neighbor-group for ipv6 peers. For example you will enable L3VPN in the neighbor-group template by issuing the *address-family vpnv4/6 unicast* command. 
 
-    **rome-xrd07**
+    **Rome-xrd07**
     ```yaml
     conf t
     router bgp 65000
