@@ -3,7 +3,7 @@
 ### Description
 In Lab 2 we will establish an SRv6 Layer-3 VPN named *`carrots`*.  The *carrots* vrf will include the *London "storage"* and *Rome* containers connected to **london-xrd01** and **rome-xrd07**.  
 
-Once the L3VPN is established we will then setup SRv6-TE traffic steering from *London* such that traffic to *Rome* prefix 40.0.0.0/24 will take a differnt path than traffic to Rome prefix 50.0.0.0/24.
+Once the L3VPN is established we will then setup SRv6-TE traffic steering from *London* such that traffic to *Rome* prefix 40.0.0.0/24 will take a different path than traffic to Rome prefix 50.0.0.0/24.
 
 ## Contents
 - [Lab 2: Configure SRv6 L3VPN and SRv6-TE \[20 Min\]](#lab-2-configure-srv6-l3vpn-and-srv6-te-20-min)
@@ -82,7 +82,7 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
           commit
     ```
 2. Verify **Rome** VRF prefix reachability  
-    Ping check from xrd07 gi 0/0/0/3 to Rome's 2nd NIC:  
+    Ping check from Rome-xrd07 gi 0/0/0/3 to Rome's Container 2nd NIC:  
     ```
     ping vrf carrots 10.107.2.1
     ping vrf carrots 40.0.0.1
