@@ -48,7 +48,7 @@ spec:
   nodeName: london-vm-00
   containers:
   - name: test
-    image: ubuntu:24.04
+    image: docker.io/library/alpine:latest
     imagePullPolicy: IfNotPresent
     command: ["/bin/bash", "-c"]
     args:
@@ -102,7 +102,7 @@ spec:
   nodeName: london-vm-01
   containers:
   - name: test
-    image: ubuntu:24.04
+    image: docker.io/library/alpine:latest
     imagePullPolicy: IfNotPresent
     command: ["/bin/bash", "-c"]
     args:
