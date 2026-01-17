@@ -22,7 +22,7 @@ https://containerlab.dev/
     - [Add Synthetic Latency to the Links](#add-synthetic-latency-to-the-links)
   - [Validate BGP Peering](#validate-bgp-peering)
   - [Configure and Validate SRv6](#configure-and-validate-srv6)
-    - [Configure SRv6 on xrd01](#configure-srv6-on-xrd01)
+    - [Configure SRv6 on London xrd01](#configure-srv6-on-london-xrd01)
     - [Configure SRv6 on xrd07](#configure-srv6-on-xrd07)
     - [Validate SRv6 configuration and reachability](#validate-srv6-configuration-and-reachability)
   - [End-to-End Connectivity - Edgeshark](#end-to-end-connectivity---edgeshark)
@@ -291,7 +291,7 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
     Overall, the SPF results confirm a healthy, loop-free WAN core with consistent metrics and deterministic path selection, suitable for advanced traffic engineering mechanisms such as SRv6.
 
 
-2. On **xrd01** validate end-to-end ISIS reachability by pinging **xrd07**:
+2. On **London-xrd01** validate end-to-end ISIS reachability by pinging **Rome-xrd07**:
    ```
    ping 10.0.0.7 source lo0
    ping fc00:0000:7777::1 source lo0
@@ -410,7 +410,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
 > [!NOTE]
 > We've preconfigured SRv6 on **xrd02** thru **xrd06**, so you'll only need to configure **xrd01** and **xrd07**
 
-### Configure SRv6 on xrd01
+### Configure SRv6 on London xrd01
 1. SSH to **London-xrd01** and enable SRv6 globally and define SRv6 locator and source address for outbound encapsulation 
 
 
@@ -576,6 +576,4 @@ Clicking on the interface will automatically launch wireshark and starts the cap
 
 ## End of Lab 1
 
-Lab 1 is completed, you can either: 
-  - Perform the optional [Lab 1 packet walk](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_1/lab_1-packet-walk.md)
-  - Proceed to [Lab 2](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_2/lab_2-guide.md)
+Lab 1 is completed, please proceed to [Lab 2](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_2/lab_2-guide.md)
