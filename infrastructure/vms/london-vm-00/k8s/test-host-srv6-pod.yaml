@@ -42,7 +42,7 @@ metadata:
     k8s.v1.cni.cncf.io/networks: |
       [{
         "name": "host-srv6-test-network",
-        "ips": ["fcbb:0:0800:a::10/126"]
+        "ips": ["fcbb:0:0800::11/120"]
       }]
 spec:
   nodeName: london-vm-00
@@ -64,13 +64,13 @@ spec:
         echo "Routes (should NOT have SRv6 routes):"
         ip -6 route show
         echo ""
-        echo "Default gateway should be fcbb:0:0800:a::9 (host ens5)"
+        echo "Default gateway should be fcbb:0:0800::1 (host ens5)"
         echo ""
         echo "Pod ready. Use 'kubectl exec -it host-srv6-test-0 -- bash' to test."
         echo ""
         echo "Test commands:"
-        echo "  ping6 -c 3 fcbb:0:0800:a::9     # ping host gateway"
-        echo "  ping6 -c 3 fcbb:0:0801:a::10    # ping remote pod (via host SRv6)"
+        echo "  ping6 -c 3 fcbb:0:0800::1     # ping host gateway"
+        echo "  ping6 -c 3 fcbb:0:0800:1::11    # ping remote pod (via host SRv6)"
         echo ""
         sleep 3600
     securityContext:
@@ -96,7 +96,7 @@ metadata:
     k8s.v1.cni.cncf.io/networks: |
       [{
         "name": "host-srv6-test-network",
-        "ips": ["fcbb:0:0801:a::10/126"]
+        "ips": ["fcbb:0:0800:1::11/120"]
       }]
 spec:
   nodeName: london-vm-01
@@ -118,7 +118,7 @@ spec:
         echo "Routes (should NOT have SRv6 routes):"
         ip -6 route show
         echo ""
-        echo "Default gateway should be fcbb:0:0801:a::9 (host ens5)"
+        echo "Default gateway should be fcbb:0:0800::1 (host ens5)"
         echo ""
         echo "Pod ready. Use 'kubectl exec -it host-srv6-test-1 -- bash' to test."
         sleep 3600
