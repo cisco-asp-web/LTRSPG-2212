@@ -1,0 +1,136 @@
+# Test pod for host-based SRv6 encapsulation feasibility test
+#
+# This pod uses the host-srv6-test-network NAD which uses ipvlan L3 mode.
+# The pod does NOT have any SRv6 routes - all SRv6 encapsulation is done
+# on the host's ens5 interface.
+#
+# SETUP STEPS:
+# 
+# 1. Apply the NAD:
+#    kubectl apply -f test-host-srv6-nad.yaml
+#
+# 2. On the host, add an IP to act as the gateway for the pod subnet:
+#    sudo ip -6 addr add fcbb:0:0800:a::9/126 dev ens5
+#
+# 3. Enable IPv6 forwarding on the host:
+#    sudo sysctl -w net.ipv6.conf.all.forwarding=1
+#    sudo sysctl -w net.ipv6.conf.ens5.forwarding=1
+#
+# 4. Enable SRv6 on the host:
+#    sudo sysctl -w net.ipv6.conf.all.seg6_enabled=1
+#    sudo sysctl -w net.ipv6.conf.ens5.seg6_enabled=1
+#
+# 5. Add SRv6 route on the host for remote destination:
+#    # Example: route to london-vm-01's test pod via SRv6
+#    sudo ip -6 route add fcbb:0:0801:a::10/128 encap seg6 mode encap segs fc00:0:801:: dev ens5
+#
+# 6. Deploy the test pod:
+#    kubectl apply -f test-host-srv6-pod.yaml
+#
+# 7. Test from inside the pod:
+#    kubectl exec -it host-srv6-test-0 -- ping6 fcbb:0:0801:a::10
+#
+# Apply with: kubectl apply -f test-host-srv6-pod.yaml
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: host-srv6-test-0
+  labels:
+    app: host-srv6-test
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "host-srv6-test-network",
+        "ips": ["fcbb:0:0800:a::10/126"]
+      }]
+spec:
+  nodeName: london-vm-00
+  containers:
+  - name: test
+    image: ubuntu:24.04
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        apt-get update && apt-get install -y iproute2 iputils-ping tcpdump net-tools curl > /dev/null 2>&1
+        echo "==========================================="
+        echo "Host-based SRv6 encapsulation test pod"
+        echo "==========================================="
+        echo ""
+        echo "Network interfaces:"
+        ip addr show net1
+        echo ""
+        echo "Routes (should NOT have SRv6 routes):"
+        ip -6 route show
+        echo ""
+        echo "Default gateway should be fcbb:0:0800:a::9 (host ens5)"
+        echo ""
+        echo "Pod ready. Use 'kubectl exec -it host-srv6-test-0 -- bash' to test."
+        echo ""
+        echo "Test commands:"
+        echo "  ping6 -c 3 fcbb:0:0800:a::9     # ping host gateway"
+        echo "  ping6 -c 3 fcbb:0:0801:a::10    # ping remote pod (via host SRv6)"
+        echo ""
+        sleep 3600
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN"]
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+  restartPolicy: Never
+---
+# Corresponding pod for london-vm-01 (deploy on that node)
+apiVersion: v1
+kind: Pod
+metadata:
+  name: host-srv6-test-1
+  labels:
+    app: host-srv6-test
+  annotations:
+    k8s.v1.cni.cncf.io/networks: |
+      [{
+        "name": "host-srv6-test-network",
+        "ips": ["fcbb:0:0801:a::10/126"]
+      }]
+spec:
+  nodeName: london-vm-01
+  containers:
+  - name: test
+    image: ubuntu:24.04
+    imagePullPolicy: IfNotPresent
+    command: ["/bin/bash", "-c"]
+    args:
+      - |
+        apt-get update && apt-get install -y iproute2 iputils-ping tcpdump net-tools curl > /dev/null 2>&1
+        echo "==========================================="
+        echo "Host-based SRv6 encapsulation test pod"
+        echo "==========================================="
+        echo ""
+        echo "Network interfaces:"
+        ip addr show net1
+        echo ""
+        echo "Routes (should NOT have SRv6 routes):"
+        ip -6 route show
+        echo ""
+        echo "Default gateway should be fcbb:0:0801:a::9 (host ens5)"
+        echo ""
+        echo "Pod ready. Use 'kubectl exec -it host-srv6-test-1 -- bash' to test."
+        sleep 3600
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN"]
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "50m"
+      limits:
+        memory: "128Mi"
+        cpu: "100m"
+  restartPolicy: Never
+

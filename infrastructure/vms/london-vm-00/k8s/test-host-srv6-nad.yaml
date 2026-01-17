@@ -1,0 +1,30 @@
+# NetworkAttachmentDefinition for testing host-based SRv6 encapsulation
+#
+# This NAD uses ipvlan L3 mode where the HOST acts as a router.
+# Traffic from the pod goes through the host's network stack,
+# allowing the infrastructure to apply SRv6 encapsulation at the host level.
+#
+# Key difference from macvlan:
+# - macvlan: pod traffic bypasses host, goes directly to wire
+# - ipvlan L3: pod traffic routes through host, host can encapsulate
+#
+# Apply with: kubectl apply -f test-host-srv6-nad.yaml
+---
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: host-srv6-test-network
+  namespace: default
+spec:
+  config: |
+    {
+      "cniVersion": "0.3.1",
+      "name": "host-srv6-test-network",
+      "type": "ipvlan",
+      "master": "ens5",
+      "mode": "l3",
+      "ipam": {
+        "type": "static"
+      }
+    }
+
