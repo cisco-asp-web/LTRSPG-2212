@@ -50,7 +50,7 @@ spec:
   - name: test
     image: docker.io/library/alpine:latest
     imagePullPolicy: IfNotPresent
-    command: ["/bin/bash", "-c"]
+    command: ["/bin/sh", "-c"]
     args:
       - |
         apt-get update && apt-get install -y iproute2 iputils-ping tcpdump net-tools curl > /dev/null 2>&1
@@ -66,7 +66,7 @@ spec:
         echo ""
         echo "Default gateway should be fcbb:0:0800::1 (host ens5)"
         echo ""
-        echo "Pod ready. Use 'kubectl exec -it host-srv6-test-0 -- bash' to test."
+        echo "Pod ready. Use 'kubectl exec -it host-srv6-test-0 -- sh' to test."
         echo ""
         echo "Test commands:"
         echo "  ping6 -c 3 fcbb:0:0800::1     # ping host gateway"
@@ -104,7 +104,7 @@ spec:
   - name: test
     image: docker.io/library/alpine:latest
     imagePullPolicy: IfNotPresent
-    command: ["/bin/bash", "-c"]
+    command: ["/bin/sh", "-c"]
     args:
       - |
         apt-get update && apt-get install -y iproute2 iputils-ping tcpdump net-tools curl > /dev/null 2>&1
@@ -120,7 +120,7 @@ spec:
         echo ""
         echo "Default gateway should be fcbb:0:0800::1 (host ens5)"
         echo ""
-        echo "Pod ready. Use 'kubectl exec -it host-srv6-test-1 -- bash' to test."
+        echo "Pod ready. Use 'kubectl exec -it host-srv6-test-1 -- sh' to test."
         sleep 3600
     securityContext:
       capabilities:
