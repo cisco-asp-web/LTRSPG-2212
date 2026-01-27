@@ -210,7 +210,7 @@ The same credentials used for the IOS-XRd routers apply.
 In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Cilium** Container Network Interface (CNI) and connected to the **London** router.
 
 
-1. From the topology host terminal in visual code, SSH to *London-vm-00* 
+1. <u><strong>From the topology host terminal</u></strong> in visual code, SSH to *London-vm-00* 
     ```
     ssh cisco@london-vm-00
     ```
