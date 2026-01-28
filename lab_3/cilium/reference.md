@@ -10,6 +10,12 @@ kubectl get IsovalentBGPVRFConfig -A
 kubectl get IsovalentBGPAdvertisement -A
 kubectl get IsovalentBGPNodeConfigOverride -A
 kubectl get IsovalentSRv6EgressPolicy -A 
+kubectl get IsovalentSRv6EgressPolicy -o yaml
+kubectl get IsovalentSRv6EgressPolicy -o jsonpath="{.items[*].spec}" | jq
+kubectl get IsovalentSRv6EgressPolicy -o jsonpath="{.items[*].spec}" | jq
+kubectl get IsovalentSRv6EgressPolicy -o jsonpath="Name: {.items.metadata.name} | Spec: {.items.spec}"
+
+   echo && kubectl get sidmanager london-vm-02 -o jsonpath="Host: {.metadata.name} | VRF: {.status.sidAllocations[*].sids[*].metadata} | SID: {.status.sidAllocations[*].sids[*].sid.addr} | Behavior: {.status.sidAllocations[*].sids[*].behavior}" && echo
 kubectl get IsovalentSRv6SIDManager -A
 !
 kubectl -n cilium logs ds/cilium | grep -i bgp

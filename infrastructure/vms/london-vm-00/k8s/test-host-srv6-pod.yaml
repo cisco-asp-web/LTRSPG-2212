@@ -64,7 +64,7 @@ spec:
         echo "Routes (should NOT have SRv6 routes):"
         ip -6 route show
         echo ""
-        echo "Default gateway should be fcbb:0:0800::1 (host ens5)"
+        echo "Default gateway should be fcbb:0:0800::2 (host ens5)"
         echo ""
         echo "Pod ready. Use 'kubectl exec -it host-srv6-test-0 -- sh' to test."
         echo ""
@@ -118,7 +118,7 @@ spec:
         echo "Routes (should NOT have SRv6 routes):"
         ip -6 route show
         echo ""
-        echo "Default gateway should be fcbb:0:0800::1 (host ens5)"
+        echo "Default gateway should be fcbb:0:0800:1::2 (host ens5)"
         echo ""
         echo "Pod ready. Use 'kubectl exec -it host-srv6-test-1 -- sh' to test."
         sleep 3600
