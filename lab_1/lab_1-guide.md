@@ -25,7 +25,7 @@ https://containerlab.dev/
     - [Configure SRv6 on London xrd01](#configure-srv6-on-london-xrd01)
     - [Configure SRv6 on xrd07](#configure-srv6-on-xrd07)
     - [Validate SRv6 configuration and reachability](#validate-srv6-configuration-and-reachability)
-  - [End-to-End Connectivity - Edgeshark](#end-to-end-connectivity---edgeshark)
+  - [Edgeshark introduction](#edgeshark-introduction)
   - [End of Lab 1](#end-of-lab-1)
   
 ## Lab Objectives
@@ -558,7 +558,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
     ```
 
 
-## End-to-End Connectivity - Edgeshark
+## Edgeshark introduction
 
 
 EdgeShark is a browser-based packet capture and analysis tool built into Containerlab. Key features of Edgeshark for our lab.
