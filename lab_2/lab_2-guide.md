@@ -65,7 +65,6 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
 1. **rome-xrd07** vrf static route configuration
    
    SSH into rome-xrd07 and copy/paste the static route config below the image:
-   ![ssh into xrd07](../topo_drawings/lab1-ssh-xrd07.png)
 
    **rome-xrd07**
    ```yaml
