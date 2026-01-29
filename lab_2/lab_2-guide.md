@@ -74,11 +74,11 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
       router static
         vrf carrots
           address-family ipv4 unicast
-            40.0.0.0/24 10.107.2.2
-            50.0.0.0/24 10.107.2.2
+            40.0.0.0/24 10.107.1.2
+            50.0.0.0/24 10.107.1.2
           address-family ipv6 unicast
-            fc00:0:40::/64 fc00:0:107:2::2
-            fc00:0:50::/64 fc00:0:107:2::2
+            fc00:0:40::/64 fc00:0:107:1::2
+            fc00:0:50::/64 fc00:0:107:1::2
           commit
     ```
 2. Verify **Rome** VRF prefix reachability  
