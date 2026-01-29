@@ -349,32 +349,32 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
     Processed 1 prefixes, 2 paths
     ```
 
-3. Verify that router **London-xrd01** has received route ```fc00:0:107:1::/64``` from the route reflectors **Paris-xrd05** and **Barcelona-xrd06**. Look for ```Paths: (2 available)```
+3. Verify that router **London-xrd01** has received route ```fc00:0:7777::1/128``` from the route reflectors **Paris-xrd05** and **Barcelona-xrd06**. Look for ```Paths: (2 available)```. (fc00:0:7777::1/128 is the loopback interface of the **Rome-xrd07 router**)
     ```
     show bgp ipv6 unicast fc00:0:107:1::/64
     ```
 
     ```
-    RP/0/RP0/CPU0:london#show bgp ipv6 unicast fc00:0:107:1::/64
-    Thu Jan  8 18:08:16.247 UTC
-    BGP routing table entry for fc00:0:107:1::/64
+    RP/0/RP0/CPU0:london#show bgp ipv6 unicast fc00:0:7777::1/128
+    Thu Jan 29 05:10:12.500 UTC
+    BGP routing table entry for fc00:0:7777::1/128
     Versions:
       Process           bRIB/RIB   SendTblVer
-      Speaker                 11           11
-    Last Modified: Jan  8 04:01:44.102 for 14:06:32
+      Speaker                 10           10
+    Last Modified: Jan 29 05:02:04.686 for 00:08:07
     Paths: (2 available, best #1)
       Not advertised to any peer
       Path #1: Received by speaker 0
-        Not advertised to any peer
-          Local
-            fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)              <------ origin from xrd07
-            Origin IGP, metric 0, localpref 100, valid, internal, best, group-best
-            Received Path ID 0, Local Path ID 1, version 11
+      Not advertised to any peer
+      Local
+        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)                  <------ origin from xrd07
+          Origin IGP, metric 0, localpref 100, valid, internal, best, group-best
+          Received Path ID 0, Local Path ID 1, version 10
           Originator: 10.0.0.7, Cluster list: 10.0.0.5                            <------ route reflector xrd05
       Path #2: Received by speaker 0
-        Not advertised to any peer
-        Local
-          fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)                <------ origin from xrd07
+      Not advertised to any peer
+      Local
+        fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)                  <------ origin from xrd07
           Origin IGP, metric 0, localpref 100, valid, internal
           Received Path ID 0, Local Path ID 0, version 0
           Originator: 10.0.0.7, Cluster list: 10.0.0.6                            <------ route reflector xrd06
