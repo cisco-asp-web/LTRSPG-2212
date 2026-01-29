@@ -401,19 +401,19 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
  
    *** Locator: 'MyLocator' *** 
 
-   SID                         Behavior          Context                           Owner               State  RW
-   --------------------------  ----------------  --------------------------------  ------------------  -----  --
-   fc00:0:1111::               uN (PSP/USD)      'default':4369                    sidmgr              InUse  Y 
-   fc00:0:1111:e000::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0:P       isis-100            InUse  Y 
-   fc00:0:1111:e001::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0         isis-100            InUse  Y 
-   fc00:0:1111:e002::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0:P       isis-100            InUse  Y 
-   fc00:0:1111:e003::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0         isis-100            InUse  Y 
-   fc00:0:1111:e004::          uDT6              'default'                         bgp-65000           InUse  Y 
-   fc00:0:1111:e005::          uDT4              'default'                         bgp-65000           InUse  Y 
+   SID                         Behavior          Context                            Owner               State  RW
+   --------------------------  ----------------  --------------------------------   ------------------  -----  --
+    fc00:0:1111::               uN (PSP/USD)      'default':4369                     sidmgr              InUse  Y 
+    fc00:0:1111:e000::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0:P        isis-100            InUse  Y 
+    fc00:0:1111:e001::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0          isis-100            InUse  Y 
+    fc00:0:1111:e002::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0:P        isis-100            InUse  Y 
+    fc00:0:1111:e003::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0          isis-100            InUse  Y 
+    fc00:0:1111:e004::          uDT6              'default'                          bgp-65000           InUse  Y 
+    fc00:0:1111:e005::          uDT4              'default'                          bgp-65000           InUse  Y 
+    fc00:0:1111:e008::          uDT4              'carrots'                          bgp-65000           InUse  Y 
+    fc00:0:1111:e009::          uDT6              'carrots'                          bgp-65000           InUse  Y
    +fc00:0:1111:e006::          uB6 (Insert.Red)  'srte_c_50_ep_fc00:0:7777::1' (50, fc00:0:7777::1)  xtc_srv6            InUse  Y 
-   +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y 
-   fc00:0:1111:e008::          uDT4              'carrots'                         bgp-65000           InUse  Y 
-   fc00:0:1111:e009::          uDT6              'carrots'                         bgp-65000           InUse  Y 
+   +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y  
    ```
    
    ```diff
