@@ -82,12 +82,12 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
           commit
     ```
 2. Verify **Rome** VRF prefix reachability  
-    Ping check from Rome-xrd07 gi 0/0/0/3 to Rome's Container 2nd NIC:  
+    Ping check from Rome-xrd07 gi 0/0/0/0 to Rome's Container NIC:  
     ```
-    ping vrf carrots 10.107.2.1
+    ping vrf carrots 10.107.1.1
     ping vrf carrots 40.0.0.1
     ping vrf carrots 50.0.0.1
-    ping vrf carrots fc00:0:107:2::2
+    ping vrf carrots fc00:0:107:1::2
     ```
 
 3. Enable BGP L3VPN on **rome-xrd07**
