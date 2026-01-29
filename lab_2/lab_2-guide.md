@@ -51,7 +51,7 @@ The VRF instances and their interfaces have been preconfigured, allowing us to f
 Optional: if you wish to see the existing VRF configuration run these commands on *rome-xrd07*:
 ```
 show run vrf
-show run interface GigabitEthernet 0/0/0/3
+show run interface GigabitEthernet 0/0/0/0
 ```
 
 ### Configure SRv6 L3VPN on rome-xrd07
