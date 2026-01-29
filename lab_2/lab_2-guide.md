@@ -185,13 +185,12 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
 > It can take a few seconds after configuration before you see routes populate through the network and be visible in the routing tables.
 
 > [!IMPORTANT]
-> **london-xrd01** and **rome-xrd07** are configured to use dynamic RD allocation, so the L3VPN RD+prefix combination shown in the lab guide may differ from the one you see in your environment. For example, **rome-xrd07** might advertise the 40.0.0.0/24 prefix with rd 10.0.0.7:0 or it might be rd 10.0.0.7:1
 > 
 1. From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). Again be aware the rd value may differ then those in the below commands:
    ```
    show segment-routing srv6 sid
    show bgp vpnv4 unicast
-   show bgp vpnv4 unicast rd 10.0.0.7:1 40.0.0.0/24
+   show bgp vrf carrots 40.0.0.0/24
    show bgp vpnv6 unicast
    ping vrf carrots 40.0.0.1
    ping vrf carrots 50.0.0.1
@@ -199,15 +198,15 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    
    Example validation for vpnv4 route
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 unicast rd 10.0.0.7:1 40.0.0.0/24   
+   RP/0/RP0/CPU0:xrd01#show bgp vrf carrots 40.0.0.0/24   
    Tue Jan 31 23:36:41.390 UTC
    +BGP routing table entry for 40.0.0.0/24, Route Distinguisher: 10.0.0.7:1   <--- WE HAVE A ROUTE. YAH
    Versions:
      Process           bRIB/RIB  SendTblVer
      Speaker                  11           11
-     Last Modified: Jan 31 23:34:44.948 for 00:01:56
-     Paths: (2 available, best #1)
-       Not advertised to any peer
+   Last Modified: Jan 31 23:34:44.948 for 00:01:56
+     Paths: (1 available, best #1)
+     Not advertised to any peer
      Path #1: Received by speaker 0
      Not advertised to any peer
      Local
@@ -220,20 +219,6 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
          PSID-Type:L3, SubTLV Count:1
          SubTLV:
    +        T:1(Sid information), Sid:fc00:0:7777::, Behavior:63, SS-TLV Count:1   <-- SRv6 Locator for source node
-           SubSubTLV:
-             T:1(Sid structure):
-     Path #2: Received by speaker 0
-     Not advertised to any peer
-     Local
-       fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)
-         Received Label 0xe0040
-         Origin incomplete, metric 0, localpref 100, valid, internal, import-candidate, not-in-vrf
-         Received Path ID 0, Local Path ID 0, version 0
-         Extended community: RT:9:9 
-   +      Originator: 10.0.0.7, Cluster list: 10.0.0.6             <------- FROM RR xrd06
-         PSID-Type:L3, SubTLV Count:1
-         SubTLV:
-           T:1(Sid information), Sid:fc00:0:7777::, Behavior:63, SS-TLV Count:1
            SubSubTLV:
              T:1(Sid structure):
    ```
