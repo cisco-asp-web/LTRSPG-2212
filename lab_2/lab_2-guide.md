@@ -161,11 +161,10 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
     commit
     ```
 
-2. Configure Route Reflector **paris-xrd05**  
+#### Route Reflectors Configuration 
    
-    The BGP route reflectors will also need to have L3VPN capability added to their peering group. **barcelona-xrd06** has been preconfigured, so you only need to configure **paris-xrd05**
+The BGP route reflectors **paris-xrd05** and **barcelona** also need L3VPN configuration added to their peering group. In order to save some time we've preconfigured both with this:
    
-     Using the visual code extension, ssh to **paris-xrd05** and apply the configuration in a single step:
 
     ```yaml
     conf t
