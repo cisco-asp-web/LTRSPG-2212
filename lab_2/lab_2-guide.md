@@ -250,16 +250,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
 
    ```diff
    RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
-   Thu Jan 23 17:12:01.018 UTC
-   BGP routing table entry for 40.0.0.0/24, Route Distinguisher: 10.0.0.1:0
-   Versions:
-     Process           bRIB/RIB   SendTblVer
-     Speaker                 63           63
-   Last Modified: Jan 23 17:11:58.418 for 00:00:02
-   Paths: (1 available, best #1)
-     Not advertised to any peer
-     Path #1: Received by speaker 0
-     Not advertised to any peer
+   <snip> 
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
         Received Label 0xe0060
