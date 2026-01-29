@@ -76,9 +76,6 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
           address-family ipv4 unicast
             40.0.0.0/24 10.107.1.2
             50.0.0.0/24 10.107.1.2
-          address-family ipv6 unicast
-            fc00:0:40::/64 fc00:0:107:1::2
-            fc00:0:50::/64 fc00:0:107:1::2
           commit
     ```
 2. Verify **Rome** VRF prefix reachability  
@@ -198,11 +195,8 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    show bgp vpnv4 unicast
    show bgp vpnv4 unicast rd 10.0.0.7:1 40.0.0.0/24
    show bgp vpnv6 unicast
-   show bgp vpnv6 unicast rd 10.0.0.7:1 fc00:0:40::/64 
    ping vrf carrots 40.0.0.1
    ping vrf carrots 50.0.0.1
-   ping vrf carrots fc00:0:40::1
-   ping vrf carrots fc00:0:50::1
    ```
    
    Example validation for vpnv4 route
@@ -247,11 +241,11 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    ```
 
 ## Configure SRv6-TE steering for L3VPN
-**Rome's** L3VPN IPv4 and IPv6 prefixes are associated with two classes of traffic:
+**Rome's** L3VPN IPv4 prefixes are associated with two classes of traffic:
 
-* The **"40"** destinations (40.0.0.0/24 and fc00:0:40::/64) are bulk transport destinations (content replication or data backups) and thus are latency and loss tolerant. 
+* The **"40"** destination (40.0.0.0/24) is bulk transport destination (content replication or data backups) and thus latency and loss tolerant. 
   
-* The **"50"** destinations (50.0.0.0/24 and fc00:0:50::/64) are for real time traffic (live video, etc.) and thus require the lowest latency path available.
+* The **"50"** destination (50.0.0.0/24) is for real time traffic (live video, etc.) and thus require the lowest latency path available.
 
 We will use the below diagram for reference:
 
@@ -318,12 +312,6 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
      if destination in (50.0.0.0/24) then
        set extcommunity color low-latency
      endif
-     if destination in (fc00:0:40::/64) then
-       set extcommunity color bulk-transfer
-     endif
-     if destination in (fc00:0:50::/64) then
-       set extcommunity color low-latency
-     endif
      pass
    end-policy
 
@@ -346,8 +334,6 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
    show bgp vpnv4 uni vrf carrots 40.0.0.0/24 
    show bgp vpnv4 uni vrf carrots 50.0.0.0/24
-   show bgp vpnv6 uni vrf carrots fc00:0:40::/64
-   show bgp vpnv6 uni vrf carrots fc00:0:50::/64
    ```
    
    Example:
@@ -583,11 +569,6 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
 
     Normally we might expect the tcpudmp output to show *5555:6666:7777* in the packet header, however, when the XRd headend router performs its SRv6-TE policy calculation it recognized that **paris-xrd05's** best path to **rome-xrd07** is through **barcelona-xrd06**, so it doesn't need to include the *6666* in the SID stack.
 
-    Optional: run the same ping test on *london-xrd01* using the IPv6 address and capture the traffic.
-    
-    ```
-    ping fc00:0:50::1 -i .5
-    ```
 
 ## End of Lab 2
 Please proceed to [Lab 3](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_3/lab_3-guide.md)
