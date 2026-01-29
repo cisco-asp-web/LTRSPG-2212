@@ -262,14 +262,14 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
      Not advertised to any peer
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
-   +     Received Label 0xe0060
+        Received Label 0xe0060
          Origin incomplete, metric 0, localpref 100, valid, internal, best, group-best, import-candidate, imported
          Received Path ID 0, Local Path ID 1, version 63
-   +     Extended community: RT:9:9
+   +     Extended community: RT:9:9 <- NO COLOR OPTION APPLIED
          Originator: 10.0.0.7, Cluster list: 10.0.0.5
          PSID-Type:L3, SubTLV Count:1
           SubTLV:
-   +       T:1(Sid information), Sid:fc00:0:7777::(Transposed), Behavior:63, SS-TLV Count:1
+          T:1(Sid information), Sid:fc00:0:7777::(Transposed), Behavior:63, SS-TLV Count:1
                SubSubTLV:
              T:1(Sid structure):
          Source AFI: VPNv4 Unicast, Source VRF: default, Source Route Distinguisher: 10.0.0.7:1
@@ -329,7 +329,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
          Received Label 0xe0060
          Origin incomplete, metric 0, localpref 100, valid, internal, best, group-best, import-candidate, imported
          Received Path ID 0, Local Path ID 1, version 67
-   +     Extended community: Color:40 RT:9:9
+   +     Extended community: Color:40 RT:9:9  <- COLOR 40 APPLIED
          Originator: 10.0.0.7, Cluster list: 10.0.0.5
          PSID-Type:L3, SubTLV Count:1
           SubTLV:
