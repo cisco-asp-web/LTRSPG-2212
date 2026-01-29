@@ -448,7 +448,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
            Binding SID requested: Dynamic
            Binding SID behavior: uB6 (Insert.Red)
      Attributes:
-   +    Binding SID: fc00:0:1111:e009::
+   +    Binding SID: fc00:0:1111:e007::
        Forward Class: Not Configured
        Steering labeled-services disabled: no
        Steering BGP disabled: no
@@ -468,7 +468,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
          Received Path ID 0, Local Path ID 1, version 30
    +     Extended community: Color:40 RT:9:9                      
          Originator: 10.0.0.7, Cluster list: 10.0.0.5
-   +     SR policy color 40, up, not-registered, bsid fc00:0:1111:e009::   <---- Newly Configured Color Policy 
+   +     SR policy color 40, up, not-registered, bsid fc00:0:1111:e007::   <---- Newly Configured Color Policy 
    
          PSID-Type:L3, SubTLV Count:1
          SubTLV:
