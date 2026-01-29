@@ -351,7 +351,7 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
 
 3. Verify that router **London-xrd01** has received route ```fc00:0:7777::1/128``` from the route reflectors **Paris-xrd05** and **Barcelona-xrd06**. Look for ```Paths: (2 available)```. (fc00:0:7777::1/128 is the loopback interface of the **Rome-xrd07 router**)
     ```
-    show bgp ipv6 unicast fc00:0:107:1::/64
+    show bgp ipv6 unicast fc00:0:7777::1/128
     ```
 
     ```
