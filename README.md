@@ -101,3 +101,5 @@ Once you've connected to VPN all nodes in the lab can be accessed using a Remote
 ![windows-rdpy](./topo_drawings/windows-rdp.png)
 
 On the Windows virtual machine, please launch firefox you shoud arrive on the github page automatically. Please proceed to [LAB 1](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_1/lab_1-guide.md)
+
+test
