@@ -150,7 +150,6 @@ topology:
     - endpoints: ["xrd-paris:Gi0-0-0-2", "xrd-barcelona:Gi0-0-0-2"]                         # Link G
     - endpoints: ["xrd-barcelona:Gi0-0-0-0", "xrd-rome:Gi0-0-0-2"]                          # Link I
     - endpoints: ["xrd-rome:Gi0-0-0-0", "app-container-rome:eth1"]                          # Link J
-    - endpoints: ["xrd-rome:Gi0-0-0-3", "app-container-rome:eth2"]                          # Link K
 
     # London DC SONiC Network Links
     - endpoints: ["sonic-leaf-00:eth1", "sonic-spine-00:eth1"]
