@@ -221,6 +221,7 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    +        T:1(Sid information), Sid:fc00:0:7777::, Behavior:63, SS-TLV Count:1   <-- SRv6 Locator for source node
            SubSubTLV:
              T:1(Sid structure):
+         Source AFI: VPNv4 Unicast, Source VRF: default, Source Route Distinguisher: 10.0.0.7:0
    ```
 
 ## Configure SRv6-TE steering for L3VPN
