@@ -322,13 +322,13 @@ Here is a portion of the prefix advertisement CRD with notes:
    ```yaml
    Node         VRouter  Peer            Prefix            NextHop        Age       Attrs
    london-vm-00  65000    fc00:0:5555::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]       
-                65000    fc00:0:6666::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]
+                 65000    fc00:0:6666::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]
    ```
 
 ### Create the carrots BGP VRF
 Apply the BGP configuration for *vrf carrots* per the yaml file here: [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml)
 
-Earlier you saw we separated the BGP peering and IPv6 unicast route advertisement configurations into two yaml files. For the VRF we've got both VRF definition and route advertisement in a single file to illustrate the point about config modularity. Here is a brief overview of the BGP VRF CRD:
+Earlier you saw we separated the BGP peering and IPv6 route advertisement configs into two yaml files. For the VRF we've got both VRF definition and route advertisement in a single file to illustrate the point about config modularity. Here is a brief overview of the BGP VRF CRD:
   ```yaml
   ---
   apiVersion: isovalent.com/v1
@@ -364,21 +364,29 @@ Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID m
 
 ## Cilium SRv6 SID Manager and Locators
 Per Cilium Enterprise documentation:
-*The SID Manager manages a cluster-wide pool of SRv6 locator prefixes. You can define a prefix pool using the IsovalentSRv6LocatorPool resource. The Cilium Operator assigns a locator for each node from this prefix.*
+*The SID Manager manages a cluster-wide pool of SRv6 locator prefixes. You can define a prefix pool using the IsovalentSRv6LocatorPool CRD and the Cilium Operator will assign a locator for each node from this prefix.*
 
-So essentially we're going to configure a /40 range from which Cilium will allocate a /48 bit uSID-based locator to each node in the London K8s cluster.
+In the next step we will configure a /40 range from which Cilium will allocate a /48 bit SRv6 locator to each node in the London K8s cluster.
 
-Cilium also supports /64 locators, but for simplicity and consistency with our *xrd* nodes we're going to use the very commonly deployed /48 bit locators. Here is a portion of the yaml file CRD with notes:
+Cilium also supports /64 locators, but for simplicity and consistency with our *xrd* nodes we're going to use the very commonly deployed /48 bit locators. Here is the yaml file CRD with notes:
 
    ```yaml
+   apiVersion: isovalent.com/v1alpha1
+   kind: IsovalentSRv6LocatorPool
+   metadata:
+     name: pool0
+     labels:
+       export: "pool0"         # label for our BGP prefix advertisement CRD to match on
    behaviorType: uSID          # options are uSID or SRH
    prefix: fc00:0:8800::/40    # the larger /40 block from which a /48 would be allocated to each node in the cluster
    structure:
      locatorBlockLenBits: 32   # the uSID block length
      locatorNodeLenBits: 16    # the uSID node length - here 32 + 16 results in our /48 bit Locator
+     functionLenBits: 16
+     argumentLenBits: 0
    ```
 
-1. Define and apply a Cilium SRv6 locator pool. The full CRD may be reviewed here: [06-srv6-locator-pool.yaml](cilium/06-srv6-locator-pool.yaml)
+1. Create the Cilium SRv6 locator pool. The full CRD may be reviewed here: [06-srv6-locator-pool.yaml](cilium/06-srv6-locator-pool.yaml)
   
    ```
    kubectl apply -f 06-srv6-locator-pool.yaml
@@ -430,7 +438,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
 
 ## Establish Cilium VRFs and Create Pods
 
-In the next step we've combined creation of both the *carrots* VRF and kubernetes namespace, and we've included a couple CRDs to spin up an Alpine linux container in the VRF/namespace. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
+In the next step we'll create the *carrots* VRF and deploy an Alpine linux container in the VRF. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
 
 ![Cilium SRv6 L3VPN](/topo_drawings/cilium-packet-forwarding.png)
 
@@ -504,17 +512,17 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
    kubectl get pod -n veggies carrots0 -o jsonpath="Node: {.spec.nodeName} | IPs: {.status.podIPs[*].ip}" && echo
    ```
 
-   Expected output should look something like:
+   Expected output should look something like the below. Note in this example the pod was deployed to **london-vm-02** your output may differ:
    ```
    Node: london-vm-02 | IPs: 10.200.3.46 2001:db8:42:4::af86
    ```
 
-4. Next we'll verify Cilium has allocated the carrots VRF a SRv6 L3VPN uDT4 SID:
+4. Next we'll verify Cilium has allocated the carrots VRF a SRv6 L3VPN uDT4 SID on **london-vm-02**:
    ```
    kubectl get sidmanager london-vm-02 -o yaml
    ```
 
-   Or for abbreviated output:
+   Or a much longer command can give us clean abbreviated output:
    ```
    echo && kubectl get sidmanager london-vm-02 -o jsonpath="Host: {.metadata.name} | VRF: {.status.sidAllocations[*].sids[*].metadata} | SID: {.status.sidAllocations[*].sids[*].sid.addr} | Behavior: {.status.sidAllocations[*].sids[*].behavior}" && echo
    ```
@@ -586,17 +594,17 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
 
 ### Run a ping test!
 
-1. From **london-vm-00** exec into one of the carrots pods and ping Rome's interface in the carrots VRF:
+1. From **london-vm-00** exec into the *`carrots`* pod and ping Rome's interface in the carrots VRF:
     ```
     kubectl exec -it -n veggies carrots0 -- sh
     ```
     ```
-    ping 10.107.2.2 -i .5
+    ping 10.107.1.2 -i .5
     ```
     
     or
     ```
-    kubectl exec -it -n veggies carrots0 -- ping 10.107.2.2 -i .5
+    kubectl exec -it -n veggies carrots0 -- ping 10.107.1.2 -i .5
     ```
 
 ### Optional - Traffic capture using Edgeshark
