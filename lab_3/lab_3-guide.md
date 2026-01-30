@@ -313,7 +313,7 @@ Here is a portion of the prefix advertisement CRD with notes:
    Usage:
      cilium bgp routes <available | advertised> <afi> <safi> [vrouter <asn>] [peer|neighbor <address>] [flags]
    ```
-
+## TRANSISTION FIRST TO SECOND BLOCK
 4. Let's get the advertised prefixes:
    ```
    cilium bgp routes advertised ipv6 unicast
