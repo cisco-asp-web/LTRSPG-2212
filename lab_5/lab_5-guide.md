@@ -230,7 +230,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 3. Use *kubectl logs* command to see the plugin's log output from the *srv6-pytorch* pods:
 
    ```
-   kubectl logs -f srv6-pytorch-0
+   kubectl logs srv6-pytorch-0
    ```
 
    Look for successful pings and a log statement something like this:
@@ -241,11 +241,11 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 
    Optional: the other two *`srv6-pytorch`* pods should have very similar log output
    ```
-   kubectl logs -f srv6-pytorch-1
-   kubectl logs -f srv6-pytorch-2
+   kubectl logs srv6-pytorch-1
+   kubectl logs srv6-pytorch-2
    ```
 
-We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at the first few lines of the pod spec you'll see that in addition to the default Cilium-provided frontend interface, the pod has been configured to have a backend, Multus provided, interface. And we've configured the pods to join *VRF carrots*:
+We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at the first few lines of the pod spec you'll see that in addition to the default Cilium-provided frontend interface, the pod has been configured to have a backend, *`Multus`* provided interface. And we've configured the pods to join *VRF carrots!*:
 
    ```diff
    kind: Pod
@@ -276,7 +276,7 @@ We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at 
 5. Run a ping from an *`srv6-pytorch`* worker pod to the remote Rome container in *VRF carrots*
    
    ```
-   kubectl exec -it srv6-pytorch-1 -- ping 10.107.2.2 -i .4
+   kubectl exec -it srv6-pytorch-1 -- ping 10.107.1.2 -i .4
    ```
 
    An Edgeshark capture on the **london xrd01** router's core facing interfaces (Gi0/0/0/1 and/or Gi0/0/0/2) should show the pings as SRv6 encapsulated L3VPN packets
