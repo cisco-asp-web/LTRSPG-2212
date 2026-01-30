@@ -78,12 +78,18 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
    fcbb:0:800:2::/64  encap seg6 mode encap segs 1 [ fcbb:0:1004:1001:1006:fe06:: ] dev ens5 metric 1024 pref medium
    ```
 
-   The SRv6 uSID combination in the above will route traffic to *`london-vm-00`* via *`leaf00`*, *`spine01`*, and *`leaf02`*. The uSID shift-and-forward at *leaf00* and *spine01* will result in an ipv6 destination address of **fc00:0:1006:fe06::** when the packet arrives at *leaf02*. *leaf02* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address **fcbb:0:0800:2::/64**. *leaf02* will then forward the traffic to *`london-vm-02`*
+   The SRv6 uSID combination in the above will route traffic to *`london-vm-00`* via *`leaf00`*, *`spine01`*, and *`leaf02`*. 
+   
+   The uSID shift-and-forward at *leaf00* and *spine01* will result in an ipv6 destination address of **fc00:0:1006:fe06::** when the packet arrives at *leaf02*. 
+   
+   *leaf02* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address **fcbb:0:0800:2::/64**. 
+   
+   *leaf02* will then forward the traffic to *`london-vm-02`*
 
    ![Linux SRv6 Route](../topo_drawings/lab5-host00-host02-static-route.png)
 
 
-3. Using the visual code containerlab extension, connect to SONiC *`leaf02`*, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
+1. Using the visual code containerlab extension, connect to SONiC *`leaf02`*, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
    
    **leaf02**
    ```
