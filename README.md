@@ -105,5 +105,3 @@ By now, you should be connected to your main Windows workplace for this lab:
 ![windows-rdpy](./topo_drawings/windows-rdp.png)
 
 On the Windows virtual machine, please launch firefox you shoud arrive on the github page automatically. Please proceed to [LAB 1](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_1/lab_1-guide.md)
-
-test
