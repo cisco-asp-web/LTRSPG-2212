@@ -92,11 +92,15 @@ This lab environment consists of three virtual machines, each with a specific ro
 
 ## Navigate through the labs.
 
-1. Using Cisco Secure Connect (Anyconnect), connect to your dCloud instance VPN using the credentials provided by the proctors (see example below):
+Using Cisco Secure Connect (Anyconnect), connect to your dCloud instance VPN using the credentials provided by the proctors (see example below):
 
-![VPN](./topo_drawings/cisco-anyconnect-url.png)
+> [!IMPORTANT]
+>  Each student has unique credentials—be sure to use the ones assigned to you. The LAB pod URL may vary, as pods can be hosted in different physical locations.
+
 
 ![VPN](./topo_drawings/anyconnect.png)
+
+![VPN](./topo_drawings/cisco-anyconnect-url.png)
 
 
 Once you've connected to VPN all nodes in the lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 (admin / cisco123). Here is how to launch a remote desktop connection from your windows computer:
