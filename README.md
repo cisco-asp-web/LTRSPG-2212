@@ -92,7 +92,7 @@ This lab environment consists of three virtual machines, each with a specific ro
 
 ## Connecting to your lab
 
-The proctors will walk you through on how you connect connect to your dCloud lab instance.
+The proctors will walk you through on how you connect connect to your individual dCloud lab instance.
 
 Once you've connected to VPN using the lab assistant, all nodes in the lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 (admin / cisco123). Here is how to launch a remote desktop connection from your windows computer:
 
