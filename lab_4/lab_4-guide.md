@@ -171,17 +171,7 @@ admin@sonic::~$ sudo config save -y
 admin@sonic::~$ sudo config save -y /etc/sonic/config2.json
 ```
 
-**Edit Configuration Through CLI**
-
-The SONiC CLI can also be used to apply non-control plane configurations. From the Linux shell enter *config* and the command syntax needed. 
-```
-admin@sonic::~$ config ?
-Usage: config [OPTIONS] COMMAND [ARGS]...
-
-  SONiC command line - 'config' command
-```
-
-**Visualize The configuration Through CLI**
+**View the configuration through SONiC CLI**
 
 As network engineers, we still like to see the traditionnal "show run" on our devices. On SONiC, the *show runningconfiguration* command displays the current active configuration of various system components. You can view specific elements such as BGP, interfaces, ports, or the full configuration using subcommands like *show runningconfiguration all*. This is useful for verifying what is currently applied without needing to inspect config files directly.
 
@@ -207,10 +197,19 @@ admin@sonic:~$ show runningconfiguration all
         },
 ```
 
+**Edit configuration through SONiC CLI**
+
+The SONiC CLI can also be used to apply non-control plane configurations. From the Linux shell enter *config* and the command syntax needed. 
+```
+admin@sonic::~$ config ?
+Usage: config [OPTIONS] COMMAND [ARGS]...
+
+  SONiC command line - 'config' command
+```
 
 ### Configure leaf00 from SONiC CLI
 
-Before we proceed with applying full fabric configurations via Ansible, we wanted to demonstrate SONiC CLI by partially configuring **leaf00**
+Before we proceed with applying full fabric configurations via Ansible, we wanted to demonstrate SONiC CLI by manually configuring **leaf00's** hostname and Loopback0 ip addresses
 
 
 1. Using the containerlab visual code extension, ssh to **leaf00** (password is `admin`) and configure hostname and *Loopback0* IPv4 and IPv6 addresses
@@ -271,7 +270,7 @@ Configuring SONiC's BGP container can be done from FRR's command line and is ver
    conf t
    ```
 
-3. This particular SONiC image was pre-configured with a BGP instance. We'll delete that instance first, then apply the config we want:
+3. This particular SONiC image came with a pre-configured BGP instance. We'll delete that instance first, then apply the config we want:
    ```
    no router bgp 65100
    ```
@@ -311,7 +310,7 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 * Copy and load FRR configs, which include BGP and SRv6 attributes, to each node; [Example spine00 frr.conf](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/spine00/frr.conf)
 
 
-1. Launch a terminal on the *topology host* using the visual code containerlab extension:
+1. Launch a terminal on the *`topology host`* using the visual code containerlab extension:
 
 ![terminal](../topo_drawings/lab4-terminal.png)
 
@@ -478,12 +477,12 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
     ```
 
     Example output:
-    ```yaml
+    ```diff
     $ ip -6 route show fcbb:0:800:2::/64
-    fcbb:0:800:2::/64 nhid 81 proto bgp src fc00:0:1004::1 metric 20 pref medium
-	  nexthop via fe80::20a3:c7ff:fe5e:5c58 dev Ethernet0 weight 1 
-	  nexthop via fe80::20dc:72ff:fe50:c026 dev Ethernet4 weight 1 
-	  nexthop via fe80::20c8:3aff:fed9:1a10 dev Ethernet8 weight 1 
+    +fcbb:0:800:2::/64 nhid 81 proto bgp src fc00:0:1004::1 metric 20 pref medium
+	   nexthop via fe80::20a3:c7ff:fe5e:5c58 dev Ethernet0 weight 1 
+	   nexthop via fe80::20dc:72ff:fe50:c026 dev Ethernet4 weight 1 
+	   nexthop via fe80::20c8:3aff:fed9:1a10 dev Ethernet8 weight 1 
     ```
 
     Note how the entry has the notation *`proto bgp src`* which indicates the route was learned from BGP. The route also has 3 ECMP paths via the BGP unnumbered / IPv6 link-local sessions.
