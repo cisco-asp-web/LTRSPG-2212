@@ -78,7 +78,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
    fcbb:0:800:2::/64  encap seg6 mode encap segs 1 [ fcbb:0:1004:1001:1006:fe06:: ] dev ens5 metric 1024 pref medium
    ```
 
-   - The SRv6 uSID combination in the above will route traffic to *`london-vm-00`* via *`leaf00`*, *`spine01`*, and *`leaf02`*. 
+   - The SRv6 uSID combination in the above will route traffic from *`london-vm-00`* to *`london-vm-02`* via *`leaf00`*, *`spine01`*, and *`leaf02`*. 
    
    - The uSID shift-and-forward at *`leaf00`* and *`spine01`* will result in an ipv6 destination address of **fc00:0:1006:fe06::** when the packet arrives at *`leaf02`*. 
    
@@ -128,7 +128,11 @@ segment-routing
 
 Using the [Lab 5 scripts and data](./jalapeno/backend/) we've created a model of our SONiC fabric/SRv6 topology data in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
 
-Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new tab/window. First select "Topology Viewer", second "fabric graph".
+Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new tab/window. 
+
+1. Select "Topology Viewer" 
+2. Select "fabric graph" from the dropdown
+3. Then you can click "select a layout" and change the layout to show the topology as a CLOS or other options
 
 ![Topology Graph](../topo_drawings/lab5-fabric-topology-graph.png)
 
@@ -144,7 +148,7 @@ From https://pytorch.org/projects/pytorch/
 
 *PyTorch is an open source machine learning framework that accelerates the path from research prototyping to production deployment. Built to offer maximum flexibility and speed...its Pythonic design and deep integration with native Python tools make it an accessible and powerful platform for building and training deep learning models at scale.*
 
-
+**PyTorch Workflow:**
 When you start a distributed training workload, PyTorch initializes a process group. It uses a backend like [NCCL](https://developer.nvidia.com/nccl) or [Gloo](https://github.com/pytorch/gloo) for communication between nodes. Each node gets a rank and knows about other nodes through the process group
 
 ### SRv6 PyTorch Plugin
@@ -165,7 +169,7 @@ The effect is the workload's traffic is intelligently load balanced across the f
 > If we had GPUs and RDMA NICs we would work to extend the plugin to program route + SRv6 encap entries on the NIC itself
 
 
-Here's a typical flow:
+Here's a summary of the workflow:
 
 ```
 [PyTorch Training Script]
@@ -176,7 +180,7 @@ Here's a typical flow:
         ↓
 [SRv6 Plugin intercepts, calls Jalapeno API]
         ↓
-[Programs SRv6 routes]
+[SRv6 Plugin programs ip routes with SRv6 encapsulation instructions from Jalapeno]
         ↓
 [NCCL/Gloo uses routes for communication]
         ↓
