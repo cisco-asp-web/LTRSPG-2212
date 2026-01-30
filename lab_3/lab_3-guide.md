@@ -213,7 +213,7 @@ One of the great things about CRDs is you can combine all the configuration elem
    isovalentbgppeerconfig.isovalent.com/cilium-peer created
    ```
    
-   Next we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter that tells Cilium which source address to use for its BGP peering sessions. This knob is comparable to `update-source` in IOS-XR.
+   Next we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter. This parameter tells Cilium which source address to use for its BGP peering sessions, similar to `update-source` in IOS-XR.
 
    Here is a portion of the node override CRD with notes:
    ```yaml
@@ -263,7 +263,7 @@ One of the great things about CRDs is you can combine all the configuration elem
    
 ### Cilium BGP prefix advertisement
 
-We have not added IPv6 prefix advertisements yet, hence a zero value in the *Advertised* output above. Also, **paris-xrd05** and **barcelona-xrd06**'s peering sessions with Cilium inherited the vpnv4 address family configuration during Lab 2 so we don't need to update their configs. 
+We have not added IPv6 prefix advertisements yet, hence a zero value in the *Advertised* output above. Also, the **paris** and **barcelona**' route-reflectors were preconfigured to peer with the Cilium nodes and inherited the vpnv4 address family configuration during Lab 2, so we don't need to update their configs. 
 
 Here is a portion of the prefix advertisement CRD with notes:
    ```yaml
@@ -321,7 +321,7 @@ Here is a portion of the prefix advertisement CRD with notes:
    Example partial output showing **london-vm-00's** network-facing interface as the BGP NextHop
    ```yaml
    Node         VRouter  Peer            Prefix            NextHop        Age       Attrs
-  london-vm-00  65000    fc00:0:5555::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]       
+   london-vm-00  65000    fc00:0:5555::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]       
                 65000    fc00:0:6666::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]
    ```
 
