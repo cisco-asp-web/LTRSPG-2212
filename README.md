@@ -90,16 +90,18 @@ This lab environment consists of three virtual machines, each with a specific ro
 | **Jalapeno Host**     | `cisco`    | `cisco123`     | 
 
 
-## Navigate through the labs.
+## Connecting to your lab
 
-1. Connect to your dCloud instance VPN
+The proctors will walk you through on how you connect connect to your individual dCloud lab instance.
 
-![VPN](./topo_drawings/anyconnect.png)
+Once you've connected to VPN using the lab assistant, all nodes in the lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 (admin / cisco123). Here is how to launch a remote desktop connection from your windows computer:
 
-Once you've connected to VPN all nodes in the lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 (admin / cisco123)
+![RDP](./topo_drawings/windows-rdp-00.png)
+
+![RDP](./topo_drawings/windows-rdp-01.png)
+
+By now, you should be connected to your main Windows workplace for this lab:
 
 ![windows-rdpy](./topo_drawings/windows-rdp.png)
 
 On the Windows virtual machine, please launch firefox you shoud arrive on the github page automatically. Please proceed to [LAB 1](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_1/lab_1-guide.md)
-
-test
