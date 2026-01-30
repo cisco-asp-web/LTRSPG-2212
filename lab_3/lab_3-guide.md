@@ -296,6 +296,7 @@ Here is a portion of the prefix advertisement CRD with notes:
                                                                                   ipv4/mpls_vpn   4          0    
                    65000      65000     fc00:0:6666::1   established     3m13s    ipv6/unicast    7          1    
                                                                                   ipv4/mpls_vpn   4          0
+   <snip>
    ```                                                                         
 
 3. Let's get a little more detail on advertised prefixes with the `cilium bgp routes` command. Let's first add a -h flag to see our options
