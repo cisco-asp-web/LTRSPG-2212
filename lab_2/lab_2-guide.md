@@ -185,13 +185,12 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
 > It can take a few seconds after configuration before you see routes populate through the network and be visible in the routing tables.
 
 > [!IMPORTANT]
-> **london-xrd01** and **rome-xrd07** are configured to use dynamic RD allocation, so the L3VPN RD+prefix combination shown in the lab guide may differ from the one you see in your environment. For example, **rome-xrd07** might advertise the 40.0.0.0/24 prefix with rd 10.0.0.7:0 or it might be rd 10.0.0.7:1
 > 
 1. From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). Again be aware the rd value may differ then those in the below commands:
    ```
    show segment-routing srv6 sid
    show bgp vpnv4 unicast
-   show bgp vpnv4 unicast rd 10.0.0.7:1 40.0.0.0/24
+   show bgp vrf carrots 40.0.0.0/24
    show bgp vpnv6 unicast
    ping vrf carrots 40.0.0.1
    ping vrf carrots 50.0.0.1
@@ -199,15 +198,15 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    
    Example validation for vpnv4 route
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 unicast rd 10.0.0.7:1 40.0.0.0/24   
+   RP/0/RP0/CPU0:xrd01#show bgp vrf carrots 40.0.0.0/24   
    Tue Jan 31 23:36:41.390 UTC
    +BGP routing table entry for 40.0.0.0/24, Route Distinguisher: 10.0.0.7:1   <--- WE HAVE A ROUTE. YAH
    Versions:
      Process           bRIB/RIB  SendTblVer
      Speaker                  11           11
-     Last Modified: Jan 31 23:34:44.948 for 00:01:56
-     Paths: (2 available, best #1)
-       Not advertised to any peer
+   Last Modified: Jan 31 23:34:44.948 for 00:01:56
+     Paths: (1 available, best #1)
+     Not advertised to any peer
      Path #1: Received by speaker 0
      Not advertised to any peer
      Local
@@ -222,20 +221,7 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    +        T:1(Sid information), Sid:fc00:0:7777::, Behavior:63, SS-TLV Count:1   <-- SRv6 Locator for source node
            SubSubTLV:
              T:1(Sid structure):
-     Path #2: Received by speaker 0
-     Not advertised to any peer
-     Local
-       fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)
-         Received Label 0xe0040
-         Origin incomplete, metric 0, localpref 100, valid, internal, import-candidate, not-in-vrf
-         Received Path ID 0, Local Path ID 0, version 0
-         Extended community: RT:9:9 
-   +      Originator: 10.0.0.7, Cluster list: 10.0.0.6             <------- FROM RR xrd06
-         PSID-Type:L3, SubTLV Count:1
-         SubTLV:
-           T:1(Sid information), Sid:fc00:0:7777::, Behavior:63, SS-TLV Count:1
-           SubSubTLV:
-             T:1(Sid structure):
+         Source AFI: VPNv4 Unicast, Source VRF: default, Source Route Distinguisher: 10.0.0.7:0
    ```
 
 ## Configure SRv6-TE steering for L3VPN
@@ -264,26 +250,17 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
 
    ```diff
    RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
-   Thu Jan 23 17:12:01.018 UTC
-   BGP routing table entry for 40.0.0.0/24, Route Distinguisher: 10.0.0.1:0
-   Versions:
-     Process           bRIB/RIB   SendTblVer
-     Speaker                 63           63
-   Last Modified: Jan 23 17:11:58.418 for 00:00:02
-   Paths: (1 available, best #1)
-     Not advertised to any peer
-     Path #1: Received by speaker 0
-     Not advertised to any peer
+   <snip> 
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
-   +     Received Label 0xe0060
+        Received Label 0xe0060
          Origin incomplete, metric 0, localpref 100, valid, internal, best, group-best, import-candidate, imported
          Received Path ID 0, Local Path ID 1, version 63
-   +     Extended community: RT:9:9
+   +     Extended community: RT:9:9 <- NO COLOR OPTION APPLIED
          Originator: 10.0.0.7, Cluster list: 10.0.0.5
          PSID-Type:L3, SubTLV Count:1
           SubTLV:
-   +       T:1(Sid information), Sid:fc00:0:7777::(Transposed), Behavior:63, SS-TLV Count:1
+          T:1(Sid information), Sid:fc00:0:7777::(Transposed), Behavior:63, SS-TLV Count:1
                SubSubTLV:
              T:1(Sid structure):
          Source AFI: VPNv4 Unicast, Source VRF: default, Source Route Distinguisher: 10.0.0.7:1
@@ -343,7 +320,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
          Received Label 0xe0060
          Origin incomplete, metric 0, localpref 100, valid, internal, best, group-best, import-candidate, imported
          Received Path ID 0, Local Path ID 1, version 67
-   +     Extended community: Color:40 RT:9:9
+   +     Extended community: Color:40 RT:9:9  <- COLOR 40 APPLIED
          Originator: 10.0.0.7, Cluster list: 10.0.0.5
          PSID-Type:L3, SubTLV Count:1
           SubTLV:
@@ -424,19 +401,19 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
  
    *** Locator: 'MyLocator' *** 
 
-   SID                         Behavior          Context                           Owner               State  RW
-   --------------------------  ----------------  --------------------------------  ------------------  -----  --
-   fc00:0:1111::               uN (PSP/USD)      'default':4369                    sidmgr              InUse  Y 
-   fc00:0:1111:e000::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0:P       isis-100            InUse  Y 
-   fc00:0:1111:e001::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0         isis-100            InUse  Y 
-   fc00:0:1111:e002::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0:P       isis-100            InUse  Y 
-   fc00:0:1111:e003::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0         isis-100            InUse  Y 
-   fc00:0:1111:e004::          uDT6              'default'                         bgp-65000           InUse  Y 
-   fc00:0:1111:e005::          uDT4              'default'                         bgp-65000           InUse  Y 
+   SID                         Behavior          Context                            Owner               State  RW
+   --------------------------  ----------------  --------------------------------   ------------------  -----  --
+    fc00:0:1111::               uN (PSP/USD)      'default':4369                     sidmgr              InUse  Y 
+    fc00:0:1111:e000::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0:P        isis-100            InUse  Y 
+    fc00:0:1111:e001::          uA (PSP/USD)      [Gi0/0/0/1, Link-Local]:0          isis-100            InUse  Y 
+    fc00:0:1111:e002::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0:P        isis-100            InUse  Y 
+    fc00:0:1111:e003::          uA (PSP/USD)      [Gi0/0/0/2, Link-Local]:0          isis-100            InUse  Y 
+    fc00:0:1111:e004::          uDT6              'default'                          bgp-65000           InUse  Y 
+    fc00:0:1111:e005::          uDT4              'default'                          bgp-65000           InUse  Y 
+    fc00:0:1111:e008::          uDT4              'carrots'                          bgp-65000           InUse  Y 
+    fc00:0:1111:e009::          uDT6              'carrots'                          bgp-65000           InUse  Y
    +fc00:0:1111:e006::          uB6 (Insert.Red)  'srte_c_50_ep_fc00:0:7777::1' (50, fc00:0:7777::1)  xtc_srv6            InUse  Y 
-   +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y 
-   fc00:0:1111:e008::          uDT4              'carrots'                         bgp-65000           InUse  Y 
-   fc00:0:1111:e009::          uDT6              'carrots'                         bgp-65000           InUse  Y 
+   +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y  
    ```
    
    ```diff
@@ -471,7 +448,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
            Binding SID requested: Dynamic
            Binding SID behavior: uB6 (Insert.Red)
      Attributes:
-   +    Binding SID: fc00:0:1111:e009::
+   +    Binding SID: fc00:0:1111:e007::
        Forward Class: Not Configured
        Steering labeled-services disabled: no
        Steering BGP disabled: no
@@ -491,7 +468,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
          Received Path ID 0, Local Path ID 1, version 30
    +     Extended community: Color:40 RT:9:9                      
          Originator: 10.0.0.7, Cluster list: 10.0.0.5
-   +     SR policy color 40, up, not-registered, bsid fc00:0:1111:e009::   <---- Newly Configured Color Policy 
+   +     SR policy color 40, up, not-registered, bsid fc00:0:1111:e007::   <---- Newly Configured Color Policy 
    
          PSID-Type:L3, SubTLV Count:1
          SubTLV:
