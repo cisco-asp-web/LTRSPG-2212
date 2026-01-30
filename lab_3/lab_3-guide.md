@@ -4,9 +4,9 @@
 Now that we've established SRv6 L3VPNs across our network, we're going to transition from **router-based SRv6** to **host-based SRv6**. Our first step will be to enable *SRv6 L3VPN for Kubernetes*. The London VMs have Kubernetes pre-installed and are running the *Cilium CNI* (Container Network Interface). In this lab we'll review some basic Kubernetes commands (kubectl) and then we'll setup Cilium BGP peering with our XRd route reflectors. After that we'll configure Cilium's SRv6 SID manager and Locator pool. Finally we'll add a couple containers to our London K8s cluster and join them to the carrots VRF.
 
 > [!NOTE]
-> This portion of the lab makes use of Cilium Enterprise as the SRv6 features are in Beta and not available in the open source version. If you are interested in SRv6 on Cilium or other Enterprise features, please contact the relevant Cisco Isovalent sales team.  
+> This portion of the lab makes use of Cilium Enterprise as the SRv6 features not available in the open source version. If you are interested in SRv6 on Cilium or other Enterprise features, please contact the relevant Cisco Isovalent sales team.  
 
-Isovalent has also published a number of labs covering a wide range of Cilium, Hubble, Tetragon, and Isovalent Load Balancer products and capabilities here:
+Isovalent has also published a number of labs covering a range of Cilium, Hubble, Tetragon, and Isovalent Load Balancer products and capabilities here:
 
 https://cilium.io/labs/
 
@@ -42,13 +42,10 @@ We will have achieved the following objectives upon completion of Lab 3:
 
 Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of the following steps are to be performed on the **london-vm-00** control plane node unless otherwise specified.
 
-1. From a **topology-host** terminal session SSH into the **london-vm-00** and cd into the lab_3/cilium directory
+1. Open a terminal session on the **topology-host** and SSH to **london-vm-00**
    ```
    ssh cisco@london-vm-00
 
-   ```
-   ```
-   cd ~/LTRSPG-2212/lab_3/cilium/
    ```
 
 2. Run a couple commands to verify the K8s cluster and the Cilium Installation
@@ -91,7 +88,7 @@ Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of
   * `Cilium-envoy`: used as a host proxy for enforcing HTTP and other L7 policies for the cluster. Reference: https://docs.cilium.io/en/latest/security/network/proxy/envoy/
   * `Cilium-node-init`: used to initialize the node and install the Cilium agent.
   * `Cilium-operator`: used to manage the Cilium agent on the node.
-  * `Cilium-h6fz9`: is the Cilium agent on the node, and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
+  * `Cilium-h6fz9`: the Cilium agent on the node and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
 
 
    Display Cilium DaemonSet status:
@@ -118,7 +115,7 @@ Per: https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-
 
 Said another way, CRDs enable us to add, update, or delete Kubernetes cluster elements and their configurations. The add/update/delete action might apply to the cluster as a whole, a node in the cluster, an aspect of cluster networking or other elements within the cluster like pods, services, daemonsets, etc.
 
-A CRD applied to a single element in the K8s cluster would be analogous to configuring BGP on a router. A CRD applied to multiple elements or cluster-wide would be analogous to adding BGP route-reflection to a network as a whole. 
+A CRD applied to a single element in the K8s cluster would be analogous to configuring BGP on a router. A CRD applied to multiple elements or cluster-wide would be analogous to adding BGP route-reflection to a network. 
 
 CRDs come in YAML file format and in the next several sections of this lab we'll apply CRDs to the K8s cluster to setup Cilium BGP peering, establish Cilium SRv6 locator ranges, create VRFs, etc.
 
@@ -134,10 +131,10 @@ On **london-vm-00** change to the lab_3/cilium directory and check out the conte
 
    The files we'll be working with are:
    * [01-bgp-cluster.yaml](cilium/01-bgp-cluster.yaml) - Cilium BGP global configuration
-   * [02-bgp-peer.yaml](cilium/02-bgp-peer.yaml) - Cilium BGP peer address families and route policies
+   * [02-bgp-peer.yaml](cilium/02-bgp-peer.yaml) - BGP peer address families and route policies
    * [03-bgp-node-override.yaml](cilium/03-bgp-node-override.yaml) - we use this to specify the BGP source address
-   * [04-bgp-advert.yaml](cilium/04-bgp-advert.yaml) - Cilium BGP prefix advertisement(s), including SRv6 locator prefix(s)
-   * [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml) - Cilium BGP VRF configuration
+   * [04-bgp-advert.yaml](cilium/04-bgp-advert.yaml) - BGP prefix advertisement(s), including SRv6 locator prefix(s)
+   * [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml) - BGP VRF configuration
    * [06-srv6-locator-pool.yaml](cilium/06-srv6-locator-pool.yaml) - Cilium SRv6 SID manager and Locator pool configuration
    * [07-vrf-carrots.yaml](cilium/07-vrf-carrots.yaml) - Cilium VRF 'carrots' configuration and pods
 
@@ -159,7 +156,7 @@ spec:
       - london-vm-01
       - london-vm-02   
   bgpInstances:                         # the k8s cluster could have multiple BGP instances
-  - name: "asn65000"                    # for simplicity we're using a single ASN end-to-end
+  - name: "asn65000"                    # for simplicity we're using the same ASN as our XRd network
     localASN: 65000
     peers:
     - name: "paris-rr"                  # base peering config
@@ -180,9 +177,8 @@ One of the great things about CRDs is you can combine all the configuration elem
 
 ![Cilium SRv6 L3VPN](/topo_drawings/lab3-cilium-l3vpn-topology.png)
 
-1. On **london-vm-00** cd into the Lab 3 cilium directory and apply the *Cilium BGP Cluster Config CRD*. BGP Cluster config establishes our Cilium Node's BGP ASN and base BGP peering with the route reflectors **paris-xrd05** and **barcelona-xrd06**.
+1. On **london-vm-00** apply the *Cilium BGP Cluster Config CRD*. BGP Cluster config establishes our Cilium Node's BGP ASN and base BGP peering with the route reflectors **paris-xrd05** and **barcelona-xrd06**.
    ```
-   cd ~/LTRSPG-2212/lab_3/cilium/
    kubectl apply -f 01-bgp-cluster.yaml
    ```
 
@@ -217,7 +213,7 @@ One of the great things about CRDs is you can combine all the configuration elem
    isovalentbgppeerconfig.isovalent.com/cilium-peer created
    ```
    
-   At this point our peer sessions are not yet established. Next we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter.  *`localAddress`* tells Cilium which source address to use for its BGP peering sessions. This knob is comparable to IOS-XR's `update-source` parameter.
+   Next we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter that tells Cilium which source address to use for its BGP peering sessions. This knob is comparable to `update-source` in IOS-XR.
 
    Here is a portion of the node override CRD with notes:
    ```yaml
@@ -246,7 +242,7 @@ One of the great things about CRDs is you can combine all the configuration elem
 
 ### Verify Cilium BGP peering 
 
-1. Verify Cilium BGP has successfully established peering sessions with **paris xrd05** and **barcelona xrd06** with the following cilium CLI. Note, it may take a few seconds for the peering sessions to establish.
+1. Use the *`cilium bgp peers`* command to verify established peering sessions with **paris xrd05** and **barcelona xrd06**. Note, it may take a few seconds for the peering sessions to come up.
    
    ```
    cilium bgp peers
@@ -267,7 +263,7 @@ One of the great things about CRDs is you can combine all the configuration elem
    
 ### Cilium BGP prefix advertisement
 
-We have not added IPv6 prefix advertisements yet, hence a zero value in the *Advertised* output above. Also, **paris-xrd05** and **barcelona-xrd06**'s peering sessions with Cilium inherited the vpnv4 address family configuration during Lab 3 so we don't need to update their configs. 
+We have not added IPv6 prefix advertisements yet, hence a zero value in the *Advertised* output above. Also, **paris-xrd05** and **barcelona-xrd06**'s peering sessions with Cilium inherited the vpnv4 address family configuration during Lab 2 so we don't need to update their configs. 
 
 Here is a portion of the prefix advertisement CRD with notes:
    ```yaml
@@ -277,7 +273,7 @@ Here is a portion of the prefix advertisement CRD with notes:
         advertise: bgpv6unicast     # this label will be used by the peer config CRD for prefixes to advertise
     spec:
       advertisements:                           
-        - advertisementType: "SRv6LocatorPool"   # advertise the SRv6 locator pool (to be created a few steps after this)
+        - advertisementType: "SRv6LocatorPool" # advertise the SRv6 locator pool (to be created a few steps after this)
           selector:
             matchLabels:
               export: "pool0"
@@ -297,9 +293,9 @@ Here is a portion of the prefix advertisement CRD with notes:
    $ cilium bgp peers
    Node           Local AS   Peer AS   Peer Address     Session State   Uptime   Family          Received   Advertised
    +london-vm-00   65000      65000     fc00:0:5555::1   established     3m13s    ipv6/unicast    7          1    
-                                                                              ipv4/mpls_vpn   4          0    
-               65000      65000     fc00:0:6666::1   established     3m13s    ipv6/unicast    7          1    
-                                                                              ipv4/mpls_vpn   4          0
+                                                                                  ipv4/mpls_vpn   4          0    
+                   65000      65000     fc00:0:6666::1   established     3m13s    ipv6/unicast    7          1    
+                                                                                  ipv4/mpls_vpn   4          0
    ```                                                                         
 
 3. Let's get a little more detail on advertised prefixes with the `cilium bgp routes` command. Let's first add a -h flag to see our options
@@ -322,14 +318,17 @@ Here is a portion of the prefix advertisement CRD with notes:
    cilium bgp routes advertised ipv6 unicast
    ```
 
-> [!NOTE]
-> The advertised IPv6 network prefix is the assigned IPv6 used by Cilium on each **london VM**. In addtion the *NextHop* address the output lists the IPv6 interface address that connects to **london xrd01**. You can see this detail if you run the command *`ip addr show dev cilium_host`* and *`ip addr show dev ens4`* respectively.
-
+   Example partial output showing **london-vm-00's** network-facing interface as the BGP NextHop
+   ```yaml
+   Node         VRouter  Peer            Prefix            NextHop        Age       Attrs
+  london-vm-00  65000    fc00:0:5555::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]       
+                65000    fc00:0:6666::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]
+   ```
 
 ### Create the carrots BGP VRF
-We are now going to apply the BGP configuration for *vrf carrots* per the yaml file here: [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml)
+Apply the BGP configuration for *vrf carrots* per the yaml file here: [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml)
 
-Earlier you saw we broke the BGP peering and route advertisement configurations into two separate yaml files. For the VRF we've got both in single file to illustrate the point about config modularity, and to also have one less step to apply. Here is a brief overview of the BGP VRF CRD:
+Earlier you saw we separated the BGP peering and IPv6 unicast route advertisement configurations into two yaml files. For the VRF we've got both VRF definition and route advertisement in a single file to illustrate the point about config modularity. Here is a brief overview of the BGP VRF CRD:
   ```yaml
   ---
   apiVersion: isovalent.com/v1
