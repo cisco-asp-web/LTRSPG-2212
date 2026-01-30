@@ -35,9 +35,7 @@ https://cilium.io/labs/
 We will have achieved the following objectives upon completion of Lab 3:
 
 * Understanding of Cilium networking for Kubernetes
-* Understanding on how to configure Cilium BGP
-* Understanding on how to configure Cilium VRFs
-* Understanding on how to configure Cilium SRv6
+* Understanding on how to configure Cilium BGP, VRFs, and SRv6
 
   
 ## Verify pre-installed Kubernetes and Cilium are running
@@ -90,7 +88,7 @@ Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of
    ```
 
   Notes on the pods:
-  * `Cilium-envoy`: used as a host proxy for enforcing HTTP and other L7 policies as specified in network policies for the cluster. For further reading see: https://docs.cilium.io/en/latest/security/network/proxy/envoy/
+  * `Cilium-envoy`: used as a host proxy for enforcing HTTP and other L7 policies for the cluster. Reference: https://docs.cilium.io/en/latest/security/network/proxy/envoy/
   * `Cilium-node-init`: used to initialize the node and install the Cilium agent.
   * `Cilium-operator`: used to manage the Cilium agent on the node.
   * `Cilium-h6fz9`: is the Cilium agent on the node, and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
@@ -116,9 +114,9 @@ Now we're ready!
 
 Per: https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
 
-*A custom resource is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. It represents a customization of a particular Kubernetes installation. However, many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.*
+*A custom resource is an extension of the Kubernetes API that is not necessarily available in a default Kubernetes installation. Many core Kubernetes functions are now built using custom resources, making Kubernetes more modular.*
 
-Said another way, CRDs enable us to add, update, or delete Kubernetes cluster elements and their configurations. The add/update/delete action might apply to the cluster as a whole, a node in the cluster, an aspect of cluster networking or the CNI (*aka, the work we'll do in this lab*), or any given element or set of elements within the cluster including pods, services, daemonsets, etc.
+Said another way, CRDs enable us to add, update, or delete Kubernetes cluster elements and their configurations. The add/update/delete action might apply to the cluster as a whole, a node in the cluster, an aspect of cluster networking or other elements within the cluster like pods, services, daemonsets, etc.
 
 A CRD applied to a single element in the K8s cluster would be analogous to configuring BGP on a router. A CRD applied to multiple elements or cluster-wide would be analogous to adding BGP route-reflection to a network as a whole. 
 
@@ -137,7 +135,7 @@ On **london-vm-00** change to the lab_3/cilium directory and check out the conte
    The files we'll be working with are:
    * [01-bgp-cluster.yaml](cilium/01-bgp-cluster.yaml) - Cilium BGP global configuration
    * [02-bgp-peer.yaml](cilium/02-bgp-peer.yaml) - Cilium BGP peer address families and route policies
-   * [03-bgp-node-override.yaml](cilium/03-bgp-node-override.yaml) - Cilium BGP node override; we use this to specify the BGP source address
+   * [03-bgp-node-override.yaml](cilium/03-bgp-node-override.yaml) - we use this to specify the BGP source address
    * [04-bgp-advert.yaml](cilium/04-bgp-advert.yaml) - Cilium BGP prefix advertisement(s), including SRv6 locator prefix(s)
    * [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml) - Cilium BGP VRF configuration
    * [06-srv6-locator-pool.yaml](cilium/06-srv6-locator-pool.yaml) - Cilium SRv6 SID manager and Locator pool configuration
@@ -219,7 +217,7 @@ One of the great things about CRDs is you can combine all the configuration elem
    isovalentbgppeerconfig.isovalent.com/cilium-peer created
    ```
    
-   At this point our peer sessions are not yet established. Next we'll apply the *`localAddress`* parameter which tells Cilium which source address to use for its BGP peering sessions. This knob is comparable to IOS-XR's `update-source` parameter.
+   At this point our peer sessions are not yet established. Next we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter.  *`localAddress`* tells Cilium which source address to use for its BGP peering sessions. This knob is comparable to IOS-XR's `update-source` parameter.
 
    Here is a portion of the node override CRD with notes:
    ```yaml
@@ -228,10 +226,10 @@ One of the great things about CRDs is you can combine all the configuration elem
     spec:
       bgpInstances:
         - name: "asn65000"        
-          srv6Responder: true     # instructs BGP to advertise the node's SRv6 Locator (to be created a few steps after this)
+          srv6Responder: true   # instructs BGP to advertise the node's SRv6 Locator (we'll create the locator a few steps after this)
           peers:
-            - name: "paris-rr"                 # must match the name of the peer in the cluster config
-              localAddress: fc00:0:800::2     # the source address to use for the peering session
+            - name: "paris-rr"              # must match the name of the peer in the cluster config
+              localAddress: fc00:0:800::2   # the source address to use for the peering session
    ```
    
 3. Apply the node override CRD:
@@ -259,11 +257,11 @@ One of the great things about CRDs is you can combine all the configuration elem
    Partial output:
    ```yaml
    $ cilium bgp peers
-   Node     Local AS   Peer AS   Peer Address     Session State   Uptime   Family          Received   Advertised
-   london-vm-00   65000      65000     fc00:0:5555::1   established     9s       ipv6/unicast    5          0    
-                                                                           ipv4/mpls_vpn   5          0    
-            65000      65000     fc00:0:6666::1   established     24s      ipv6/unicast    5          0    
-                                                                           ipv4/mpls_vpn   5          0  
+   Node          Local AS  Peer AS  Peer Address     Session State  Uptime  Family          Received  Advertised
+   london-vm-00  65000     65000    fc00:0:5555::1   established    25s     ipv6/unicast    2         0    
+                                                                            ipv4/mpls_vpn   4         0    
+                 65000     65000    fc00:0:6666::1   established    30s     ipv6/unicast    2         0    
+                                                                            ipv4/mpls_vpn   4         0  
    ```
 
    
@@ -325,7 +323,7 @@ Here is a portion of the prefix advertisement CRD with notes:
    ```
 
 > [!NOTE]
-> The advertised IPv6 network prefix is the assigned IPv6 used by Cilium on each **london VM**. In addtion the *NextHop* address in the output lists the IPv6 interface address that connects to **london xrd01**. You can see this detail if you run the command *`ip addr show dev cilium_host`* and *`ip addr show dev ens4`* respectively.
+> The advertised IPv6 network prefix is the assigned IPv6 used by Cilium on each **london VM**. In addtion the *NextHop* address the output lists the IPv6 interface address that connects to **london xrd01**. You can see this detail if you run the command *`ip addr show dev cilium_host`* and *`ip addr show dev ens4`* respectively.
 
 
 ### Create the carrots BGP VRF
@@ -363,7 +361,7 @@ Earlier you saw we broke the BGP peering and route advertisement configurations 
    kubectl apply -f 05-bgp-vrf.yaml
    ```
 
-Our Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID manager and locators.
+Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID manager and locators.
 
 ## Cilium SRv6 SID Manager and Locators
 Per Cilium Enterprise documentation:
