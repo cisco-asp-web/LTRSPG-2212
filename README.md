@@ -90,7 +90,7 @@ This lab environment consists of three virtual machines, each with a specific ro
 | **Jalapeno Host**     | `cisco`    | `cisco123`     | 
 
 
-## Navigate through the labs.
+## Navigate through the labs
 
 Using Cisco Secure Connect (Anyconnect), connect to your dCloud instance VPN using the credentials provided by the proctors (see example below):
 
