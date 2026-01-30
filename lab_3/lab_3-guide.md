@@ -313,7 +313,7 @@ Here is a portion of the prefix advertisement CRD with notes:
    Usage:
      cilium bgp routes <available | advertised> <afi> <safi> [vrouter <asn>] [peer|neighbor <address>] [flags]
    ```
-## TRANSISTION FIRST TO SECOND BLOCK
+
 4. Let's get the advertised prefixes:
    ```
    cilium bgp routes advertised ipv6 unicast
@@ -325,43 +325,7 @@ Here is a portion of the prefix advertisement CRD with notes:
    london-vm-00  65000    fc00:0:5555::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]       
                  65000    fc00:0:6666::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]
    ```
-
-### Create the carrots BGP VRF
-Apply the BGP configuration for *vrf carrots* per the yaml file here: [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml)
-
-Earlier you saw we separated the BGP peering and IPv6 route advertisement configs into two yaml files. For the VRF we've got both VRF definition and route advertisement in a single file to illustrate the point about config modularity. Here is a brief overview of the BGP VRF CRD:
-  ```yaml
-  ---
-  apiVersion: isovalent.com/v1
-  kind: IsovalentBGPVRFConfig      # the BGP VRF configuration CRD
-  metadata:
-    name: carrots-config   # a meta data label / name of the vrf config
-  spec:
-    families:
-      - afi: ipv4        
-        safi: mpls_vpn   
-        advertisements:
-          matchLabels:
-            advertise: "bgp-carrots"  # a meta data label / name for the route advertisement - this is analogous to a outbound route policy
-
-  ---
-  apiVersion: isovalent.com/v1
-  kind: IsovalentBGPAdvertisement      # BGP route advertisement CRD
-  metadata:
-    name: carrots-adverts     # a meta data label / name for the VRF route advertisement
-    labels:
-      advertise: bgp-carrots  # a meta data label / name for this particular advertisement
-  spec:
-    advertisements:
-      - advertisementType: "PodCIDR"   # we're going to advertise the k8s pod CIDR or subnet
-  ```
-
-1. Apply the carrots BGP VRF configuration:
-   ```
-   kubectl apply -f 05-bgp-vrf.yaml
-   ```
-
-Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID manager and locators.
+# TRANSISTION FIRST TO SECOND BLOCK APPLIED FIRST CONFIG FILE
 
 ## Cilium SRv6 SID Manager and Locators
 Per Cilium Enterprise documentation:
@@ -436,6 +400,45 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    london-vm-01   [map[locators:[map[behaviorType:uSID prefix:fc00:0:88f6::/48 
    london-vm-02   [map[locators:[map[behaviorType:uSID prefix:fc00:0:8804::/48
    ```
+
+## SECOND CODE BLOCK DONE
+
+### Create the carrots BGP VRF
+Apply the BGP configuration for *vrf carrots* per the yaml file here: [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml)
+
+Earlier you saw we separated the BGP peering and IPv6 route advertisement configs into two yaml files. For the VRF we've got both VRF definition and route advertisement in a single file to illustrate the point about config modularity. Here is a brief overview of the BGP VRF CRD:
+  ```yaml
+  ---
+  apiVersion: isovalent.com/v1
+  kind: IsovalentBGPVRFConfig      # the BGP VRF configuration CRD
+  metadata:
+    name: carrots-config   # a meta data label / name of the vrf config
+  spec:
+    families:
+      - afi: ipv4        
+        safi: mpls_vpn   
+        advertisements:
+          matchLabels:
+            advertise: "bgp-carrots"  # a meta data label / name for the route advertisement - this is analogous to a outbound route policy
+
+  ---
+  apiVersion: isovalent.com/v1
+  kind: IsovalentBGPAdvertisement      # BGP route advertisement CRD
+  metadata:
+    name: carrots-adverts     # a meta data label / name for the VRF route advertisement
+    labels:
+      advertise: bgp-carrots  # a meta data label / name for this particular advertisement
+  spec:
+    advertisements:
+      - advertisementType: "PodCIDR"   # we're going to advertise the k8s pod CIDR or subnet
+  ```
+
+1. Apply the carrots BGP VRF configuration:
+   ```
+   kubectl apply -f 05-bgp-vrf.yaml
+   ```
+
+Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID manager and locators.
 
 ## Establish Cilium VRFs and Create Pods
 
