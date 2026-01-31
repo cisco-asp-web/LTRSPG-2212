@@ -523,7 +523,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
 
 1.  Start a new edgeshark capture  **london-xrd01's** outbound interface (Gi0-0-0-2) to **paris-xrd05**:
 
-2.  Let's test and validate that our SRv6 TE policy is applied on **london-xrd01**. From **Amsterdam** we will ping **Rome's** low latency IPv4 destination:
+2.  Let's test and validate that our SRv6 TE policy is applied on **london-xrd01**. From **app-container-london** we will ping **Rome's** low latency IPv4 destination:
     ```
     ping 50.0.0.1 -i .5
     ```
