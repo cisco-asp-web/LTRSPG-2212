@@ -54,7 +54,7 @@ At the heart of Jalapeno is the Arango Graph Database, which is used to model ne
     Once logged in the UI will show you its *collections* view. If you like, take a moment to browse around the collections
 
 
-2. Optional or for reference: connect to the DB and try some of the queries in the [lab_5-arango-queries.md doc](https://github.com/cisco-asp-web/LTRSPG-2212/tree/main/lab_5/lab_5-arango-queries.md)
+2. Optional or for reference: connect to the DB and try some of the queries in the [lab_5-arango-queries.md doc](https://github.com/cisco-asp-web/LTRSPG-2212/tree/main/lab_5/jalapeno/example-arango-queries.md)
 
 > [!NOTE]
 > This next step affects later tasks in the bonus lab, so for best results it should be completed.

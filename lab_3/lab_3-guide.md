@@ -17,13 +17,14 @@ https://cilium.io/labs/
   - [Contents](#contents)
   - [Lab Objectives](#lab-objectives)
   - [Verify pre-installed Kubernetes and Cilium are running](#verify-pre-installed-kubernetes-and-cilium-are-running)
-  - [Setup Cilium BGP Peering](#setup-cilium-bgp-peering)
-    - [Cilium BGP CRD](#cilium-bgp-crd)
-    - [Establish the Cilium BGP global and peer configurations](#establish-the-cilium-bgp-global-and-peer-configurations)
+  - [Kubernetes Custom Resource Definitions (CRDs)](#kubernetes-custom-resource-definitions-crds)
+    - [Cilium BGP](#cilium-bgp)
     - [Verify Cilium BGP peering](#verify-cilium-bgp-peering)
     - [Cilium BGP prefix advertisement](#cilium-bgp-prefix-advertisement)
-    - [Create the carrots BGP VRF](#create-the-carrots-bgp-vrf)
+- [TRANSISTION FIRST TO SECOND BLOCK APPLIED FIRST CONFIG FILE](#transistion-first-to-second-block-applied-first-config-file)
   - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
+  - [SECOND CODE BLOCK DONE](#second-code-block-done)
+    - [Create the carrots BGP VRF](#create-the-carrots-bgp-vrf)
   - [Establish Cilium VRFs and Create Pods](#establish-cilium-vrfs-and-create-pods)
     - [Verify Cilium advertised L3vpn prefixes are reaching remote xrd nodes](#verify-cilium-advertised-l3vpn-prefixes-are-reaching-remote-xrd-nodes)
     - [Run a ping test!](#run-a-ping-test)
@@ -106,8 +107,7 @@ Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of
 
 Now we're ready!
 
-##  Setup Cilium BGP Peering
-**Brief explanation of Kubernetes Custom Resource Definitions (CRDs)**
+##  Kubernetes Custom Resource Definitions (CRDs)
 
 Per: https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/
 
@@ -119,9 +119,11 @@ A CRD applied to a single element in the K8s cluster would be analogous to confi
 
 CRDs come in YAML file format and in the next several sections of this lab we'll apply CRDs to the K8s cluster to setup Cilium BGP peering, establish Cilium SRv6 locator ranges, create VRFs, etc.
 
-### Cilium BGP CRD
+One of the great things about CRDs is you can combine all the configuration elements into a single file, or you can break it up into multiple files by configuration element. We've grouped roughly 10 CRDs into three yaml files:
 
-For the sake of simplicity we'll use iBGP peering between our London K8s nodes and our route reflectors **paris xrd05** and **barcelona xrd06**. 
+   * [01-cilium-bgp.yaml](cilium/01-cilium-bgp.yaml) - Full Cilium BGP config including ASN, peers, address-families, node-override/update-source, and prefix advertisement
+   * [02-cilium-srv6.yaml](cilium/02-cilium-srv6.yaml) - Cilium SRv6 SID manager and Locator pool configuration
+   * [03-carrots-vrf.yaml](cilium/07-vrf-carrots.yaml) - Cilium BGP and K8s VRF 'carrots' configuration and deployment of test pod
 
 On **london-vm-00** change to the lab_3/cilium directory and check out the contents
    ```
@@ -129,17 +131,16 @@ On **london-vm-00** change to the lab_3/cilium directory and check out the conte
    ll
    ```
 
-   The files we'll be working with are:
-   * [01-bgp-cluster.yaml](cilium/01-bgp-cluster.yaml) - Cilium BGP global configuration
-   * [02-bgp-peer.yaml](cilium/02-bgp-peer.yaml) - BGP peer address families and route policies
-   * [03-bgp-node-override.yaml](cilium/03-bgp-node-override.yaml) - we use this to specify the BGP source address
-   * [04-bgp-advert.yaml](cilium/04-bgp-advert.yaml) - BGP prefix advertisement(s), including SRv6 locator prefix(s)
-   * [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml) - BGP VRF configuration
-   * [06-srv6-locator-pool.yaml](cilium/06-srv6-locator-pool.yaml) - Cilium SRv6 SID manager and Locator pool configuration
-   * [07-vrf-carrots.yaml](cilium/07-vrf-carrots.yaml) - Cilium VRF 'carrots' configuration and pods
+The directory also contains [99-cilium-all.yaml](./cilium/99-cilium-all.yaml) which has all CRDs used in this lab. This file can be used to deploy all elements in a single shot, or to clean out all Cilium BGP/SRv6/VRF config.
+  
 
+### Cilium BGP
 
-Here is a portion of our Cilium BGP configuration in CRD form and with notes:
+For the sake of simplicity we'll use iBGP peering between our London K8s nodes and our route reflectors **paris xrd05** and **barcelona xrd06**. 
+
+![Cilium SRv6 L3VPN](/topo_drawings/lab3-cilium-l3vpn-topology.png)
+
+Here is a portion of our Cilium BGP Cluster configuration in CRD form and with notes:
 
 ```yaml
 apiVersion: isovalent.com/v1alpha1
@@ -171,20 +172,18 @@ spec:
         name: "cilium-peer"
 ```
 
-One of the great things about CRDs is you can combine all the configuration elements into a single file, or you can break it up into multiple files by configuration element; see [99-cilium-all.yaml](./cilium/99-cilium-all.yaml)
-
-### Establish the Cilium BGP global and peer configurations
-
-![Cilium SRv6 L3VPN](/topo_drawings/lab3-cilium-l3vpn-topology.png)
-
-1. On **london-vm-00** apply the *Cilium BGP Cluster Config CRD*. BGP Cluster config establishes our Cilium Node's BGP ASN and base BGP peering with the route reflectors **paris-xrd05** and **barcelona-xrd06**.
+1. On **london-vm-00** apply the *Cilium BGP Config CRD*. This config establishes our Cilium Node's BGP ASN, peering with the route reflectors **paris-xrd05** and **barcelona-xrd06**, and IPv6 prefix advertisement among other parameters.
    ```
-   kubectl apply -f 01-bgp-cluster.yaml
+   kubectl apply -f 01-cilium-bgp.yaml
    ```
 
    Expected output:
    ```
-   isovalentbgpclusterconfig.isovalent.com/cilium-bgp created
+    isovalentbgppeerconfig.isovalent.com/cilium-peer created
+    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-00 created
+    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-01 created
+    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-02 created
+    isovalentbgpadvertisement.isovalent.com/bgp-ipv6-unicast created
    ```
 
    Next: The *BGP Peer Config CRD* is where we control address families and other BGP peering or route policies on a per peer or peer-group basis.
@@ -202,16 +201,6 @@ One of the great things about CRDs is you can combine all the configuration elem
        - afi: ipv4
          safi: mpls_vpn  # a bit of a misnomer, but we're advertising SRv6 L3VPN, or the equivalent of vpnv4 unicast in XR
    ```
-
-2. Apply the Cilium BGP Peer Config CRD. 
-   ```
-   kubectl apply -f 02-bgp-peer.yaml
-   ```
-
-   Expected output:
-   ```
-   isovalentbgppeerconfig.isovalent.com/cilium-peer created
-   ```
    
    Next we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter. This parameter tells Cilium which source address to use for its BGP peering sessions, similar to `update-source` in IOS-XR.
 
@@ -228,17 +217,6 @@ One of the great things about CRDs is you can combine all the configuration elem
               localAddress: fc00:0:800::2   # the source address to use for the peering session
    ```
    
-3. Apply the node override CRD:
-   ```
-   kubectl apply -f 03-bgp-node-override.yaml
-   ```
-
-   Expected output:
-   ```yaml
-   isovalentbgpnodeconfigoverride.isovalent.com/london-vm-00 created
-   isovalentbgpnodeconfigoverride.isovalent.com/london-vm-01 created
-   isovalentbgpnodeconfigoverride.isovalent.com/london-vm-02 created
-   ```
 
 ### Verify Cilium BGP peering 
 
@@ -280,12 +258,8 @@ Here is a portion of the prefix advertisement CRD with notes:
         - advertisementType: "PodCIDR"          # advertise the pod CIDR prefix for pods in the default VRF
    ```
 
-1. Apply the BGP ipv6 unicast (global table/default VRF) prefix advertisement CRD:
-   ```
-   kubectl apply -f 04-bgp-advert.yaml
-   ```
 
-2. Verify the prefix advertisement (you should now see a 1 under the ipv6 unicast column):
+1. Verify the prefix advertisement (you should now see a 1 under the ipv6 unicast column):
    ```
    cilium bgp peers
    ```
@@ -299,7 +273,7 @@ Here is a portion of the prefix advertisement CRD with notes:
    <snip>
    ```                                                                         
 
-3. Let's get a little more detail on advertised prefixes with the `cilium bgp routes` command. Let's first add a -h flag to see our options
+2. Let's get a little more detail on advertised prefixes with the `cilium bgp routes` command. Let's first add a -h flag to see our options
 
    ```
    cilium bgp routes -h
@@ -314,7 +288,7 @@ Here is a portion of the prefix advertisement CRD with notes:
      cilium bgp routes <available | advertised> <afi> <safi> [vrouter <asn>] [peer|neighbor <address>] [flags]
    ```
 
-4. Let's get the advertised prefixes:
+3. Let's get the advertised prefixes:
    ```
    cilium bgp routes advertised ipv6 unicast
    ```
