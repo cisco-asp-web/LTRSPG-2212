@@ -165,8 +165,8 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
    
 The BGP route reflectors **paris-xrd05** and **barcelona** also need L3VPN configuration added to their peering group. In order to save some time we've preconfigured both with this:
    
-
     ```yaml
+
     conf t
     router bgp 65000
     neighbor-group xrd-ipv6-peer
