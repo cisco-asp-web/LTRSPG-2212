@@ -250,12 +250,12 @@ Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we 
    admin@leaf00:~$ show ipv6 interfaces
    Interface    Master    IPv6 address/mask                        Admin/Oper    BGP Neighbor    Neighbor IP
    -----------  --------  ---------------------------------------  ------------  --------------  -------------
-   Ethernet0              fe80::203d:a9ff:fe5d:83c6%Ethernet0/64   up/up         N/A             N/A
-   Ethernet4              fe80::203d:a9ff:fe5d:83c6%Ethernet4/64   up/up         N/A             N/A
-   Ethernet8              fe80::203d:a9ff:fe5d:83c6%Ethernet8/64   up/up         N/A             N/A
-   Ethernet12             fe80::203d:a9ff:fe5d:83c6%Ethernet12/64  up/up         N/A             N/A
+    Ethernet0              fe80::203d:a9ff:fe5d:83c6%Ethernet0/64   up/up         N/A             N/A
+    Ethernet4              fe80::203d:a9ff:fe5d:83c6%Ethernet4/64   up/up         N/A             N/A
+    Ethernet8              fe80::203d:a9ff:fe5d:83c6%Ethernet8/64   up/up         N/A             N/A
+    Ethernet12             fe80::203d:a9ff:fe5d:83c6%Ethernet12/64  up/up         N/A             N/A
    +Ethernet16             fcbb:0:800::1/64                         up/up         N/A             N/A
-                          fe80::203d:a9ff:fe5d:83c6%Ethernet16/64                N/A             N/A
+                           fe80::203d:a9ff:fe5d:83c6%Ethernet16/64                N/A             N/A
    +Loopback0              fc00:0:1004::1/128                       up/up         N/A             N/A
    ```
 
