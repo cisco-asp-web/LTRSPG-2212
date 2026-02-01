@@ -141,6 +141,8 @@ Configuration state in SONiC is saved in two separate files. The first is the **
 
 The command *config load* is used to load a configuration from an input file; the default is */etc/sonic/config_db.json*, unless specified otherwise. This command does not flush the config DB before loading the new configuration, rather it performs a *diff* on the existing and applies the new. 
 
+We will configuring **leaf00** in the next section through cli.
+
 - Usage:
 ```
 config load [-y|--yes] [<filename>]
@@ -200,6 +202,7 @@ admin@sonic:~$ show runningconfiguration all
 **Edit configuration through SONiC CLI**
 
 The SONiC CLI can also be used to apply non-control plane configurations. From the Linux shell enter *config* and the command syntax needed. 
+
 ```
 admin@sonic::~$ config ?
 Usage: config [OPTIONS] COMMAND [ARGS]...
