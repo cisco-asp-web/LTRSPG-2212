@@ -202,7 +202,7 @@ spec:
          safi: mpls_vpn  # a bit of a misnomer, but we're advertising SRv6 L3VPN, or the equivalent of vpnv4 unicast in XR
    ```
    
-   Next we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter. This parameter tells Cilium which source address to use for its BGP peering sessions, similar to `update-source` in IOS-XR.
+   Then we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter. This parameter tells Cilium which source address to use for its BGP peering sessions, similar to `update-source` in IOS-XR.
 
    Here is a portion of the node override CRD with notes:
    ```yaml
