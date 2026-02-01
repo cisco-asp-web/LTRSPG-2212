@@ -21,7 +21,6 @@ https://cilium.io/labs/
     - [Cilium BGP](#cilium-bgp)
     - [Verify Cilium BGP peering](#verify-cilium-bgp-peering)
     - [Cilium BGP prefix advertisement](#cilium-bgp-prefix-advertisement)
-- [TRANSISTION FIRST TO SECOND BLOCK APPLIED FIRST CONFIG FILE](#transistion-first-to-second-block-applied-first-config-file)
   - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
   - [SECOND CODE BLOCK DONE](#second-code-block-done)
     - [Create the carrots BGP VRF](#create-the-carrots-bgp-vrf)
