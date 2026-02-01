@@ -25,7 +25,7 @@ https://cilium.io/labs/
     - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
   - [Cilium VRF](#cilium-vrf)
     - [Create the carrots BGP VRF](#create-the-carrots-bgp-vrf)
-    - [Establish Cilium VRFs and Create Pods](#establish-cilium-vrfs-and-create-pods)
+    - [Verify Cilium VRFs and Create Pods](#verify-cilium-vrfs-and-create-pods)
   - [Verify Cilium advertised L3VPN prefixes in the lab](#verify-cilium-advertised-l3vpn-prefixes-in-the-lab)
     - [Run a ping test!](#run-a-ping-test)
     - [Optional - Traffic capture using Edgeshark](#optional---traffic-capture-using-edgeshark)
@@ -380,8 +380,8 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
 ## Cilium VRF
 
 ### Create the carrots BGP VRF
-Here is a brief overview of the BGP *vrf carrots* configuration. The full file you will be applying shortly canbe found here [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml)
-   ```
+Here is a brief overview of the BGP *vrf carrots* configuration.
+The full file you will be applying shortly canbe found here [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml)
 
   ```yaml
   ---
@@ -414,9 +414,7 @@ Here is a brief overview of the BGP *vrf carrots* configuration. The full file y
    kubectl apply -f 03-carrots-vrf.yaml
    ```
 
-Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID manager and locators.
-
-## Establish Cilium VRFs and Create Pods
+## Verify Cilium VRFs and Create Pods
 
 Now lets dive deeper into the  *carrots* VRF and the Alpine linux container in the VRF. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
 
