@@ -220,7 +220,7 @@ spec:
 
 ### Verify Cilium BGP peering 
 
-1. Use the *`cilium bgp peers`* command to verify established peering sessions with **paris xrd05** and **barcelona xrd06**. Note, it may take a few seconds for the peering sessions to come up.
+1. Use the *`cilium bgp peers`* command to verify established peering sessions with **paris xrd05** and **barcelona xrd06**. Note, it may take a few seconds to a minute for the peering sessions and bgp table sync.
    
    ```
    cilium bgp peers
@@ -232,9 +232,9 @@ spec:
    ```yaml
    $ cilium bgp peers
    Node          Local AS  Peer AS  Peer Address     Session State  Uptime  Family          Received  Advertised
-   london-vm-00  65000     65000    fc00:0:5555::1   established    25s     ipv6/unicast    2         0    
+   london-vm-00  65000     65000    fc00:0:5555::1   established    25s     ipv6/unicast    6         1    
                                                                             ipv4/mpls_vpn   4         0    
-                 65000     65000    fc00:0:6666::1   established    30s     ipv6/unicast    2         0    
+                 65000     65000    fc00:0:6666::1   established    30s     ipv6/unicast    6         1    
                                                                             ipv4/mpls_vpn   4         0
    <snip>  
    ```
@@ -242,7 +242,7 @@ spec:
    
 ### Cilium BGP prefix advertisement
 
-We have not added IPv6 prefix advertisements yet, hence a zero value in the *Advertised* output above. Also, the **paris** and **barcelona**' route-reflectors were preconfigured to peer with the Cilium nodes and inherited the vpnv4 address family configuration during Lab 2, so we don't need to update their configs. 
+The **paris** and **barcelona**' route-reflectors were preconfigured to peer with the Cilium nodes and inherited the vpnv4 address family configuration during Lab 2, so we don't need to update their configs. 
 
 Here is a portion of the prefix advertisement CRD with notes:
    ```yaml
@@ -267,9 +267,9 @@ Here is a portion of the prefix advertisement CRD with notes:
    ```diff
    $ cilium bgp peers
    Node           Local AS   Peer AS   Peer Address     Session State   Uptime   Family          Received   Advertised
-   +london-vm-00   65000      65000     fc00:0:5555::1   established     3m13s    ipv6/unicast    7          1    
+   +london-vm-00   65000      65000     fc00:0:5555::1   established     3m13s    ipv6/unicast    6          1    
                                                                                   ipv4/mpls_vpn   4          0    
-                   65000      65000     fc00:0:6666::1   established     3m13s    ipv6/unicast    7          1    
+                   65000      65000     fc00:0:6666::1   established     3m13s    ipv6/unicast    6          1    
                                                                                   ipv4/mpls_vpn   4          0
    <snip>
    ```                                                                         
