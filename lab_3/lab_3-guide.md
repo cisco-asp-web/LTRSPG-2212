@@ -380,8 +380,9 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
 ## Cilium VRF
 
 ### Create the carrots BGP VRF
-Here is a brief overview of the BGP *vrf carrots* configuration.
-The full file you will be applying shortly canbe found here [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml)
+You will be applying the full Cilium VRF configuration shortly found here [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml).
+
+First though lets look at the BGP VRF configuration section containted in *03-carrots-vrf.yaml* 
 
   ```yaml
   ---
@@ -409,18 +410,12 @@ The full file you will be applying shortly canbe found here [03-carrots-vrf.yaml
       - advertisementType: "PodCIDR"   # we're going to advertise the k8s pod CIDR or subnet
   ```
 
-1. Apply the carrots BGP VRF configuration:
-   ```
-   kubectl apply -f 03-carrots-vrf.yaml
-   ```
-
-## Verify Cilium VRFs and Create Pods
-
 Now lets dive deeper into the  *carrots* VRF and the Alpine linux container in the VRF. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
 
 ![Cilium SRv6 L3VPN](/topo_drawings/cilium-packet-forwarding.png)
 
-A brief explanation of the VRF and pods CRD:
+A brief explanation of the VRF and pods CRD configuration section containted in *03-carrots-vrf.yaml*
+
 ```yaml
 ---
 apiVersion: v1
@@ -466,9 +461,16 @@ spec:
       - "sleep 60m"
 ```
 
+1. Apply the carrots Cilium VRF configuration:
+   ```
+   kubectl apply -f 03-carrots-vrf.yaml
+   ```
+
+## Verify Cilium VRFs and Create Pods
+
 You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*. We didn't do this to be overly complex, but rather to illustrate the fact that the namespace and VRF are independent of each other. We could have pods from multiple namespaces in the same VRF and vice versa.
 
-2. Verify the VRF carrots pods are running:
+1. Verify the VRF carrots pods are running:
    ```
    kubectl get pods -n veggies
    ```
@@ -479,7 +481,7 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
    carrots0   1/1     Running   0          10s
    ``` 
 
-3. Let's get the pods' IP addresses as we'll need them in a few more steps:
+2. Let's get the pods' IP addresses as we'll need them in a few more steps:
    ```
    kubectl get pod -n veggies carrots0 -o jsonpath="Node: {.spec.nodeName} | IPs: {.status.podIPs[*].ip}" && echo
    ```
@@ -489,7 +491,7 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
    Node: london-vm-02 | IPs: 10.200.3.46 2001:db8:42:4::af86
    ```
 
-4. Next we'll verify Cilium has allocated the carrots VRF a SRv6 L3VPN uDT4 SID on **london-vm-02**:
+3. Next we'll verify Cilium has allocated the carrots VRF a SRv6 L3VPN uDT4 SID on **london-vm-02**:
    ```
    kubectl get sidmanager london-vm-02 -o yaml
    ```
