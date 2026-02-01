@@ -235,7 +235,8 @@ spec:
    london-vm-00  65000     65000    fc00:0:5555::1   established    25s     ipv6/unicast    2         0    
                                                                             ipv4/mpls_vpn   4         0    
                  65000     65000    fc00:0:6666::1   established    30s     ipv6/unicast    2         0    
-                                                                            ipv4/mpls_vpn   4         0  
+                                                                            ipv4/mpls_vpn   4         0
+   <snip>  
    ```
 
    
