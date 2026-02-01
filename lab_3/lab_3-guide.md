@@ -21,7 +21,6 @@ https://cilium.io/labs/
     - [Cilium BGP](#cilium-bgp)
     - [Verify Cilium BGP peering](#verify-cilium-bgp-peering)
     - [Verify BGP prefix advertisement](#verify-bgp-prefix-advertisement)
-  - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
   - [Cilium SRv6](#cilium-srv6)
     - [Cilium SRv6 SID Manager and Locators](cilium-srv6-sid-manager-and-locators)
   - [Cilium VRF](cilium-vrf)
