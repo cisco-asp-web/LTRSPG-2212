@@ -380,9 +380,9 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
 ## Cillium VRF
 
 ### Create the carrots BGP VRF
-Apply the BGP configuration for *vrf carrots* per the yaml file here: [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml)
+Here is a brief overview of the BGP *vrf carrots* configuration. The full file you will be applying shortly canbe found here [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml)
+   ```
 
-Earlier you saw we separated the BGP peering and IPv6 route advertisement configs into two yaml files. For the VRF we've got both VRF definition and route advertisement in a single file to illustrate the point about config modularity. Here is a brief overview of the BGP VRF CRD:
   ```yaml
   ---
   apiVersion: isovalent.com/v1
@@ -411,7 +411,7 @@ Earlier you saw we separated the BGP peering and IPv6 route advertisement config
 
 1. Apply the carrots BGP VRF configuration:
    ```
-   kubectl apply -f 05-bgp-vrf.yaml
+   kubectl apply -f 03-carrots-vrf.yaml
    ```
 
 Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID manager and locators.
