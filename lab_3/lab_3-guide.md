@@ -377,7 +377,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
      london-vm-02   [map[locators:[map[behaviorType:uSID prefix:fc00:0:8804::/48
    ```
 
-## Cillium VRF
+## Cilium VRF
 
 ### Create the carrots BGP VRF
 Here is a brief overview of the BGP *vrf carrots* configuration. The full file you will be applying shortly canbe found here [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml)
@@ -418,7 +418,7 @@ Cilium BGP configuration is now complete. Next we'll setup the Cilium SRv6 SID m
 
 ## Establish Cilium VRFs and Create Pods
 
-In the next step we'll create the *carrots* VRF and deploy an Alpine linux container in the VRF. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
+Now lets dive deeper into the  *carrots* VRF and the Alpine linux container in the VRF. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
 
 ![Cilium SRv6 L3VPN](/topo_drawings/cilium-packet-forwarding.png)
 
@@ -469,12 +469,6 @@ spec:
 ```
 
 You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*. We didn't do this to be overly complex, but rather to illustrate the fact that the namespace and VRF are independent of each other. We could have pods from multiple namespaces in the same VRF and vice versa.
-
-1. Add VRF, namespace, and pods:
-   [07-vrf-carrots.yaml](cilium/07-vrf-carrots.yaml)
-   ```
-   kubectl apply -f 07-vrf-carrots.yaml
-   ```
 
 2. Verify the VRF carrots pods are running:
    ```
