@@ -134,7 +134,7 @@ On **london-vm-00** change to the lab_3/cilium directory and check out the conte
 The directory also contains [99-cilium-all.yaml](./cilium/99-cilium-all.yaml) which has all CRDs used in this lab. This file can be used to deploy all elements in a single shot, or to clean out all Cilium BGP/SRv6/VRF config.
   
 
-### Cilium BGP
+## Cilium BGP
 
 For the sake of simplicity we'll use iBGP peering between our London K8s nodes and our route reflectors **paris xrd05** and **barcelona xrd06**. 
 
@@ -171,7 +171,7 @@ spec:
       peerConfigRef:
         name: "cilium-peer"
 ```
-
+### Configure Cilium BGP
 1. On **london-vm-00** apply the *Cilium BGP Config CRD*. This config establishes our Cilium Node's BGP ASN, peering with the route reflectors **paris-xrd05** and **barcelona-xrd06**, and IPv6 prefix advertisement among other parameters.
    ```
    kubectl apply -f 01-cilium-bgp.yaml
@@ -240,7 +240,7 @@ spec:
    ```
 
    
-### Cilium BGP prefix advertisement
+### Verify BGP prefix advertisement
 
 The **paris** and **barcelona**' route-reflectors were preconfigured to peer with the Cilium nodes and inherited the vpnv4 address family configuration during Lab 2, so we don't need to update their configs. 
 
@@ -300,9 +300,9 @@ Here is a portion of the prefix advertisement CRD with notes:
    london-vm-00  65000    fc00:0:5555::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]       
                  65000    fc00:0:6666::1  2001:db8:42::/64  fc00:0:800::2  3h22m34s  [{Origin: i} {AsPath: } {LocalPref: 100} {MpReach(ipv6-unicast): {Nexthop: fc00:0:800::2, NLRIs: [2001:db8:42::/64]}}]
    ```
-# TRANSISTION FIRST TO SECOND BLOCK APPLIED FIRST CONFIG FILE
+## Cilium SRv6
 
-## Cilium SRv6 SID Manager and Locators
+### Cilium SRv6 SID Manager and Locators
 Per Cilium Enterprise documentation:
 *The SID Manager manages a cluster-wide pool of SRv6 locator prefixes. You can define a prefix pool using the IsovalentSRv6LocatorPool CRD and the Cilium Operator will assign a locator for each node from this prefix.*
 
@@ -326,10 +326,10 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
      argumentLenBits: 0
    ```
 
-1. Create the Cilium SRv6 locator pool. The full CRD may be reviewed here: [06-srv6-locator-pool.yaml](cilium/06-srv6-locator-pool.yaml)
+1. Create the Cilium SRv6 locator pool. The full CRD may be reviewed here: [02-cilium-srv6.yaml](cilium/02-cilium-srv6.yaml)
   
    ```
-   kubectl apply -f 06-srv6-locator-pool.yaml
+   kubectl apply -f 02-cilium-srv6.yaml
    ```
 
    Recall the BGP prefix advertisement CRD included a spec for advertising the SRv6 locator pool as well:
@@ -346,13 +346,13 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    cilium bgp routes advertised ipv6 unicast
    ```
 
-   Example partial output, Cilium is now advertising the node's Locator:
+   Example partial output, Cilium is now advertising the node's Locators as highlighted below.
    ```diff
    Node           VRouter   Peer             Prefix               NextHop           Age     Attrs
    london-vm-00   65000     fc00:0:5555::1   2001:db8:42::/64     fc00:0:800::2           
                   65000     fc00:0:6666::1   2001:db8:42::/64     fc00:0:800::2            
-   +               65000     fc00:0:5555::1   fc00:0:88f7::/48     fc00:0:800::2           
-   +               65000     fc00:0:6666::1   fc00:0:88f7::/48     fc00:0:800::2    
+   +              65000     fc00:0:5555::1   fc00:0:88f7::/48     fc00:0:800::2           
+   +              65000     fc00:0:6666::1   fc00:0:88f7::/48     fc00:0:800::2    
    ```
 
 3. Now that we've created locator pool, let's validate it:
