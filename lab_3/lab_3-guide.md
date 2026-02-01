@@ -22,10 +22,12 @@ https://cilium.io/labs/
     - [Verify Cilium BGP peering](#verify-cilium-bgp-peering)
     - [Verify BGP prefix advertisement](#verify-bgp-prefix-advertisement)
   - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
-  - [SECOND CODE BLOCK DONE](#second-code-block-done)
+  - [Cilium SRv6](#cilium-srv6)
+    - [Cilium SRv6 SID Manager and Locators](cilium-srv6-sid-manager-and-locators)
+  - [Cilium VRF](cilium-vrf)
     - [Create the carrots BGP VRF](#create-the-carrots-bgp-vrf)
-  - [Establish Cilium VRFs and Create Pods](#establish-cilium-vrfs-and-create-pods)
-    - [Verify Cilium advertised L3vpn prefixes are reaching remote xrd nodes](#verify-cilium-advertised-l3vpn-prefixes-are-reaching-remote-xrd-nodes)
+    - [Establish Cilium VRFs and Create Pods](#establish-cilium-vrfs-and-create-pods)
+  - [Verify Cilium advertised L3VPN prefixes in the lab](#verify-cilium-advertised-l3vpn-prefixes-in-the-lab)
     - [Run a ping test!](#run-a-ping-test)
     - [Optional - Traffic capture using Edgeshark](#optional---traffic-capture-using-edgeshark)
   - [Lab 3 Appendix](#lab-3-appendix)
@@ -376,7 +378,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
      london-vm-02   [map[locators:[map[behaviorType:uSID prefix:fc00:0:8804::/48
    ```
 
-## SECOND CODE BLOCK DONE
+## Cillium VRF
 
 ### Create the carrots BGP VRF
 Apply the BGP configuration for *vrf carrots* per the yaml file here: [05-bgp-vrf.yaml](cilium/05-bgp-vrf.yaml)
@@ -511,7 +513,7 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
    Host: london-vm-02 | VRF: carrots | SID: fc00:0:8804:9747:: | Behavior: uDT4
    ```
 
-### Verify Cilium advertised L3vpn prefixes are reaching remote xrd nodes
+## Verify Cilium advertised L3VPN prefixes in the lab
 
 1. Using the containerlab extension, ssh to **rome xrd07** and run some BGP verification commands.
 
