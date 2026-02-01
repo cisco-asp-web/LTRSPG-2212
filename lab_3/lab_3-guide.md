@@ -20,7 +20,7 @@ https://cilium.io/labs/
   - [Kubernetes Custom Resource Definitions (CRDs)](#kubernetes-custom-resource-definitions-crds)
     - [Cilium BGP](#cilium-bgp)
     - [Verify Cilium BGP peering](#verify-cilium-bgp-peering)
-    - [Cilium BGP prefix advertisement](#cilium-bgp-prefix-advertisement)
+    - [Verify BGP prefix advertisement](#verify-bgp-prefix-advertisement)
   - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
   - [SECOND CODE BLOCK DONE](#second-code-block-done)
     - [Create the carrots BGP VRF](#create-the-carrots-bgp-vrf)
