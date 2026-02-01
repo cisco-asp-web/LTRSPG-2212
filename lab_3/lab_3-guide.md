@@ -364,15 +364,16 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    kubectl get sidmanager -o custom-columns="NAME:.metadata.name,ALLOCATIONS:.spec.locatorAllocations"
    ```
 
-   The truncated output below shows the Cilium uSID locator allocation for each node:
+   The truncated output below shows the Cilium uSID locator allocation for each node. Notice that we have the
+   same prefix as the previous command *fc00:0:88f7::/48* listed for london-vm-00.
 
    Example output:
 
    ```yaml
    NAME           ALLOCATIONS
-   london-vm-00   [map[locators:[map[behaviorType:uSID prefix:fc00:0:88f7::/48
-   london-vm-01   [map[locators:[map[behaviorType:uSID prefix:fc00:0:88f6::/48 
-   london-vm-02   [map[locators:[map[behaviorType:uSID prefix:fc00:0:8804::/48
+   + london-vm-00   [map[locators:[map[behaviorType:uSID prefix:fc00:0:88f7::/48
+     london-vm-01   [map[locators:[map[behaviorType:uSID prefix:fc00:0:88f6::/48 
+     london-vm-02   [map[locators:[map[behaviorType:uSID prefix:fc00:0:8804::/48
    ```
 
 ## SECOND CODE BLOCK DONE
