@@ -320,8 +320,6 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 2. cd into the lab_4 directory and execute the *sonic-playbook.yaml*
     ```
     cd ~/LTRSPG-2212/lab_4/ansible
-    ```
-    ```
     ansible-playbook -i hosts sonic-playbook.yaml -e "ansible_user=admin ansible_ssh_pass=admin ansible_sudo_pass=admin" -vv
     ```
 
