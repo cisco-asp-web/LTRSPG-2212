@@ -118,7 +118,7 @@ git reset --hard origin/main
 ```
 This downloads the latest changes from GitHub and updates all tracked files so your local repository exactly matches the current main branch without applying any local modifications.
 
-![git](../topo_drawings/git.png)
+![git](../topo_drawings/git-fetch.png)
 
 
 
