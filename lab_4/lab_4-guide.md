@@ -37,6 +37,7 @@ We will have achieved the following objectives upon completion of Lab 4:
 In lab 1 our containerlab script deployed both the XRd topology and the SONiC nodes in our London AI/ML backend data center. 
 
 Our SONiC ML Training Fabric topology looks like this:
+
 ![Lab 4 Topology](../topo_drawings/lab4-topology-diagram.png)
 
 
