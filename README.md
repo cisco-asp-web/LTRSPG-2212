@@ -59,7 +59,9 @@ Within each lab directory you should see several files of importance:
 
 # dCloud Instances 
 
-Each lab instance is running on Cisco dCloud and is reachable via AnyConnect VPN. In the Webex Teams room for the lab we've provided a spreadsheet with a list of dCloud instances and the AnyConnect credentials necessary to access each instance. To find your dCloud instance please reference your student number provided on the handout in class.
+All lab instances are running on Cisco dCloud.
+The proctors will walk through the complete login and access process during the session, including how to connect to your assigned lab instance.
+No preparation or prior access is required before the demonstration.
 
 
 # dCloud lab Topology
