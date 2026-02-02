@@ -15,6 +15,8 @@ https://containerlab.dev/
   - [Lab Objectives](#lab-objectives)
   - [Topology](#topology)
   - [Accessing the routers](#accessing-the-routers)
+  - [Lab Repository Update (Required)](#lab-repository-update-required)
+    - [Step-by-step](#step-by-step)
   - [Launch and Validate XRD Topology](#launch-and-validate-xrd-topology)
     - [Connect to the Topology Host and SSH to Containers.](#connect-to-the-topology-host-and-ssh-to-containers)
     - [Accessing the London K8s Control Plane VM](#accessing-the-london-k8s-control-plane-vm)
@@ -95,6 +97,28 @@ All VMs, routers, etc. use the same user credentials:
 ```
 User: cisco, Password: cisco123
 ```
+
+## Lab Repository Update (Required)
+
+At the start of the lab, you must update the local lab repository to ensure it matches the latest official version hosted on GitHub.  
+GitHub is the **source of truth** for all lab files.
+
+The commands below will reset your local copy to exactly match the remote repository.
+
+---
+
+### Step-by-step
+
+Follow the instructions demonstrated by the proctors to connect to your lab VM.
+
+```bash
+cd ~/LTRSPG-2212
+git fetch origin
+git reset --hard origin/main
+```
+This downloads the latest changes from GitHub and updates all tracked files so your local repository exactly matches the current main branch without applying any local modifications.
+
+![git](../topo_drawings/git.png)
 
 
 
