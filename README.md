@@ -1,8 +1,5 @@
 # Welcome to LTRSPG-2212: Modern AI networks: IOS-XR, SRv6, Cilium, and SONiC
 
-## Lab Credentials:
-
-Before starting the lab, please connect to the lab using these [credentials.](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/LTRSPG-2212-credentials.csv)
 
 ## Introduction: 
 
