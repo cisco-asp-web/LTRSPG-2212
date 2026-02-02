@@ -299,7 +299,7 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
 ### Add Synthetic Latency to the Links
 
 > [!NOTE]
-> In a default containerized environment, direct XRd-to-XRd pings typically result in round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions, we intentionally move away from these values. As part of the lab setup, an Ansible playbook invokes a shell script that injects synthetic latency on the underlying Linux links, using the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later traffic engineering and path-selection exercises.
+> In a default containerlab environment, direct XRd-to-XRd pings typically result in round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions we're going to add synthetic latency on the underlying Linux links to match the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later traffic engineering and path-selection exercises.
    
 ![WAN Latencies](../topo_drawings/lab1-latencies.png)
 
@@ -353,7 +353,7 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
     show bgp ipv6 unicast fc00:0:7777::1/128
     ```
 
-    ```
+    ```diff
     RP/0/RP0/CPU0:london#show bgp ipv6 unicast fc00:0:7777::1/128
     Thu Jan 29 05:10:12.500 UTC
     BGP routing table entry for fc00:0:7777::1/128
@@ -366,23 +366,21 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
       Path #1: Received by speaker 0
       Not advertised to any peer
       Local
-        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)                  <------ origin from xrd07
+       +fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)                  <------ origin from xrd07
           Origin IGP, metric 0, localpref 100, valid, internal, best, group-best
           Received Path ID 0, Local Path ID 1, version 10
-          Originator: 10.0.0.7, Cluster list: 10.0.0.5                            <------ route reflector xrd05
+         +Originator: 10.0.0.7, Cluster list: 10.0.0.5                            <------ route reflector xrd05
       Path #2: Received by speaker 0
       Not advertised to any peer
       Local
-        fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)                  <------ origin from xrd07
+       +fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)                  <------ origin from xrd07
           Origin IGP, metric 0, localpref 100, valid, internal
           Received Path ID 0, Local Path ID 0, version 0
-          Originator: 10.0.0.7, Cluster list: 10.0.0.6                            <------ route reflector xrd06
+         +Originator: 10.0.0.7, Cluster list: 10.0.0.6                            <------ route reflector xrd06
       ```
 
 
 ## Configure and Validate SRv6
-
-In SRv6, the IPv6 destination address represents a set of one or more instructions. In our lab we will use SRv6 "micro segment" (SRv6 uSID or just "uSID" for short) instead of the full SRH. 
 
 With SRv6 uSID:
 
