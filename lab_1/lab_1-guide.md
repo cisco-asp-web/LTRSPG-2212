@@ -1,6 +1,6 @@
 # Lab 1 Guide: Deploy XRd Topology and apply SRv6 configurations [20 Min]
 
-We use of containerlab to orchestrate the XRd and SONiC virtual network topologies in this lab. If you wish to explore XRd and its uses beyond the scope of this lab the xrdocs team has posted a number of tutorials here: 
+We use containerlab to orchestrate the XRd and SONiC virtual network topologies. If you wish to explore XRd and its uses beyond the scope of this lab the xrdocs team has posted a number of tutorials here: 
 
 https://xrdocs.io/virtual-routing/tutorials
 
@@ -43,7 +43,7 @@ We will have achieved the following objectives upon completion of Lab 1:
 For Labs 1 - 3 we will use the topology shown below. In this network we have 7 XRd routers providing SRv6 transport services to a pair of Ubuntu containers (London and Rome) and a Kubernetes cluster running on Ubuntu VMs (London).
 ![Lab Topology](../topo_drawings/overview-topology-large.png)
 
-Although the topology includes several SONiC routers and virtual machines, this lab focuses exclusively on the WAN network, which is built using IOS-XRd routers.
+Although the topology includes several SONiC routers and virtual machines, Lab 1 focuses exclusively on the WAN network, which is built using IOS-XRd routers.
 
 ## Accessing the routers 
 
@@ -51,9 +51,8 @@ Although the topology includes several SONiC routers and virtual machines, this 
 
 Lab attendees can interact with the routers in multiple ways. They may choose to ssh to the **topology host** VM and use it as a jumpbox to:
 
-- Launch topologies  
-- SSH into routers  
-- Perform additional configuration tasks
+- Launch the topology
+- SSH into routers and perform configuration tasks
 
 However, it is **recommended** to use **Visual Studio Code** on the provided **Windows virtual machine** for a more streamlined experience.
 
@@ -71,18 +70,18 @@ These tools allow attendees to:
 
 This setup simplifies lab operations and significantly enhances usability.
 
-RDP to the Windows Virtual machine from the lab attendee laptop:
+1. RDP to the Windows Virtual machine from the lab attendee laptop:
 
-The lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 **(admin / cisco123)**
+   The lab can be accessed using a Remote Desktop connection to the windows management hosts at 198.18.128.102 **(admin / cisco123)**
 
 ![windows-rdp](.././topo_drawings/windows-rdp.png)
 
 
-Launch Visual Code:
+2. Launch Visual Code:
 
 ![launch visual code](../topo_drawings/lab1-visual-code-launch.png)
 
-Visual code will connect to the topology host and lab attendees should enter the "cisco123" password 
+Visual code will connect to the topology host and lab attendees should enter the **"cisco123"** password 
 
 ![connect using visual code](../topo_drawings/lab1-visual-code-connect.png)
 
@@ -199,7 +198,7 @@ To establish an SSH session to an IOS-XRd router, use the Containerlab Visual St
 ![ssh into xrd01](../topo_drawings/lab1-ssh-xrd01.png)
 
 
-The London and Rome sites host Linux-based containers that will be used to generate traffic and run validation tests throughout the lab. To access these containers, use the same method as for an IOS-XRd router: right-click on the container in the Containerlab VS Code extension, select SSH, and repeat the same procedure.
+The London and Rome sites host Linux containers that will be used to generate traffic and run validation tests throughout the lab. To access these containers, use the same method as for an IOS-XRd router: right-click on the container in the Containerlab VS Code extension, select SSH, and repeat the same procedure.
 The same credentials used for the IOS-XRd routers apply.
 
 ![Attach terminal](../topo_drawings/lab1-attach-terminal.png)

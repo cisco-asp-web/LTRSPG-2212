@@ -6,7 +6,7 @@ Before starting the lab, please connect to the lab using these [credentials.](ht
 
 ## Introduction: 
 
-In this immersive hands-on lab we will explore how to build SRv6 WAN networks utilizing L3VPNs, next-generation AI fabric load balancing using SRv6, and Kubernetes-native SRv6 with Cilium. This lab session walks participants through a series of progressive tutorials and labs covering:
+In this immersive hands-on lab we will explore how to build SRv6 WAN networks utilizing L3VPNs, next-generation AI fabric load balancing using SRv6, and Kubernetes-native SRv6 with Cilium. This session walks participants through a series of progressive tutorials and labs covering:
 
  - SRv6 fundamentals and foundational building blocks for SRv6 L3VPN and Traffic Engineering 
 
@@ -16,7 +16,7 @@ In this immersive hands-on lab we will explore how to build SRv6 WAN networks ut
   
  - Programmatic traffic control using custom SRv6 mappings and intelligent automation 
   
-Participants will gain practical skills in deploying flexible, scalable, and programmable infrastructure purpose-built for AI, HPC, or cloud-native workloads.
+Participants will gain practical skills in deploying flexible, scalable, and programmable infrastructure purpose-built for Service Provider, AI, HPC, or cloud-native workloads.
 
 ## Contents
 * Repository Overview [LINK](#github-repository-overview)
@@ -29,7 +29,7 @@ Participants will gain practical skills in deploying flexible, scalable, and pro
 
 
 ## Github Repository Overview
-Each of the labs is designed to be completed in the order presented. Lab 1 will launch our XRd topology with baseline configurations. In each subsequent lab (2-3) we'll add SRv6 configurations on network and host devices. In lab 4-5 we switch to SONIC to discover new AI use cases for backend networks utilizing SRv6.
+Each of the labs is designed to be completed in the order presented.
 
 ### Root Directory
 
@@ -77,7 +77,7 @@ This lab environment consists of three virtual machines, each with a specific ro
 |----------------------|------------------|------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
 | **Windows Management** | `198.18.128.102` | RDP-accessible Windows VM for student interaction with the lab                                                        | - Lab documentation access<br>- VS Code with SSH and extensions:<br> &nbsp;&nbsp;• Start/stop topologies<br> &nbsp;&nbsp;• Capture traffic<br> &nbsp;&nbsp;• Access containers and Linux hosts |
 | **Topology Host**    | `198.18.133.100` | Primary VM that hosts our SONiC and XRd networks deployed via Containerlab                        | - `Containerlab` to define and deploy topologies (`*.clab.yaml`)<br>- `Edgeshark` for in-container packet captures |
-| **Jalapeno Host**    | `198.18.128.101` | Hosts **Project Jalapeno**, an open-source SDN controller framework focused on tunnel-based and graph-driven control planes       | - SDN automation & path computation<br>- Real-time topology modeling<br>- Graph database ingestion              |
+| **Jalapeno Host**    | `198.18.128.101` | Hosts **Project Jalapeno**, an open-source SDN controller framework        | - SDN automation & path computation<br>- Real-time topology modeling<br>- Graph database              |
 
 
 
