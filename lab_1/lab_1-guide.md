@@ -214,36 +214,17 @@ In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Ci
     ssh cisco@london-vm-00
     ```
    
-2. Check IPv6 connectivity from **london-vm-00** to **london xrd01**
+2. Optional: check IPv6 connectivity from **london-vm-00** to **london xrd01**
 
     ![London xrd01](../topo_drawings/lab1-london-xrd01.png)
 
     ```
     ping fc00:0:800::1 -c 2
     ```
-    ```
-    cisco@london-vm-00:~$ ping fc00:0:800::1 -c 2
-    PING fc00:0:800::1(fc00:0:800::1) 56 data bytes
-    64 bytes from fc00:0:800::1: icmp_seq=1 ttl=64 time=1.61 ms
-    64 bytes from fc00:0:800::1: icmp_seq=2 ttl=64 time=1.81 ms
-
-    --- fc00:0:800::1 ping statistics ---
-    2 packets transmitted, 2 received, 0% packet loss, time 1001ms
-    rtt min/avg/max/mdev = 1.611/1.709/1.808/0.098 ms
-    ```
 
     Visual representation:
 
     ![berlin connectivity](../topo_drawings/lab1-london-connectivity.png)
-
-    You can now logout of the London VM 
-
-    ```
-    cisco@london-vm-00:~$ exit
-    logout
-    Connection to london-vm-00 closed.
-    cisco@topology-host:~/LTRSPG-2212$ 
-    ```
 
 
 ## Validate ISIS Topology
@@ -299,7 +280,7 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
 ### Add Synthetic Latency to the Links
 
 > [!NOTE]
-> In a default containerlab environment, direct XRd-to-XRd pings typically result in round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions we're going to add synthetic latency on the underlying Linux links to match the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later traffic engineering and path-selection exercises.
+> In a default containerlab environment XRd-to-XRd pings would have round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions we're going to add synthetic latency on the underlying Linux links to match the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later traffic engineering and path-selection exercises.
    
 ![WAN Latencies](../topo_drawings/lab1-latencies.png)
 
@@ -366,18 +347,18 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
       Path #1: Received by speaker 0
       Not advertised to any peer
       Local
-       +fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)                  <------ origin from xrd07
+    +    fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)                  <------ origin from xrd07
           Origin IGP, metric 0, localpref 100, valid, internal, best, group-best
           Received Path ID 0, Local Path ID 1, version 10
-         +Originator: 10.0.0.7, Cluster list: 10.0.0.5                            <------ route reflector xrd05
+    +      Originator: 10.0.0.7, Cluster list: 10.0.0.5                            <------ route reflector xrd05
       Path #2: Received by speaker 0
       Not advertised to any peer
       Local
-       +fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)                  <------ origin from xrd07
+    +    fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)                  <------ origin from xrd07
           Origin IGP, metric 0, localpref 100, valid, internal
           Received Path ID 0, Local Path ID 0, version 0
-         +Originator: 10.0.0.7, Cluster list: 10.0.0.6                            <------ route reflector xrd06
-      ```
+    +      Originator: 10.0.0.7, Cluster list: 10.0.0.6                            <------ route reflector xrd06
+    ```
 
 
 ## Configure and Validate SRv6
@@ -550,7 +531,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
       Level: level-1      Metric: 1        Administrative Tag: 0         
       Level: level-2-only Metric: 1        Administrative Tag: 0         
       SID behavior: uN (PSP/USD)
-    + SID value:    fc00:0:1111::                                   <------------ HERE
+    + SID value:    fc00:0:1111::                                   
       Block Length: 32, Node Length: 16, Func Length: 0, Args Length: 80
     ```
 
