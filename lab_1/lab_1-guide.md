@@ -195,7 +195,7 @@ To establish an SSH session to an IOS-XRd router, use the Containerlab Visual St
 ![ssh into xrd01](../topo_drawings/lab1-ssh-xrd01.png)
 
 
-The London and Rome sites host Linux containers that will be used to generate traffic and run validation tests throughout the lab. To access these containers, use the same method as for an IOS-XRd router: right-click on the container in the Containerlab VS Code extension, select SSH, and repeat the same procedure.
+The London and Rome Linux containers will be used to run validation tests throughout the lab. To access these containers, use the same method as for an IOS-XRd router: right-click on the container in the Containerlab VS Code extension, select SSH, and repeat the same procedure.
 The same credentials used for the IOS-XRd routers apply.
 
 ![Attach terminal](../topo_drawings/lab1-attach-terminal.png)
@@ -203,7 +203,7 @@ The same credentials used for the IOS-XRd routers apply.
 
 ### Accessing the London K8s Control Plane VM
 
-In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Cilium** Container Network Interface (CNI) and connected to the **London** router.
+The three **London VMs** have been preconfigured as a Kubernetes cluster running the **Cilium** Container Network Interface (CNI). All three VMs connect to the **London** XRd router.
 
 
 1. **From the topology host terminal** in visual code, SSH to *London-vm-00* 
@@ -226,7 +226,7 @@ In our lab the **London VMs** are three Ubuntu Kubernetes nodes running the **Ci
 
 ## Validate ISIS Topology
 
-Our topology is running ISIS as its underlying IGP with basic settings pre-configured at startup in lab 1.
+The XRd network is running ISIS with basic settings pre-configured at startup in lab 1.
 
 ![ISIS Topology](../topo_drawings/isis-topology-medium.png)
 
@@ -264,7 +264,8 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
 
     ```
 
-    From London’s perspective, the IS-IS topology shows a pure Level-2 backbone design, with no active Level-1 adjacencies and full reachability achieved through L2 SPF computation. 
+    From London’s perspective, the IS-IS topology shows a Level-2-only network design and reachability achieved through L2 SPF computation. 
+    
     Overall, the SPF results confirm a healthy, loop-free WAN core with consistent metrics and deterministic path selection, suitable for advanced traffic engineering mechanisms such as SRv6.
 
 
