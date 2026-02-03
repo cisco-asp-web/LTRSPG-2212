@@ -527,7 +527,7 @@ The following diagram illustrates the expected traffic path and highlights the d
 
 
     
-1. Launch an edgeshark capture on container xrd01 interface Gig0/0/0/1 to inspect the traffic.
+3. Launch an edgeshark capture on container **london-xrd01** interface Gig0/0/0/1 to inspect the traffic.
    
    ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-g1.png) 
    
@@ -541,7 +541,18 @@ The following diagram illustrates the expected traffic path and highlights the d
    - Source IPv6: fc00:0:1111::1 
    - Destination IPv6: fc00:0:2222:3333:7777:e006:: which defines the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
     
-  
+In SRv6 Traffic Engineering, uSIDs allow a source node (ingress PE) to explicitly program a packet’s path through a domain by enforcing a sequence of intermediate waypoints or links. Like all Segment Routing, uSID-based TE is stateless; the entire path and service instructions are encoded in the packet header, meaning transit routers do not need to maintain per-flow state.
+Standard SRv6 requires a 128-bit SID for every hop, which can lead to large packet headers
+uSIDs solve this by packing six hops into a single address, allowing complex TE paths to be executed without a Segment Routing Header (SRH) in most use cases
+
+On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamically only when it receives a service route with a specific color. This eliminates the need to pre-configure "full mesh" tunnels, significantly improving scalability.
+
+
+4. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic.
+
+  ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
+
+
 **Validate low latency traffic takes the path: london-xrd01 -> 05 -> 06 -> rome-xrd07**
 
 1.  Start a new edgeshark capture  **london-xrd01's** outbound interface (Gi0-0-0-2) to **paris-xrd05**:
