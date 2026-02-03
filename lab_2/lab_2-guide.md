@@ -3,7 +3,7 @@
 ### Description
 In Lab 2 we will establish an SRv6 Layer-3 VPN named *`carrots`*.  The *carrots* vrf will include the *London "storage"* and *Rome* containers connected to **london-xrd01** and **rome-xrd07**.  
 
-Once the L3VPN is established we will then setup SRv6-TE traffic steering from *London* such that traffic to *Rome* prefix 40.0.0.0/24 will take a different path than traffic to Rome prefix 50.0.0.0/24.
+Once the L3VPN is established we will then setup SRv6-TE traffic steering from *London* such that traffic to *Rome* prefix *`40.0.0.0/24`* will take a different path than traffic to Rome prefix *`50.0.0.0/24`*.
 
 ## Contents
 - [Lab 2: Configure SRv6 L3VPN and SRv6-TE \[20 Min\]](#lab-2-configure-srv6-l3vpn-and-srv6-te-20-min)
@@ -164,7 +164,7 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
 
 #### Route Reflectors Configuration 
    
-The BGP route reflectors **paris-xrd05** and **barcelona** also need L3VPN configuration added to their peering group. In order to save some time we've preconfigured both with this:
+The BGP route reflectors **paris-xrd05** and **barcelona-xrd06** also need L3VPN configuration added to their peering group. In order to save some time we've preconfigured both with this:
 
 ```yaml
     conf t
@@ -188,7 +188,7 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
 
 
 > [!IMPORTANT]
-> From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). Again be aware the rd value may differ then those in the below commands:
+> From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). 
 
    ```
    show segment-routing srv6 sid
@@ -369,6 +369,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    conf t
    segment-routing
    traffic-eng
+
      policy bulk-transfer
      srv6
        locator MyLocator binding-sid dynamic behavior ub6-insert-reduced
@@ -393,12 +394,6 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
     show segment-routing srv6 sid
    ```
-   ```
-    show segment-routing traffic-eng policy
-   ```
-   ```
-    show bgp vpnv4 uni vrf carrots 40.0.0.0/24 
-   ```
    
    Example output, note the additional uDT VRF carrots and SRv6-TE **uB6 Insert.Red** SIDs added to the list:
    ```diff
@@ -420,6 +415,11 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
     fc00:0:1111:e009::          uDT6              'carrots'                          bgp-65000           InUse  Y
    +fc00:0:1111:e006::          uB6 (Insert.Red)  'srte_c_50_ep_fc00:0:7777::1' (50, fc00:0:7777::1)  xtc_srv6            InUse  Y 
    +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y  
+   ```
+
+   Take a look at the SRv6-TE policy detail:
+   ```
+    show segment-routing traffic-eng policy
    ```
    
    ```diff
@@ -464,6 +464,10 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
        Path Type: SRV6
    ```
    
+   Show the BGP vpnv4 prefix entry and note the addition the SR policy and binding-SID:
+   ```
+    show bgp vpnv4 uni vrf carrots 40.0.0.0/24 
+   ```   
    ```diff
    RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
     <snip>
