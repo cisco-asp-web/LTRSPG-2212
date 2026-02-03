@@ -527,8 +527,7 @@ The following diagram illustrates the expected traffic path and highlights the d
    ```
 
 > [!IMPORTANT]
-> Notice that the above that the above SID stack the last hop **zurich-xrd04** (4444). As mentioned in the lecture XR looks at the penultimate hop and does a calculation using the ISIS topology table and determines that **berlin-xrd03's** best forwarding path to **rome-xrd07** (7777) is through **xrd04**. Therefore for efficiency it drops the penultimate hop off the SID stack.
-
+> Notice that the above SID stack the last hop **zurich-xrd04** (4444). As mentioned in the lecture XR looks at the penultimate hop and does a calculation using the ISIS topology table and determines that **berlin-xrd03's** best forwarding path to **rome-xrd07** (7777) is through **xrd04**. Therefore for efficiency it drops the penultimate hop off the SID stack.
 
     
 3. Launch an edgeshark capture on container **london-xrd01** interface Gig0/0/0/1 to inspect the traffic.
@@ -572,13 +571,10 @@ In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the dest
 
   ![Zurich ingress Wireshark Capture](../topo_drawings/lab2-xrd04-wireshark-g0.png)
 
-
-Here, the penultimate router (XRD04 – 4444) receives a packet whose IPv6 destination address contains the microSID of the final destination (7777) rather than its own, and therefore forwards the packet as standard IPv6 traffic toward the endpoint.
-• No SRv6 Processing: The router does perform any "Shift" operations because the Destination Address does not match any of its locally configured SRv6 SIDs.
+Here, the zurich xrd router (XRD04 – 4444) receives a packet whose IPv6 destination address contains the microSID of the final destination (7777) rather than its own, and therefore forwards the packet as standard IPv6 traffic toward the endpoint.
+• No SRv6 Processing: The router does not perform any "Shift" operations because the Destination Address does not match any of its locally configured SRv6 SIDs.
 • Longest Prefix Match (LPM): The router performs a standard Longest Prefix Match lookup on the Destination Address.
 • Forwarding: It finds the route to the final destination (the egress PE or next endpoint) and forwards the packet out the appropriate interface
-
-
 
 
 
@@ -586,8 +582,6 @@ Here, the penultimate router (XRD04 – 4444) receives a packet whose IPv6 desti
 1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
 
   ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
-
-
 
 
 
