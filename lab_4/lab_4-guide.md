@@ -41,7 +41,8 @@ Our SONiC ML Training Fabric topology looks like this:
 ![Lab 4 Topology](../topo_drawings/lab4-topology-diagram.png)
 
 <img src="../topo_drawings/lab4-topology-diagram.png" width="800" />
-
+<img src="../topo_drawings/lab4-topology-diagram.png" width="700" />
+<img src="../topo_drawings/lab4-topology-diagram.png" width="8600" />
 
 ## SONiC: A Very Quick Tour
 
