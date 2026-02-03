@@ -201,7 +201,7 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    
    Example validation for vpnv4 route
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vrf carrots 40.0.0.0/24   
+   RP/0/RP0/CPU0:london#show bgp vrf carrots 40.0.0.0/24   
    Tue Jan 31 23:36:41.390 UTC
    +BGP routing table entry for 40.0.0.0/24, Route Distinguisher: 10.0.0.7:1   <--- WE HAVE A ROUTE. YAH
    Versions:
@@ -256,7 +256,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
 
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
+   RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
    <snip> 
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
@@ -320,7 +320,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    
    Example:
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
+   RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
     <snip>
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
@@ -403,7 +403,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    
    Example output, note the additional uDT VRF carrots and SRv6-TE **uB6 Insert.Red** SIDs added to the list:
    ```diff
-   RP/0/RP0/CPU0:xrd01#  show segment-routing srv6 sid
+   RP/0/RP0/CPU0:london#  show segment-routing srv6 sid
    Sat Dec 16 02:45:31.772 UTC
  
    *** Locator: 'MyLocator' *** 
@@ -424,7 +424,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
    
    ```diff
-   RP/0/RP0/CPU0:xrd01#show segment-routing traffic-eng policy color 40
+   RP/0/RP0/CPU0:london#show segment-routing traffic-eng policy color 40
    SR-TE policy database
    ---------------------
 
@@ -466,7 +466,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
    
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
+   RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
     <snip>
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
