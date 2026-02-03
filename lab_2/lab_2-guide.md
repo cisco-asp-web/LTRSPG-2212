@@ -16,7 +16,7 @@ Once the L3VPN is established we will then setup SRv6-TE traffic steering from *
     - [Validate SRv6 L3VPN](#validate-srv6-l3vpn)
   - [Configure SRv6-TE steering for L3VPN](#configure-srv6-te-steering-for-l3vpn)
     - [Create SRv6-TE steering policy](#create-srv6-te-steering-policy)
-    - [Validate SRv6-TE steering of L3VPN traffic](#validate-srv6-te-steering-of-l3vpn-traffic)
+    - [Validate SRv6-TE steering of L3VPN traffic and Packet Walk.](#validate-srv6-te-steering-of-l3vpn-traffic-and-packet-walk)
   - [End of Lab 2](#end-of-lab-2)
 
 ## Lab Objectives
@@ -484,9 +484,17 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
              T:1(Sid structure):
          Source AFI: VPNv4 Unicast, Source VRF: default, Source Route Distinguisher: 10.0.0.7:1
    ```
-### Validate SRv6-TE steering of L3VPN traffic
+### Validate SRv6-TE steering of L3VPN traffic and Packet Walk.
+
+In the previous section, we validated the SRv6 control plane, confirming that color-based SR policies, Binding SIDs, and segment lists were correctly programmed between the London and Rome sites. We now move to data-plane validation, focusing on how traffic originating from the London container is actually forwarded across the network toward the Rome container. Using SRv6 color-based policies, packets are steered along explicitly engineered paths, independent of default IGP routing. Two traffic intents are validated: a bulk-transfer path and a low-latency path, each traversing a different set of intermediate nodes. By observing packet forwarding and captures along the path, we validate how control-plane intent is enforced in the data plane through SRv6 Binding SIDs and segment lists.
 
 **Validate bulk traffic takes the non-shortest path: london-xrd01 -> 02 -> 03 -> 04 -> rome-xrd07** 
+
+In SRv6 Traffic Engineering, uSIDs allow a source node (ingress PE, London-XRD01 in this case) to explicitly program a packet’s path through a domain by enforcing a sequence of intermediate waypoints or links.
+
+The following diagram shows the expected path with the different capture point that will be demonstrated
+
+![Lab2-Wireshark](../topo_drawings/lab2-topology-wireshark.png)
 
 1. Lets now tie the SRv6 TE policy configured to what we expect to see in the Edgeshark output. What you're looking for in the below output is the translation of the previously configured SRv6 TE policy reflected in the actual SRv6 packet header. So the TE bulk policy configured was:
 
