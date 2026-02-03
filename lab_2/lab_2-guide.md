@@ -550,7 +550,7 @@ On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamica
 
 4. Launch an edgeshark capture on container **berlin-xrd03** interface Gig0/0/0/0 to inspect the traffic.
 
-  ![Berlin Wireshark Capture](../topo_drawings/lab2-xrd03-wireshark-g0)
+  ![Berlin Wireshark Capture](../topo_drawings/lab2-xrd03-wireshark-g0.png)
 
 Like in the previous steps, we need to focus on the IPv6 header (Outer Header - SRv6 transport layer):
 
