@@ -41,19 +41,17 @@ We will have achieved the following objectives upon completion of Lab 1:
 
 ## Topology 
 
-For Labs 1 - 3 we will use the topology shown below. In this network we have 7 XRd routers providing SRv6 transport services to a pair of Ubuntu containers (London and Rome) and a Kubernetes cluster running on Ubuntu VMs (London).
+Our network consists of a frontend/WAN with 7 XRd routers providing SRv6 transport services and a 6-node SONiC fabric to simulate an AI/ML backend network. We have a pair of Ubuntu containers (London and Rome) connected to the XRd network, and three Ubuntu VMs (London) running as a Kubernetes cluster and connected to both XRd frontend and SONiC backend networks.
+
 ![Lab Topology](../topo_drawings/overview-topology-large.png)
 
-Although the topology includes several SONiC routers and virtual machines, Lab 1 focuses exclusively on the WAN network, which is built using IOS-XRd routers.
+Lab 1 focuses exclusively on the XRd frontend network.
 
 ## Accessing the routers 
 
 ⚠️⚠️⚠️  Note: This section is provided for reference only. We will walk through router access during the live demo. ⚠️⚠️⚠️ 
 
-Lab attendees can interact with the routers in multiple ways. They may choose to ssh to the **topology host** VM and use it as a jumpbox to:
-
-- Launch the topology
-- SSH into routers and perform configuration tasks
+Lab attendees can interact with the routers in multiple ways. They may choose to ssh to the **topology host** VM and use it as a jumpbox to the routers.
 
 However, it is **recommended** to use **Visual Studio Code** on the provided **Windows virtual machine** for a more streamlined experience.
 
@@ -151,16 +149,10 @@ We can also verify the containerlab logs in the visual code output window. Trunc
  │ clab-cleu26-sonic-leaf-01        │ linux                               │ running            │ 172.20.6.129   │
  │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
  ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
- │ clab-cleu26-sonic-leaf-02        │ linux                               │ running            │ 172.20.6.130   │
- │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
- ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
  │ clab-cleu26-sonic-spine-00       │ linux                               │ running            │ 172.20.6.192   │
  │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
  ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
  │ clab-cleu26-sonic-spine-01       │ linux                               │ running            │ 172.20.6.193   │
- │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
- ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
- │ clab-cleu26-sonic-spine-02       │ linux                               │ running            │ 172.20.6.194   │
  │                                  │ vrnetlab/sonic_sonic-vs:vpp20250422 │ (health: starting) │ N/A            │
  ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
  │ clab-cleu26-xrd-amsterdam        │ cisco_xrd                           │ running            │ 172.20.6.102   │
@@ -168,22 +160,7 @@ We can also verify the containerlab logs in the visual code output window. Trunc
  ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
  │ clab-cleu26-xrd-barcelona        │ cisco_xrd                           │ running            │ 172.20.6.106   │
  │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
- ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
- │ clab-cleu26-xrd-berlin           │ cisco_xrd                           │ running            │ 172.20.6.103   │
- │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
- ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
- │ clab-cleu26-xrd-london           │ cisco_xrd                           │ running            │ 172.20.6.101   │
- │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
- ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
- │ clab-cleu26-xrd-paris            │ cisco_xrd                           │ running            │ 172.20.6.105   │
- │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
- ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
- │ clab-cleu26-xrd-rome             │ cisco_xrd                           │ running            │ 172.20.6.107   │
- │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
- ├──────────────────────────────────┼─────────────────────────────────────┼────────────────────┼────────────────┤
- │ clab-cleu26-xrd-zurich           │ cisco_xrd                           │ running            │ 172.20.6.104   │
- │                                  │ cisco-xrd-control-plane:24.4.1      │                    │ N/A            │
- ╰──────────────────────────────────┴─────────────────────────────────────┴────────────────────┴────────────────╯
+
 
 ```
 
