@@ -13,9 +13,10 @@ Once the L3VPN is established we will then setup SRv6-TE traffic steering from *
   - [Topology](#topology)
   - [Configure SRv6 L3VPN](#configure-srv6-l3vpn)
     - [Configure SRv6 L3VPN on rome-xrd07](#configure-srv6-l3vpn-on-rome-xrd07)
+    - [Validate SRv6 L3VPN](#validate-srv6-l3vpn)
   - [Configure SRv6-TE steering for L3VPN](#configure-srv6-te-steering-for-l3vpn)
     - [Create SRv6-TE steering policy](#create-srv6-te-steering-policy)
-    - [Validate SRv6-TE steering of L3VPN traffic](#validate-srv6-te-steering-of-l3vpn-traffic)
+    - [Validate SRv6-TE steering of L3VPN traffic and Packet Walk.](#validate-srv6-te-steering-of-l3vpn-traffic-and-packet-walk)
   - [End of Lab 2](#end-of-lab-2)
 
 ## Lab Objectives
@@ -164,10 +165,10 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
 #### Route Reflectors Configuration 
    
 The BGP route reflectors **paris-xrd05** and **barcelona** also need L3VPN configuration added to their peering group. In order to save some time we've preconfigured both with this:
-   
-    ```yaml
 
+```yaml
     conf t
+    
     router bgp 65000
     neighbor-group xrd-ipv6-peer
       address-family vpnv4 unicast
@@ -176,7 +177,8 @@ The BGP route reflectors **paris-xrd05** and **barcelona** also need L3VPN confi
       address-family vpnv6 unicast
       route-reflector-client
     commit
-    ```
+```
+
 
 ### Validate SRv6 L3VPN
 
@@ -184,9 +186,10 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
 > [!NOTE]
 > It can take a few seconds after configuration before you see routes populate through the network and be visible in the routing tables.
 
+
 > [!IMPORTANT]
-> 
-1. From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). Again be aware the rd value may differ then those in the below commands:
+> From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). Again be aware the rd value may differ then those in the below commands:
+
    ```
    show segment-routing srv6 sid
    show bgp vpnv4 unicast
@@ -198,7 +201,7 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
    
    Example validation for vpnv4 route
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vrf carrots 40.0.0.0/24   
+   RP/0/RP0/CPU0:london#show bgp vrf carrots 40.0.0.0/24   
    Tue Jan 31 23:36:41.390 UTC
    +BGP routing table entry for 40.0.0.0/24, Route Distinguisher: 10.0.0.7:1   <--- WE HAVE A ROUTE. YAH
    Versions:
@@ -235,6 +238,9 @@ We will use the below diagram for reference:
 
 ![L3VPN Topology](/topo_drawings/lab2-l3vpn-policy.png)
 
+> [!IMPORTANT]
+> A subsequent section of this lab will validate end-to-end connectivity between the London and Rome containers, providing a detailed, step-by-step walkthrough of traffic forwarding across the network from ingress to egress.
+
 ### Create SRv6-TE steering policy
 For our SRv6-TE purposes we'll leverage the on-demand nexthop (ODN) feature set. Here is a nice example and explanation of ODN: [HERE](https://xrdocs.io/design/blogs/latest-converged-sdn-transport-ig)
 
@@ -249,7 +255,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
 
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
+   RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
    <snip> 
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
@@ -313,7 +319,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    
    Example:
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
+   RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
     <snip>
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
@@ -396,7 +402,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    
    Example output, note the additional uDT VRF carrots and SRv6-TE **uB6 Insert.Red** SIDs added to the list:
    ```diff
-   RP/0/RP0/CPU0:xrd01#  show segment-routing srv6 sid
+   RP/0/RP0/CPU0:london#  show segment-routing srv6 sid
    Sat Dec 16 02:45:31.772 UTC
  
    *** Locator: 'MyLocator' *** 
@@ -417,7 +423,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
    
    ```diff
-   RP/0/RP0/CPU0:xrd01#show segment-routing traffic-eng policy color 40
+   RP/0/RP0/CPU0:london#show segment-routing traffic-eng policy color 40
    SR-TE policy database
    ---------------------
 
@@ -459,7 +465,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
    
    ```diff
-   RP/0/RP0/CPU0:xrd01#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
+   RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
     <snip>
      Local
        fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)
@@ -477,11 +483,32 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
              T:1(Sid structure):
          Source AFI: VPNv4 Unicast, Source VRF: default, Source Route Distinguisher: 10.0.0.7:1
    ```
-### Validate SRv6-TE steering of L3VPN traffic
+### Validate SRv6-TE steering of L3VPN traffic and Packet Walk.
+
+In the previous section, we validated the SRv6 control plane, confirming that color-based SR policies, Binding SIDs, and segment lists were correctly programmed between the London and Rome sites. We now move to data-plane validation, focusing on how traffic originating from the London container is actually forwarded across the network toward the Rome container. Using SRv6 color-based policies, packets are steered along explicitly engineered paths, independent of default IGP routing. Two traffic intents are validated: a bulk-transfer path and a low-latency path, each traversing a different set of intermediate nodes. By observing packet forwarding and captures along the path, we validate how control-plane intent is enforced in the data plane through SRv6 Binding SIDs and segment lists.
 
 **Validate bulk traffic takes the non-shortest path: london-xrd01 -> 02 -> 03 -> 04 -> rome-xrd07** 
 
-1. Lets now tie the SRv6 TE policy configured to what we expect to see in the Edgeshark output. What you're looking for in the below output is the translation of the previously configured SRv6 TE policy reflected in the actual SRv6 packet header. So the TE bulk policy configured was:
+In SRv6 Traffic Engineering, uSIDs allow a source node (ingress PE, London-XRD01 in this case) to explicitly program a packet’s path through a domain by enforcing a sequence of intermediate waypoints or links.
+
+The following diagram illustrates the expected traffic path and highlights the different capture points that will be demonstrated.
+
+![Lab2-Wireshark](../topo_drawings/lab2-topology-wireshark.png)
+
+1. Using the Visual Code extension, ssh to the **London container's** shell and run a ping to the bulk transport destination IPv4 address on Rome. We will capture and analyze this traffic at multiple points across the network.
+
+![London ping](../topo_drawings/lab2-amsterdam-ping.png)
+
+  Launch an edgeshark capture on the **london-xrd01** container interface Gig0/0/0/0 to inspect the traffic.
+
+![London gi0/0/0](../topo_drawings/lab2-xrd-edgeshark-g0.png)
+
+  Observing the ICMP traffic exchanged between the London and Rome containers, the echo request is a standard IPv4 packet sourced from 10.101.1.2 and destined for 40.0.0.1, with a measured round-trip time of approximately 120 ms. This latency matches the delay values that were intentionally introduced on the links using Ansible in Lab 1, confirming that traffic is traversing the expected network path.
+
+![London gi0/0/0 capture](../topo_drawings/lab2-xrd01-wireshark-g0.png)
+
+
+2. Lets now tie the SRv6 TE policy configured to what we expect to see in the Edgeshark output. What you're looking for in the below output is the translation of the previously configured SRv6 TE policy reflected in the actual SRv6 packet header. So the TE bulk policy configured was:
 
    ```
       segment-list xrd2347
@@ -494,23 +521,19 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
    2222:3333:7777
    ```
+
 > [!IMPORTANT]
 > Notice that the above that the above SID stack the last hop **zurich-xrd04** (4444). As mentioned in the lecture XR looks at the penultimate hop and does a calculation using the ISIS topology table and determines that **berlin-xrd03's** best forwarding path to **rome-xrd07** (7777) is through **xrd04**. Therefore for efficiency it drops the penultimate hop off the SID stack.
 
-2. Using the Visual Code extension, attach to the **London container's** shell and run a ping to the bulk transport destination IPv4 address on Rome.
-    ![London ping](../topo_drawings/lab2-amsterdam-ping.png)
 
-    ```
-    ping 40.0.0.1 -i .5
-    ```
     
-3. Launch an edgeshark capture on container xrd01 interface Gig0/0/0/1 to inspect the traffic.
+3. Launch an edgeshark capture on container **london-xrd01** interface Gig0/0/0/1 to inspect the traffic.
    
-   ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-g0.png) 
+   ![London edgeshark](../topo_drawings/lab2-xrd-edgeshark-g1.png) 
    
    Here is a visual representation of our capture :
    
-   ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-pcap.png) 
+   ![London edgeshark](../topo_drawings/lab2-xrd-edgeshark-pcap.png) 
    
    If we focus on the IPv6 header (Outer Header - SRv6 transport layer) we can see the following:
 
@@ -518,7 +541,92 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    - Source IPv6: fc00:0:1111::1 
    - Destination IPv6: fc00:0:2222:3333:7777:e006:: which defines the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
     
-  
+In SRv6 Traffic Engineering, uSIDs allow a source node (ingress PE) to explicitly program a packet’s path through a domain by enforcing a sequence of intermediate waypoints or links. Like all Segment Routing, uSID-based TE is stateless; the entire path and service instructions are encoded in the packet header, meaning transit routers do not need to maintain per-flow state.
+Standard SRv6 requires a 128-bit SID for every hop, which can lead to large packet headers
+uSIDs solve this by packing six hops into a single address, allowing complex TE paths to be executed without a Segment Routing Header (SRH) in most use cases
+
+On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamically only when it receives a service route with a specific color. This eliminates the need to pre-configure "full mesh" tunnels, significantly improving scalability.
+
+
+4. Launch an edgeshark capture on container **berlin-xrd03** interface Gig0/0/0/0 to inspect the traffic.
+
+  ![Berlin Wireshark Capture](../topo_drawings/lab2-xrd03-wireshark-g0.png)
+
+Like in the previous steps, we need to focus on the IPv6 header (Outer Header - SRv6 transport layer):
+
+   - Source IPv6: fc00:0:1111::1 
+   - Destination IPv6: fc00:0::3333:7777:e007:: which defines a modified version of the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
+
+Unlike MPLS, which pops labels from a stack, SRv6 uSID manipulates the IPv6 Destination Address (DA) directly to expose the next instruction. Instead of removing a header, the router "strips" the active uSID by modifying the Destination Address itself.
+The router shifts the remaining bits of the uSID list (the portion after the Locator Block) to the left, typically by 16 bits.
+This shift overwrites the current router's uSID (effectively popping it) and moves the next uSID into the active position.
+
+In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the destination address, resulting in fc00:0::3333:7777:e007:: downstream, proving that the SRv6 data plane is correctly executing and advancing the uSID instructions hop by hop.
+
+
+5. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
+
+  ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
+
+In our lab, the entire path is compressed into the IPv6 Destination Address, and no SRH is present. In this case, the penultimate router performs a "Shift-and-Forward" operation.
+The penultimate router **zurich-xrd04** receives the packet and notice that the active portion of the Destination Address (DA) matches the router's own uSID ("4444" in our case).
+The router executes the "uN" (End) behavior. It pops (removes) its own uSID by shifting the remaining bits of the Destination Address to the left (typically by 16 bits). This action moves the next uSID (which belongs to the final destination router) into the active position of the address
+
+
+
+1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic.
+
+  ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 **Validate low latency traffic takes the path: london-xrd01 -> 05 -> 06 -> rome-xrd07**
 
 1.  Start a new edgeshark capture  **london-xrd01's** outbound interface (Gi0-0-0-2) to **paris-xrd05**:
