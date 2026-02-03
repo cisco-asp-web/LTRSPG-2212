@@ -543,7 +543,7 @@ The following diagram illustrates the expected traffic path and highlights the d
     
 In SRv6 Traffic Engineering, uSIDs allow a source node (ingress PE) to explicitly program a packet’s path through a domain by enforcing a sequence of intermediate waypoints or links. Like all Segment Routing, uSID-based TE is stateless; the entire path and service instructions are encoded in the packet header, meaning transit routers do not need to maintain per-flow state.
 Standard SRv6 requires a 128-bit SID for every hop, which can lead to large packet headers
-uSIDs solve this by packing six hops into a single address, allowing complex TE paths to be executed without a Segment Routing Header (SRH) in most use cases
+uSIDs solve this by packing six hops into a single address, allowing complex TE paths to be executed without a Segment Routing Header (SRH) in most use cases.
 
 On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamically only when it receives a service route with a specific color. This eliminates the need to pre-configure "full mesh" tunnels, significantly improving scalability.
 
@@ -564,7 +564,7 @@ This shift overwrites the current router's uSID (effectively popping it) and mov
 In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the destination address, resulting in fc00:0::3333:7777:e007:: downstream, proving that the SRv6 data plane is correctly executing and advancing the uSID instructions hop by hop.
 
 
-5. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
+5. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
 
   ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
@@ -574,7 +574,7 @@ The router executes the "uN" (End) behavior. It pops (removes) its own uSID by s
 
 
 
-1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic.
+1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic.
 
   ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
