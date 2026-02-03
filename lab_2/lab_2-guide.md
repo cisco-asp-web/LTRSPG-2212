@@ -13,6 +13,7 @@ Once the L3VPN is established we will then setup SRv6-TE traffic steering from *
   - [Topology](#topology)
   - [Configure SRv6 L3VPN](#configure-srv6-l3vpn)
     - [Configure SRv6 L3VPN on rome-xrd07](#configure-srv6-l3vpn-on-rome-xrd07)
+    - [Validate SRv6 L3VPN](#validate-srv6-l3vpn)
   - [Configure SRv6-TE steering for L3VPN](#configure-srv6-te-steering-for-l3vpn)
     - [Create SRv6-TE steering policy](#create-srv6-te-steering-policy)
     - [Validate SRv6-TE steering of L3VPN traffic](#validate-srv6-te-steering-of-l3vpn-traffic)
@@ -165,7 +166,7 @@ We'll start with **rome-xrd07** as it will need a pair of static routes for reac
    
 The BGP route reflectors **paris-xrd05** and **barcelona** also need L3VPN configuration added to their peering group. In order to save some time we've preconfigured both with this:
 
-    ```yaml
+```yaml
     conf t
     
     router bgp 65000
@@ -176,7 +177,7 @@ The BGP route reflectors **paris-xrd05** and **barcelona** also need L3VPN confi
       address-family vpnv6 unicast
       route-reflector-client
     commit
-    ```
+```
 
 
 ### Validate SRv6 L3VPN
