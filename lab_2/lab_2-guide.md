@@ -552,6 +552,11 @@ On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamica
 
   ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
+In our lab, the entire path is compressed into the IPv6 Destination Address, and no SRH is present. In this case, the penultimate router performs a "Shift-and-Forward" operation.
+The penultimate router receives the packet. The active portion of the Destination Address (DA) matches the router's own uSID ("3333" in our case).
+
+The router executes the "uN" (End) behavior. It pops (removes) its own uSID by shifting the remaining bits of the Destination Address to the left (typically by 16 bits). This action moves the next uSID (which belongs to the final destination router) into the active position of the address
+
 
 **Validate low latency traffic takes the path: london-xrd01 -> 05 -> 06 -> rome-xrd07**
 
