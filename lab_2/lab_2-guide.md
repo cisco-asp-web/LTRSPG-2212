@@ -564,7 +564,7 @@ This shift overwrites the current router's uSID (effectively popping it) and mov
 In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the destination address, resulting in fc00:0::3333:7777:e007:: downstream, proving that the SRv6 data plane is correctly executing and advancing the uSID instructions hop by hop.
 
 
-1. Launch an edgeshark capture on container **zurich-xrd04** interface Gig0/0/0/0 to inspect the traffic.
+5. Launch an edgeshark capture on container **zurich-xrd04** interface Gig0/0/0/0 to inspect the traffic.
 
   ![Zurich ingress Wireshark Capture](../topo_drawings/lab2-xrd04-wireshark-g0.png)
 
@@ -579,7 +579,7 @@ In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the dest
 
 
 
-5. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
+6. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
 
   ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
@@ -587,7 +587,7 @@ In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the dest
 
 
 
-1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic.
+7. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic.
 
   ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
