@@ -238,6 +238,10 @@ We will use the below diagram for reference:
 
 ![L3VPN Topology](/topo_drawings/lab2-l3vpn-policy.png)
 
+> [!IMPORTANT]
+> End-to-end connectivity between the London and Rome containers will be demonstrated in Lab 2 – Packet Walk. This lab provides a step-by-step walkthrough of how traffic is forwarded across the network from ingress to egress.
+
+
 ### Create SRv6-TE steering policy
 For our SRv6-TE purposes we'll leverage the on-demand nexthop (ODN) feature set. Here is a nice example and explanation of ODN: [HERE](https://xrdocs.io/design/blogs/latest-converged-sdn-transport-ig)
 
