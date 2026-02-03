@@ -570,7 +570,7 @@ In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the dest
 
 
 Here, the penultimate router (XRD04 – 4444) receives a packet whose IPv6 destination address contains the microSID of the final destination (7777) rather than its own, and therefore forwards the packet as standard IPv6 traffic toward the endpoint.
-• No SRv6 Processing: The router does not inspect the Segment Routing Header (SRH) or perform any "Shift" operations because the Destination Address does not match any of its locally configured SRv6 SIDs.
+• No SRv6 Processing: The router does perform any "Shift" operations because the Destination Address does not match any of its locally configured SRv6 SIDs.
 • Longest Prefix Match (LPM): The router performs a standard Longest Prefix Match lookup on the Destination Address.
 • Forwarding: It finds the route to the final destination (the egress PE or next endpoint) and forwards the packet out the appropriate interface
 
@@ -579,7 +579,7 @@ Here, the penultimate router (XRD04 – 4444) receives a packet whose IPv6 desti
 
 
 
-6. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
+1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
 
   ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
