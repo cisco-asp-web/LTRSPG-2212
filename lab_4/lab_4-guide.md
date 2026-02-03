@@ -38,11 +38,7 @@ In lab 1 our containerlab script deployed both the XRd topology and the SONiC no
 
 Our SONiC ML Training Fabric topology looks like this:
 
-![Lab 4 Topology](../topo_drawings/lab4-topology-diagram.png)
-
-<img src="../topo_drawings/lab4-topology-diagram.png" width="800" />
 <img src="../topo_drawings/lab4-topology-diagram.png" width="700" />
-<img src="../topo_drawings/lab4-topology-diagram.png" width="600" />
 
 ## SONiC: A Very Quick Tour
 
@@ -319,7 +315,7 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 
 1. Launch a terminal on the *`topology host`* using the visual code containerlab extension:
 
-![terminal](../topo_drawings/lab4-terminal.png)
+<img src="../topo_drawings/lab4-terminal.png" width="700" />
 
 2. cd into the lab_4 directory and execute the *sonic-playbook.yaml*
     ```
@@ -344,11 +340,11 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 
 With our backend DC fabric now configured we will check to make sure that BGP peering was established. Use the below diagram as a reference to the ASN configured in the prior steps.
 
-![Lab 4 Topology](../topo_drawings/lab4-fabric-asn-topology.png)
+<img src="../topo_drawings/lab4-fabric-asn-topology.png" width="700" />
 
 1. Using the visual code containerlab extension, ssh to one or more SONiC nodes and spot check BGP peering . You can SSH into any SONiC container.  (user: admin, pw: admin)
 
-   ![Lab 4 Topology](../topo_drawings/lab4-ssh-sonic.png)
+   <img src="../topo_drawings/lab4-ssh-sonic.png" width="350" />
 
     ```
     vtysh
@@ -378,7 +374,7 @@ With our backend DC fabric now configured we will check to make sure that BGP pe
 
 Our SONiC topology has now been configured for SRv6 uSID forwarding with each node assigned SRv6 locators as shown in the diagram:
 
-![Topology with Locators](../topo_drawings/lab4-topology-with-locators.png)
+<img src="../topo_drawings/lab4-topology-with-locators.png" width="700" />
 
 If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00** using the visual code containerlab extension and invoke vtysh for the next few tasks:
 
@@ -498,13 +494,13 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
 1. SSH to the **london-vm-00** from the **topology-host**
 
     **old diagram**
-    ![terminal](../topo_drawings/lab4-host00-ipaddr.png)
+    <img src="../topo_drawings/lab4-host00-ipaddr.png" width="350" />
 
     ```
     ssh london-vm-00
     ```
 
-2. Disply the VM's ipv6 routing table:
+3. Disply the VM's ipv6 routing table:
    
     ```
     ip -6 route 
@@ -523,7 +519,7 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
     fe80::/64 dev ens5 proto kernel metric 256 pref medium
     ```
 
-3. Ping **london-vm-01** and **london-vm-02** over the *`Backend/SONiC`* network:
+4. Ping **london-vm-01** and **london-vm-02** over the *`Backend/SONiC`* network:
 
     ```
     ping fcbb:0:800:1::2 -i .3 -c 100
@@ -535,10 +531,13 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
     While the ping is running we can launch edgeshark using the visual code containerlab extension and inspect the traffic on the **SONiC Leaf00 eth5 ???** interface. Note the traffic is not SRv6 encapsulated at this time:
 
     ![edgeshark-host00](../topo_drawings/lab4-host00-edgeshark.png)
+      <img src="../topo_drawings/lab4-host00-edgeshark.png" width="700" />
+   lab4-host00-ipaddr.png
 
     Wireshark is launching and traffic is automatically intercepted.
 
     ![edgeshark-host00](../topo_drawings/lab4-wireshark.png)
+   <img src="../topo_drawings/lab4-wireshark.png" width="700" />
 
     
 ## End of lab 4
