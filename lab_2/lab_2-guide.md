@@ -495,19 +495,13 @@ The following diagram illustrates the expected traffic path and highlights the d
 
 ![Lab2-Wireshark](../topo_drawings/lab2-topology-wireshark.png)
 
-Start a continuous ping from the London container toward the Rome container at IP address 40.0.0.1. We will capture and analyze this traffic at multiple points across the network.
+1. Using the Visual Code extension, ssh to the **London container's** shell and run a ping to the bulk transport destination IPv4 address on Rome. We will capture and analyze this traffic at multiple points across the network.
 
+![London ping](../topo_drawings/lab2-amsterdam-ping.png)
 
-```
-admin@app-container-london:~$ ping 40.0.0.1
-PING 40.0.0.1 (40.0.0.1) 56(84) bytes of data.
-64 bytes from 40.0.0.1: icmp_seq=1 ttl=62 time=115 ms
-64 bytes from 40.0.0.1: icmp_seq=2 ttl=62 time=115 ms
-64 bytes from 40.0.0.1: icmp_seq=3 ttl=62 time=115 ms
-64 bytes from 40.0.0.1: icmp_seq=4 ttl=62 time=117 ms
-64 bytes from 40.0.0.1: icmp_seq=5 ttl=62 time=115 ms
-64 bytes from 40.0.0.1: icmp_seq=6 ttl=62 time=115 ms
-```
+1. Launch an edgeshark capture on the **london-xrd01** container interface Gig0/0/0/0 to inspect the traffic.
+
+![London gi0/0/0](../topo_drawings/lab2-xrd-edgeshark-g0.png)
 
 
 1. Lets now tie the SRv6 TE policy configured to what we expect to see in the Edgeshark output. What you're looking for in the below output is the translation of the previously configured SRv6 TE policy reflected in the actual SRv6 packet header. So the TE bulk policy configured was:
@@ -523,17 +517,13 @@ PING 40.0.0.1 (40.0.0.1) 56(84) bytes of data.
    ```
    2222:3333:7777
    ```
+
 > [!IMPORTANT]
 > Notice that the above that the above SID stack the last hop **zurich-xrd04** (4444). As mentioned in the lecture XR looks at the penultimate hop and does a calculation using the ISIS topology table and determines that **berlin-xrd03's** best forwarding path to **rome-xrd07** (7777) is through **xrd04**. Therefore for efficiency it drops the penultimate hop off the SID stack.
 
-1. Using the Visual Code extension, attach to the **London container's** shell and run a ping to the bulk transport destination IPv4 address on Rome.
-    ![London ping](../topo_drawings/lab2-amsterdam-ping.png)
 
-    ```
-    ping 40.0.0.1 -i .5
-    ```
     
-2. Launch an edgeshark capture on container xrd01 interface Gig0/0/0/1 to inspect the traffic.
+1. Launch an edgeshark capture on container xrd01 interface Gig0/0/0/1 to inspect the traffic.
    
    ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-g0.png) 
    
