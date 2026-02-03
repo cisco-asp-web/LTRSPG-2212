@@ -265,8 +265,6 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
     ```
 
     From London’s perspective, the IS-IS topology shows a Level-2-only network design and reachability achieved through L2 SPF computation. 
-    
-    Overall, the SPF results confirm a healthy, loop-free WAN core with consistent metrics and deterministic path selection, suitable for advanced traffic engineering mechanisms such as SRv6.
 
 
 2. On **London-xrd01** validate end-to-end ISIS reachability by pinging **Rome-xrd07**:
@@ -278,7 +276,7 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
 ### Add Synthetic Latency to the Links
 
 > [!NOTE]
-> In a default containerlab environment XRd-to-XRd pings would have round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions we're going to add synthetic latency on the underlying Linux links to match the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later traffic engineering and path-selection exercises.
+> In a default containerlab environment pings would have round-trip times of approximately 1–3 ms. To better approximate real-world WAN conditions we're going to add synthetic latency on the underlying Linux links to match the values shown in the diagram. These latencies are not meant to be realistic measurements, but rather a controlled mechanism to introduce deterministic path variation for later TE and path-selection exercises.
    
 ![WAN Latencies](../topo_drawings/lab1-latencies.png)
 
@@ -290,7 +288,7 @@ For full size image see [LINK](../topo_drawings/isis-topology-large.png)
    
 ## Validate BGP Peering
 
-In the topology we are running a single ASN 65000 with BGP running on **xrd01**, **xrd05**, **xrd06**, **xrd07**.  Routers **xrd05** and **xrd06** are functioning as route reflectors and **xrd01** and **xrd07** are clients. 
+In the XRd network we are running a single BGP ASN 65000. Routers **xrd05** and **xrd06** are functioning as route reflectors and **xrd01** and **xrd07** are RR clients. 
 
 ![BGP Topology](../topo_drawings/bgp-topology-medium.png)
 
@@ -426,14 +424,6 @@ SRv6 uSID locator and source address information for nodes in the lab:
       locator MyLocator
       !
     !
-    neighbor-group xrd-ipv4-peer
-      address-family ipv4 unicast
-      !
-    ! 
-    neighbor-group xrd-ipv6-peer
-      address-family ipv6 unicast
-      !
-    !
     commit
     ```
 
@@ -463,14 +453,6 @@ SRv6 uSID locator and source address information for nodes in the lab:
     address-family ipv6 unicast
      segment-routing srv6
      locator MyLocator
-     !
-    !
-    neighbor-group xrd-ipv4-peer
-     address-family ipv4 unicast
-     !
-    ! 
-    neighbor-group xrd-ipv6-peer
-     address-family ipv6 unicast
      !
     !
     segment-routing
@@ -511,7 +493,7 @@ SRv6 uSID locator and source address information for nodes in the lab:
     ```
 
 > [!NOTE]
-> The bottom two entries. These SIDs belong to BGP and represent End.DT behaviors. Any packet arriving with either of these SIDs as the outer IPv6 destination address will be decapsulated and then an LPM lookup in the global/default routing table will be performed on the inner destination address. 
+> The bottom two entries. These SIDs belong to BGP and represent End.DT behaviors. Normally these would be associated with VRFs, but we wanted to show that SRv6 and SRv6-TE capabilities can apply to global table traffic as well. Any packet arriving with either of these SIDs as the outer IPv6 destination address will be decapsulated and then an LPM lookup in the global/default routing table will be performed on the inner destination address. 
 
 2. Validate the SRv6 prefix-SID configuration. As example for **London-xrd01** look for *SID value: fc00:0000:1111::*
     ```
