@@ -491,7 +491,7 @@ In the previous section, we validated the SRv6 control plane, confirming that co
 
 In SRv6 Traffic Engineering, uSIDs allow a source node (ingress PE, London-XRD01 in this case) to explicitly program a packet’s path through a domain by enforcing a sequence of intermediate waypoints or links.
 
-The following diagram shows the expected path with the different capture point that will be demonstrated
+The following diagram illustrates the expected traffic path and highlights the different capture points that will be demonstrated.
 
 ![Lab2-Wireshark](../topo_drawings/lab2-topology-wireshark.png)
 
