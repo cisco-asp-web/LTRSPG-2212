@@ -80,7 +80,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
 
    - The SRv6 uSID combination in the above will route traffic from *`london-vm-00`* to *`london-vm-02`* via *`leaf00`*, *`spine01`*, and *`leaf02`*. 
    
-   - The uSID shift-and-forward at *`leaf00`* and *`spine01`* will result in an ipv6 destination address of **fc00:0:1006:fe06::** when the packet arrives at *`leaf02`*. 
+   - The uSID shift-and-forward at *`leaf00`* and *`spine01`* will result in an ipv6 destination address of **fcbb:1006:fe06::** when the packet arrives at *`leaf02`*. 
    
    - *`leaf02`* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address **fcbb:0:0800:2::/64**. 
    
