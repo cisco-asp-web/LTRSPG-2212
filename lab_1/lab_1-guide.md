@@ -344,14 +344,14 @@ For full size image see [LINK](../topo_drawings/bgp-topology-large.png)
     Last Modified: Jan 29 05:02:04.686 for 00:08:07
     Paths: (2 available, best #1)
       Not advertised to any peer
-      Path #1: Received by speaker 0
+    +  Path #1: Received by speaker 0
       Not advertised to any peer
       Local
     +    fc00:0:7777::1 (metric 3) from fc00:0:5555::1 (10.0.0.7)                  <------ origin from xrd07
           Origin IGP, metric 0, localpref 100, valid, internal, best, group-best
           Received Path ID 0, Local Path ID 1, version 10
     +      Originator: 10.0.0.7, Cluster list: 10.0.0.5                            <------ route reflector xrd05
-      Path #2: Received by speaker 0
+    +  Path #2: Received by speaker 0
       Not advertised to any peer
       Local
     +    fc00:0:7777::1 (metric 3) from fc00:0:6666::1 (10.0.0.7)                  <------ origin from xrd07
