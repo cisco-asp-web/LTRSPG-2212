@@ -529,7 +529,7 @@ The following diagram illustrates the expected traffic path and highlights the d
     
 1. Launch an edgeshark capture on container xrd01 interface Gig0/0/0/1 to inspect the traffic.
    
-   ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-g0.png) 
+   ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-g1.png) 
    
    Here is a visual representation of our capture :
    
