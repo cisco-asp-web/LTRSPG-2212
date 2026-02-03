@@ -530,13 +530,10 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
 
     While the ping is running we can launch edgeshark using the visual code containerlab extension and inspect the traffic on the **SONiC Leaf00 eth5 ???** interface. Note the traffic is not SRv6 encapsulated at this time:
 
-    ![edgeshark-host00](../topo_drawings/lab4-host00-edgeshark.png)
-      <img src="../topo_drawings/lab4-host00-edgeshark.png" width="700" />
-   lab4-host00-ipaddr.png
+   <img src="../topo_drawings/lab4-host00-edgeshark.png" width="700" />
 
     Wireshark is launching and traffic is automatically intercepted.
 
-    ![edgeshark-host00](../topo_drawings/lab4-wireshark.png)
    <img src="../topo_drawings/lab4-wireshark.png" width="700" />
 
     
