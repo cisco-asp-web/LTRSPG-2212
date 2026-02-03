@@ -186,10 +186,10 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
 > [!NOTE]
 > It can take a few seconds after configuration before you see routes populate through the network and be visible in the routing tables.
 
-> [!IMPORTANT]
-> 
 
-1. From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). Again be aware the rd value may differ then those in the below commands:
+> [!IMPORTANT]
+> From **london-xrd01** run the following set of validation commands (for the sake of time you can paste them in as a group, or spot check some subset of commands). Again be aware the rd value may differ then those in the below commands:
+
    ```
    show segment-routing srv6 sid
    show bgp vpnv4 unicast
