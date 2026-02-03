@@ -529,11 +529,11 @@ The following diagram illustrates the expected traffic path and highlights the d
     
 3. Launch an edgeshark capture on container **london-xrd01** interface Gig0/0/0/1 to inspect the traffic.
    
-   ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-g1.png) 
+   ![London edgeshark](../topo_drawings/lab2-xrd-edgeshark-g1.png) 
    
    Here is a visual representation of our capture :
    
-   ![Amsterdam edgeshark](../topo_drawings/lab2-xrd-edgeshark-pcap.png) 
+   ![London edgeshark](../topo_drawings/lab2-xrd-edgeshark-pcap.png) 
    
    If we focus on the IPv6 header (Outer Header - SRv6 transport layer) we can see the following:
 
@@ -548,14 +548,83 @@ uSIDs solve this by packing six hops into a single address, allowing complex TE 
 On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamically only when it receives a service route with a specific color. This eliminates the need to pre-configure "full mesh" tunnels, significantly improving scalability.
 
 
-4. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic.
+4. Launch an edgeshark capture on container **berlin-xrd03** interface Gig0/0/0/0 to inspect the traffic.
+
+  ![Berlin Wireshark Capture](../topo_drawings/lab2-xrd03-wireshark-g0)
+
+Like in the previous steps, we need to focus on the IPv6 header (Outer Header - SRv6 transport layer):
+
+   - Source IPv6: fc00:0:1111::1 
+   - Destination IPv6: fc00:0::3333:7777:e007:: which defines a modified version of the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
+
+Unlike MPLS, which pops labels from a stack, SRv6 uSID manipulates the IPv6 Destination Address (DA) directly to expose the next instruction. Instead of removing a header, the router "strips" the active uSID by modifying the Destination Address itself.
+The router shifts the remaining bits of the uSID list (the portion after the Locator Block) to the left, typically by 16 bits.
+This shift overwrites the current router's uSID (effectively popping it) and moves the next uSID into the active position.
+
+In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the destination address, resulting in fc00:0::3333:7777:e007:: downstream, proving that the SRv6 data plane is correctly executing and advancing the uSID instructions hop by hop.
+
+
+5. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
+
+  ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
+
+In our lab, the entire path is compressed into the IPv6 Destination Address, and no SRH is present. In this case, the penultimate router performs a "Shift-and-Forward" operation.
+The penultimate router **zurich-xrd04** receives the packet and notice that the active portion of the Destination Address (DA) matches the router's own uSID ("4444" in our case).
+The router executes the "uN" (End) behavior. It pops (removes) its own uSID by shifting the remaining bits of the Destination Address to the left (typically by 16 bits). This action moves the next uSID (which belongs to the final destination router) into the active position of the address
+
+
+
+1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic.
 
   ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
-In our lab, the entire path is compressed into the IPv6 Destination Address, and no SRH is present. In this case, the penultimate router performs a "Shift-and-Forward" operation.
-The penultimate router receives the packet. The active portion of the Destination Address (DA) matches the router's own uSID ("3333" in our case).
 
-The router executes the "uN" (End) behavior. It pops (removes) its own uSID by shifting the remaining bits of the Destination Address to the left (typically by 16 bits). This action moves the next uSID (which belongs to the final destination router) into the active position of the address
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 **Validate low latency traffic takes the path: london-xrd01 -> 05 -> 06 -> rome-xrd07**
