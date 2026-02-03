@@ -569,9 +569,9 @@ Unlike MPLS, which pops labels from a stack, SRv6 microSIDs operate by directly 
 
 Here, the zurich xrd router (XRD04 – 4444) receives a packet whose IPv6 destination address contains the microSID of the final destination (7777) rather than its own, and therefore forwards the packet as standard IPv6 traffic toward the endpoint.
 
-• No SRv6 Processing: The router does not perform any "Shift" operations because the Destination Address does not match any of its locally configured SRv6 SIDs.
-• Longest Prefix Match (LPM): The router performs a standard Longest Prefix Match lookup on the Destination Address.
-• Forwarding: It finds the route to the final destination (the egress PE or next endpoint) and forwards the packet out the appropriate interface
+- No SRv6 Processing: The router does not perform any "Shift" operations because the Destination Address does not match any of its locally configured SRv6 SIDs.
+- Longest Prefix Match (LPM): The router performs a standard Longest Prefix Match lookup on the Destination Address.
+- Forwarding: It finds the route to the final destination (the egress PE or next endpoint) and forwards the packet out the appropriate interface
 
 
 
