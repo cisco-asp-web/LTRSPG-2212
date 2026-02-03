@@ -499,16 +499,16 @@ The following diagram illustrates the expected traffic path and highlights the d
 
 ![London ping](../topo_drawings/lab2-amsterdam-ping.png)
 
-1. Launch an edgeshark capture on the **london-xrd01** container interface Gig0/0/0/0 to inspect the traffic.
+  Launch an edgeshark capture on the **london-xrd01** container interface Gig0/0/0/0 to inspect the traffic.
 
 ![London gi0/0/0](../topo_drawings/lab2-xrd-edgeshark-g0.png)
 
-Observing the ICMP traffic exchanged between the London and Rome containers, the echo request is a standard IPv4 packet sourced from 10.101.1.2 and destined for 40.0.0.1, with a measured round-trip time of approximately 120 ms. This latency matches the delay values that were intentionally introduced on the links using Ansible in Lab 1, confirming that traffic is traversing the expected network path.
+  Observing the ICMP traffic exchanged between the London and Rome containers, the echo request is a standard IPv4 packet sourced from 10.101.1.2 and destined for 40.0.0.1, with a measured round-trip time of approximately 120 ms. This latency matches the delay values that were intentionally introduced on the links using Ansible in Lab 1, confirming that traffic is traversing the expected network path.
 
 ![London gi0/0/0 capture](../topo_drawings/lab2-xrd01-wireshark-g0.png)
 
 
-1. Lets now tie the SRv6 TE policy configured to what we expect to see in the Edgeshark output. What you're looking for in the below output is the translation of the previously configured SRv6 TE policy reflected in the actual SRv6 packet header. So the TE bulk policy configured was:
+2. Lets now tie the SRv6 TE policy configured to what we expect to see in the Edgeshark output. What you're looking for in the below output is the translation of the previously configured SRv6 TE policy reflected in the actual SRv6 packet header. So the TE bulk policy configured was:
 
    ```
       segment-list xrd2347
