@@ -560,11 +560,7 @@ Like in the previous steps, we need to focus on the IPv6 header (Outer Header - 
    - Source IPv6: fc00:0:1111::1 
    - Destination IPv6: fc00:0::3333:7777:e007:: which defines a modified version of the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
 
-Unlike MPLS, which pops labels from a stack, SRv6 uSID manipulates the IPv6 Destination Address (DA) directly to expose the next instruction. Instead of removing a header, the router "strips" the active uSID by modifying the Destination Address itself.
-The router shifts the remaining bits of the uSID list (the portion after the Locator Block) to the left, typically by 16 bits.
-This shift overwrites the current router's uSID (effectively popping it) and moves the next uSID into the active position.
-
-In our lab, the active uSID 2222 is consumed at XRD02 and stripped from the destination address, resulting in fc00:0::3333:7777:e007:: downstream, proving that the SRv6 data plane is correctly executing and advancing the uSID instructions hop by hop.
+Unlike MPLS, which pops labels from a stack, SRv6 microSIDs operate by directly modifying the IPv6 destination address to expose the next forwarding instruction. At each hop, the active uSID is consumed by shifting the remaining uSID fields within the destination address, effectively removing the current instruction and advancing the next one. In this lab, the uSID 2222 is consumed at XRD02, resulting in a destination address of fc00:0::3333:7777:e007:: downstream, confirming correct hop-by-hop execution of the SRv6 data plane.
 
 
 5. Launch an edgeshark capture on container **zurich-xrd04** interface Gig0/0/0/0 to inspect the traffic.
