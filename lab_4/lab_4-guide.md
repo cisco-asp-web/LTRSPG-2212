@@ -284,23 +284,23 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
     ```
 
 > [!Note] 
-> The sonic playbook produces a lot of console output. Don't worry about errors on the *vrf sysctl* task as those come from *spine* nodes where no VRFs are configured. By the time the playbook completes we expect to see something like this:
+> The sonic playbook produces a lot of console output. By the time the playbook completes we expect to see something like this:
 
 ```
     PLAY RECAP *************************************************************************************
-    leaf00   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-    leaf01   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-    leaf02   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
-    spine00  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
-    spine01  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
-    spine02  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1
+    leaf00   : ok=20   changed=15   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    leaf01   : ok=20   changed=15   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    leaf02   : ok=20   changed=15   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    spine00  : ok=18   changed=14   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    spine01  : ok=18   changed=14   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+    spine02  : ok=18   changed=14   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ``` 
 
 **Verify Configuration of FRR in Leaf00**
 
 FRR operates in SONiC very similar to Classic IOS commands. 
 
-1. Invoke FRR's VTY shell on **leaf00**
+1. Return to your **leaf** terminal session and invoke FRR's VTY shell
    ```
    vtysh
    ```
@@ -310,6 +310,30 @@ FRR operates in SONiC very similar to Classic IOS commands.
    show run
    ```
 
+   We expect to see BGP configurations with unnumbered peering over EthernetX interfaces and SRv6 config including locator, source address for encapsulation, and some static uSID entries.
+
+   Example:
+
+   ```diff
+   segment-routing
+    srv6
+     static-sids
+   +   sid fcbb:0:1004::/48 locator MAIN behavior uN  
+   +   sid fcbb:0:1004:fe04::/64 locator MAIN behavior uDT4 vrf default
+   +   sid fcbb:0:1004:fe06::/64 locator MAIN behavior uDT6 vrf default
+     exit
+     !
+    exit
+    !
+    srv6
+     encapsulation
+   +   source-address fcbb:0:1004::1
+     locators
+      locator MAIN
+   +    prefix fcbb:0:1004::/48 block-len 32 node-len 16 func-bits 16
+       behavior usid
+      exit
+   ```
 ### Verify SONiC BGP peering
 
 With our backend DC fabric now configured we will check to make sure that BGP peering was established. Use the below diagram as a reference to the ASN configured in the prior steps.
