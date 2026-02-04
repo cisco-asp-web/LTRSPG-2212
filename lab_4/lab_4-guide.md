@@ -285,15 +285,15 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
 > [!Note] 
 > The sonic playbook produces a lot of console output. Don't worry about errors on the *vrf sysctl* task as those come from *spine* nodes where no VRFs are configured. By the time the playbook completes we expect to see something like this:
 
-    ```
+```
     PLAY RECAP *************************************************************************************
     leaf00   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
     leaf01   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
     leaf02   : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
     spine00  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
     spine01  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
-    spine02  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
-    ``` 
+    spine02  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1
+``` 
 
 **Verify Configuration of FRR in Leaf00**
 
