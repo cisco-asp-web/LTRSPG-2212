@@ -62,7 +62,7 @@ Cisco doesn't currently have a controller product for host-based SRv6 and the Hy
 
 Before we get into PyTorch and AI Backend fabrics, let's manually add a Linux route with SRv6 encapsulation:
 
-1. Return to your ssh session on **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path **leaf00** -> **spine01** -> **leaf02**:
+1. Return to your ssh session on **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path *leaf00* -> *spine01* -> *leaf02*:
 
    ```
    sudo ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap segs fcbb:0:1004:1001:1006:fe06:: dev ens5
@@ -81,11 +81,11 @@ Before we get into PyTorch and AI Backend fabrics, let's manually add a Linux ro
 
    - The SRv6 uSID combination in the above will route traffic from **london-vm-00** to **london-vm-02** via **leaf00**, **spine01**, and **leaf02**.
      
-   - The packet that egresses from *`london-vm-00`* will have an outer IPv6 destination header of **fcbb:1004:1001:1006:fe06::** and an inner packet header destination of **fcbb:0:0800:2::2/128**. 
+   - The packet that egresses from london-vm-00 will have an outer IPv6 destination header of *`fcbb:1004:1001:1006:fe06::`* and an inner packet header destination of *`fcbb:0:0800:2::2/128`*. 
    
-   - The uSID shift-and-forward at **leaf00** and **spine01** will result in an ipv6 destination address of **fcbb:1006:fe06::** when the packet arrives at **leaf02**. 
+   - The uSID shift-and-forward at **leaf00** and **spine01** will result in an ipv6 destination address of *`fcbb:1006:fe06::`* when the packet arrives at **leaf02**. 
    
-   - *`leaf02`* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address **fcbb:0:0800:2::/64**. 
+   - **leaf02** recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address *`fcbb:0:0800:2::/64`*. 
    
    - **leaf02** will then forward the traffic to **london-vm-02**
 
@@ -250,7 +250,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 
    The "job" completes with some pings from each host to each host.
 
-3. Use *kubectl logs* command to see the plugin's log output from the *srv6-pytorch* pods:
+3. Use *kubectl logs* command to see the plugin's log output from the *srv6-pytorch* pods. May take 3-4 minutes for the job to complete:
 
    ```
    kubectl logs srv6-pytorch-0
