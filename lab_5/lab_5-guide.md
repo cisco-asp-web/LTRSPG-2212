@@ -83,7 +83,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
      
    - The packet that egresses from london-vm-00 will have an outer IPv6 destination header of *`fcbb:1004:1001:1006:fe06::`* and an inner packet header destination of *`fcbb:0:0800:2::2/128`*. 
    
-   - The uSID shift-and-forward at **leaf00** and **spine01** will result in an ipv6 destination address of **fcbb:1006:fe06::** when the packet arrives at **leaf02**. 
+   - The uSID shift-and-forward at **leaf00** and **spine01** will result in an ipv6 destination address of *`fcbb:1006:fe06::`* when the packet arrives at **leaf02**. 
    
    - *`leaf02`* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address *`fcbb:0:0800:2::/64`*. 
    
