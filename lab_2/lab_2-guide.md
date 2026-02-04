@@ -1,5 +1,7 @@
 # Lab 2: Configure SRv6 L3VPN and SRv6-TE [20 Min]
 
+> Tip: Attention to detail matters—sometimes the data plane hides more than just packets.
+
 ### Description
 In Lab 2 we will establish an SRv6 Layer-3 VPN named *`carrots`*.  The *carrots* vrf will include the *London "storage"* and *Rome* containers connected to **london-xrd01** and **rome-xrd07**.  
 
@@ -576,7 +578,7 @@ Here, the zurich xrd router (XRD04 – 4444) receives a packet whose IPv6 destin
 
 
 
-1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04**.
+6. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04**.
 
   ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
@@ -584,57 +586,19 @@ When Rome receives the packet with an IPv6 destination address of fc00:0:7777:e0
 
 
 
-1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic.
+7. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic.
 
   ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
+At the Rome router, the SRv6 transport header has been fully processed and removed, and the packet is delivered to the endpoint service. As shown in this capture, only a standard IPv4 ICMP packet remains, sourced from 10.101.1.2 and destined for 40.0.0.1, confirming that the SRv6 encapsulation has been decapsulated. This behavior corresponds to the execution of the SRv6 uDT4 endpoint function, which forwards the packet into the correct routing context . The packet is then forwarded within the Carrots VRF, completing the end-to-end SRv6 packet walk from London to Rome.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+---
+<!-- 
+EASTER_EGG:
+fc00:0:2212:3333:7777:8986::
+If you found this, explain what this uSID represents and why RFC 8986 matters here.
+-->
 
 
 **Validate low latency traffic takes the path: london-xrd01 -> 05 -> 06 -> rome-xrd07**
