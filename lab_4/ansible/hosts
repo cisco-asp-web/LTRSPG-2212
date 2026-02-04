@@ -11,6 +11,16 @@ spine01 ansible_host=172.20.6.193
 spine02 ansible_host=172.20.6.194
 #spine03 ansible_host=172.20.6.195
 
+[leafs]
+leaf00 ansible_host=172.20.6.128
+leaf01 ansible_host=172.20.6.129
+leaf02 ansible_host=172.20.6.130
+
+[spines]
+spine00 ansible_host=172.20.6.192
+spine01 ansible_host=172.20.6.193
+spine02 ansible_host=172.20.6.194
+
 [hosts]
 host00 ansible_host=172.20.6.224
 host08 ansible_host=172.20.6.225

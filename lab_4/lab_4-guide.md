@@ -49,7 +49,8 @@ For a deep dive on SONiC architecture and containers please see: https://sonicfo
 
 1. ssh to **leaf00** in our topology using the visual code extension
   
-   Note: user/password is **admin/admin**)
+  > [!NOTE]
+  >user/password is **admin/admin**)
 
    ```
    ssh admin@clab-cleu26-sonic-leaf-00
@@ -142,8 +143,6 @@ Configuration state in SONiC is saved in two separate files. The first is the **
 **config load**
 
 The command *config load* is used to load a configuration from an input file; the default is */etc/sonic/config_db.json*, unless specified otherwise. This command does not flush the config DB before loading the new configuration, rather it performs a *diff* on the existing and applies the new. 
-
-We will configuring **leaf00** in the next section through cli.
 
 - Usage:
 ```

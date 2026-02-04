@@ -43,15 +43,19 @@
       command: "sudo ip link set sr0 up"
       ignore_errors: yes
 
-    - name: vrf sysctl
-      command: "sudo sysctl -w net.vrf.strict_mode=1"
-      ignore_errors: yes
-
     - name: Delete default sonic-vs BGP config
       ansible.builtin.command: >
         vtysh -c "configure terminal"
         -c "no router bgp 65100"
         -c "exit"
+      ignore_errors: yes
+
+- name: Apply VRF sysctl
+  hosts: leafs
+  become: true
+  tasks:
+    - name: vrf sysctl
+      command: "sudo sysctl -w net.vrf.strict_mode=1"
       ignore_errors: yes
 
 - name: Load frr config
