@@ -259,47 +259,6 @@ Our SONiC fabric will use IPv6 link local addresses for the BGP underlay, so we 
    +Loopback0              fc00:0:1004::1/128                       up/up         N/A             N/A
    ```
 
-**Manual Configuration of FRR**
-
-Configuring SONiC's BGP container can be done from FRR's command line and is very much like IOS.
-
-1. Invoke FRR's VTY shell
-   ```
-   vtysh
-   ```
-
-2. Enter configuration mode
-   ```
-   conf t
-   ```
-
-3. This particular SONiC image came with a pre-configured BGP instance. We'll delete that instance first, then apply the config we want:
-   ```
-   no router bgp 65100
-   ```
-
-4. Copy **leaf00's** FRR config and paste it into the terminal [CTRL/CMD-Click this LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf).
-
-
-5. Exit out of config mode and save the config
-   ```
-   write mem
-   ``` 
-
-6. Exit FRR vtysh
-   ```
-   exit
-   ```
-
-You may have noticed in the FRR config or show command output that SONiC supports BGP unnumbered peering over its Ethernet interfaces. This is a huge advantage for deploying, automating, and managing hyperscale fabrics, and we wanted to highlight it here. 
-
-Config example from **leaf00** [CTRL/CMD-Click this LINK](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_4/sonic-config/leaf00/frr.conf#L25):
-
-   ```
-   neighbor Ethernet0 interface remote-as 65000
-   neighbor Ethernet4 interface remote-as 65001
-   neighbor Ethernet8 interface remote-as 65002
-   ```
 
 ## Fabric Config Automation with Ansible 
 
@@ -335,6 +294,20 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
     spine01  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
     spine02  : ok=14   changed=12   unreachable=0    failed=0    skipped=0    rescued=0    ignored=1   
     ``` 
+
+**Verify Configuration of FRR in Leaf00**
+
+FRR operates in SONiC very similar to Classic IOS commands. 
+
+1. Invoke FRR's VTY shell on **leaf00**
+   ```
+   vtysh
+   ```
+
+2. Show the running FRR config
+   ```
+   show run
+   ```
 
 ### Verify SONiC BGP peering
 
