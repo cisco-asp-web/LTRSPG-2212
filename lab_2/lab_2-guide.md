@@ -623,7 +623,7 @@ At the Rome router, the SRv6 transport header has been fully processed and remov
 
     Normally we might expect the tcpudmp output to show *5555:6666:7777* in the packet header, however, when the XRd headend router performs its SRv6-TE policy calculation it recognized that **paris-xrd05's** best path to **rome-xrd07** is through **barcelona-xrd06**, so it doesn't need to include the *6666* in the SID stack.
 
-
+    Under normal circumstances, we might expect the packet header to include the microSID sequence *5555:6666:7777*, explicitly steering traffic through **paris-xrd05**, **barcelona-xrd06**, and finally **rome-xrd07**. However, when the XRd headend router computes the SRv6 Traffic Engineering policy, it determines that the best path from paris-xrd05 to **rome-xrd07** naturally traverses **barcelona-xrd06** based on the IGP topology. As a result, the headend optimizes the uSID list by omitting 6666, since no additional steering decision is required at that hop. This optimization reduces SID overhead while still enforcing the intended SRv6-TE path, resulting in an outer IPv6 destination address of *fc00:0:5555:7777:e006::*.
 
 ## End of Lab 2
 Please proceed to [Lab 3](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_3/lab_3-guide.md)
