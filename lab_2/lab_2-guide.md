@@ -424,6 +424,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
     show segment-routing traffic-eng policy
    ```
    
+   Example output:
    ```diff
    RP/0/RP0/CPU0:london#show segment-routing traffic-eng policy color 40
    SR-TE policy database
@@ -470,6 +471,8 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
     show bgp vpnv4 uni vrf carrots 40.0.0.0/24 
    ```   
+
+   Example output:
    ```diff
    RP/0/RP0/CPU0:london#show bgp vpnv4 uni vrf carrots 40.0.0.0/24
     <snip>
