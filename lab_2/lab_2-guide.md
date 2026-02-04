@@ -306,7 +306,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    commit
    ```
 
-4. Validate vpnv4 prefixes are received at **london-xrd01** and that they have their color extcomms:
+3. Validate vpnv4 prefixes are received at **london-xrd01** and that they have their color extcomms:
    
 
    Using the visual code extension, SSH into xrd01 and paste the following commands:
@@ -336,7 +336,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
          Source AFI: VPNv4 Unicast, Source VRF: default, Source Route Distinguisher: 10.0.0.7:1
    ```
 
-2. On **london-xrd01** configure a pair of SRv6-TE segment lists for steering traffic over these specific paths through the network: 
+4. On **london-xrd01** configure a pair of SRv6-TE segment lists for steering traffic over these specific paths through the network: 
     - Segment list *xrd2347* will execute the explicit path: xrd01 -> 02 -> 03 -> 04 -> 07
     - Segment list *xrd567* will execute the explicit path: xrd01 -> 05 -> 06 -> 07
 
@@ -362,7 +362,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
      commit
    ```
 
-3. On **london-xrd01** configure our bulk transport and low latency SRv6 steering policies. Low latency traffic will be forced over the *xrd01-05-06-07* path, and bulk transport traffic will take the longer *xrd01-02-03-04-07* path:
+5. On **london-xrd01** configure our bulk transport and low latency SRv6 steering policies. Low latency traffic will be forced over the *xrd01-05-06-07* path, and bulk transport traffic will take the longer *xrd01-02-03-04-07* path:
   
    **london-xrd01**
    ```yaml
@@ -390,7 +390,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
      commit
    ```
 
-4. Validate **london-xrd01's** SRv6-TE SID policy is enabled and up:
+6. Validate **london-xrd01's** SRv6-TE SID policy is enabled and up:
    ```
     show segment-routing srv6 sid
    ```
@@ -417,7 +417,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y  
    ```
 
-   Take a look at the SRv6-TE policy detail:
+7. Show SRv6-TE policy detail:
    ```
     show segment-routing traffic-eng policy
    ```
@@ -464,7 +464,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
        Path Type: SRV6
    ```
    
-   Show the BGP vpnv4 prefix entry and note the addition the SR policy and binding-SID:
+8. Show the BGP vpnv4 prefix entry and note the addition the SR policy and binding-SID:
    ```
     show bgp vpnv4 uni vrf carrots 40.0.0.0/24 
    ```   
