@@ -492,7 +492,7 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
 3. Ping **london-vm-01** and **london-vm-02** over the *`Backend/SONiC`* network:
 
     ```
-    ping fcbb:0:800:2::2 -i .3 -c 3
+    ping fcbb:0:800:1::2 -i .3 -c 3
     ```
 
     ```
