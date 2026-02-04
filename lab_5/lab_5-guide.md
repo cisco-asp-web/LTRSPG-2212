@@ -13,7 +13,7 @@ In Lab 5 we will explore this use case with our SONiC backend fabric and the att
   - [Lab Objectives](#lab-objectives)
   - [Host-Based SRv6 for Intelligent Fabric Load Balancing](#host-based-srv6-for-intelligent-fabric-load-balancing)
     - [SRv6 Linux Kernel Routes](#srv6-linux-kernel-routes)
-  - [SRv6 for AI Backend Demo Lab](#srv6-for-ai-backend-demo-lab)
+  - [SRv6 for AI Backend Workloads](#srv6-for-ai-backend-workloads)
     - [Jalapeno and Modeling Networks as Graphs](#jalapeno-and-modeling-networks-as-graphs)
     - [AI/ML Workloads and Kubernetes](#aiml-workloads-and-kubernetes)
     - [PyTorch Distributed Training](#pytorch-distributed-training)
@@ -60,7 +60,7 @@ Cisco doesn't currently have a controller product for host-based SRv6 and the Hy
 
 ### SRv6 Linux Kernel Routes
 
-Before we get into PyTorch and automation, let's manually add a Linux route with SRv6 encapsulation:
+Before we get into PyTorch and AI Backend fabrics, let's manually add a Linux route with SRv6 encapsulation:
 
 1. Return to your ssh session on **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path **leaf00** -> **spine01** -> **leaf02**:
 
@@ -91,7 +91,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
 
    <img src="../topo_drawings/lab5-host00-host02-static-route.png" width="800" />
 
-3. Using the visual code containerlab extension, connect to SONiC **leaf02**, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
+3. Using the visual code containerlab extension, connect to SONiC **leaf02**, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries, including the uDT6 entry for decapsulating and forwarding traffic to **london-vm-02**:
    
    **leaf02**
    ```
@@ -109,14 +109,14 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
 vtysh -c "show running-config" | grep -A 10 "segment-routing"
 ```
 
-```
+```diff
 admin@leaf02:~$ sudo vtysh -c "show running-config" | grep -A 10 "segment-routing"
 segment-routing
  srv6
   static-sids
    sid fc00:0:1006::/48 locator MAIN behavior uN
    sid fc00:0:1006:fe04::/64 locator MAIN behavior uDT4 vrf default
-   sid fc00:0:1006:fe06::/64 locator MAIN behavior uDT6 vrf default
++   sid fc00:0:1006:fe06::/64 locator MAIN behavior uDT6 vrf default
   exit
   !
  exit
@@ -124,7 +124,29 @@ segment-routing
  srv6
  ```
 
-## SRv6 for AI Backend Demo Lab
+4. Optional: run a ping from **london-vm-00** to **london-vm-02** and capture the traffic with an Edgshark session on **leaf00** Ethernet16
+
+```
+ping fcbb:0:800:2::2 -i .5
+```
+
+Or for a quick validation of the packet encap open a new terminal session to **topology-host** and run a tcpdump on the underlying connection between **london-vm-00** and **leaf00**:
+```
+sudo tcpdump -ni london-vm-00-be
+```
+
+Expected output will be something like:
+```
+cisco@topology-host:~$ sudo tcpdump -ni london-vm-00-be
+tcpdump: verbose output suppressed, use -v[v]... for full protocol decode
+listening on london-vm-00-be, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+23:18:42.196845 IP6 fcbb:0:800::2 > fcbb:0:1004:1001:1006:fe06::: RT6 (len=2, type=4, segleft=0, last-entry=0, tag=0, [0]fcbb:0:1004:1001:1006:fe06::) IP6 fcbb:0:800::2 > fcbb:0:800:2::2: ICMP6, echo request, id 28522, seq 136, length 64
+23:18:42.197926 IP6 fcbb:0:800:2::2 > fcbb:0:800::2: ICMP6, echo reply, id 28522, seq 136, length 64
+```
+
+>[!Note:] we only specified an encapsulated route in the outbound direction, so the return traffic is not encapsulated
+
+## SRv6 for AI Backend Workloads
 
 ### Jalapeno and Modeling Networks as Graphs
 
