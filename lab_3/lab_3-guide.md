@@ -140,53 +140,43 @@ For the sake of simplicity we'll use iBGP peering between our London K8s nodes a
 
 ![Cilium SRv6 L3VPN](/topo_drawings/lab3-cilium-l3vpn-topology.png)
 
-Here is a portion of our Cilium BGP Cluster configuration in CRD form and with notes:
+Our Cilium BGP configuration is broken into four CRDs:
 
-```yaml
-apiVersion: isovalent.com/v1alpha1
-kind: IsovalentBGPClusterConfig  # the BGP cluster configuration CRD  
-metadata:
-  name: cilium-bgp 
-spec:
-  nodeSelector:
-    matchExpressions:
-    - key: kubernetes.io/hostname
-      operator: In                      # apply config to all nodes in the values list
-      values:
-      - london-vm-00
-      - london-vm-01
-      - london-vm-02   
-  bgpInstances:                         # the k8s cluster could have multiple BGP instances
-  - name: "asn65000"                    # for simplicity we're using the same ASN as our XRd network
-    localASN: 65000
-    peers:
-    - name: "paris-rr"                  # base peering config
-      peerASN: 65000                   
-      peerAddress: fc00:0:5555::1       
-      peerConfigRef:
-        name: "cilium-peer"             # reference to additional peer config in another CRD
-    - name: "barcelona-rr"
-      peerASN: 65000
-      peerAddress: fc00:0:6666::1
-      peerConfigRef:
-        name: "cilium-peer"
-```
-### Configure Cilium BGP
-1. On **london-vm-00** apply the *Cilium BGP Config CRD*. This config establishes our Cilium Node's BGP ASN, peering with the route reflectors **paris-xrd05** and **barcelona-xrd06**, and IPv6 prefix advertisement among other parameters.
-   ```
-   kubectl apply -f 01-cilium-bgp.yaml
-   ```
+1. The *BGP Cluster Config CRD* where we define BGP global values like ASN, etc.
+   
+   Here is a portion of the BGP Cluster Config CRD with notes:
+   ```yaml
+   apiVersion: isovalent.com/v1alpha1
+   kind: IsovalentBGPClusterConfig  # the BGP cluster configuration CRD  
+   metadata:
+     name: cilium-bgp 
+   spec:
+     nodeSelector:
+       matchExpressions:
+       - key: kubernetes.io/hostname
+         operator: In                      # apply config to all nodes in the values list
+         values:
+         - london-vm-00
+         - london-vm-01
+         - london-vm-02   
+     bgpInstances:                         # the k8s cluster could have multiple BGP instances
+     - name: "asn65000"                    # for simplicity we're using the same ASN as our XRd network
+       localASN: 65000
+       peers:
+       - name: "paris-rr"                  # base peering config
+         peerASN: 65000                   
+         peerAddress: fc00:0:5555::1       
+         peerConfigRef:
+           name: "cilium-peer"             # reference to additional peer config in another CRD
+       - name: "barcelona-rr"
+         peerASN: 65000
+         peerAddress: fc00:0:6666::1
+         peerConfigRef:
+           name: "cilium-peer"
+  ```
 
-   Expected output:
-   ```
-    isovalentbgppeerconfig.isovalent.com/cilium-peer created
-    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-00 created
-    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-01 created
-    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-02 created
-    isovalentbgpadvertisement.isovalent.com/bgp-ipv6-unicast created
-   ```
+2. The *BGP Peer Config CRD* is where we control address families and other BGP peering or route policies on a per peer or peer-group basis.
 
-   Next: The *BGP Peer Config CRD* is where we control address families and other BGP peering or route policies on a per peer or peer-group basis.
    Here is a portion of the BGP Peer Config CRD with notes:
    ```yaml
    metadata:
@@ -199,10 +189,10 @@ spec:
            matchLabels:
              advertise: "bgpv6unicast"   # advertise ipv6 prefixes found in the bgpv6unicast advertisement CRD
        - afi: ipv4
-         safi: mpls_vpn  # a bit of a misnomer, but we're advertising SRv6 L3VPN, or the equivalent of vpnv4 unicast in XR
+         safi: mpls_vpn  # a bit of a misnomer, we're advertising SRv6 L3VPN, or the equivalent of vpnv4 unicast in XR
    ```
-   
-   Then we'll apply the *`node overide`* CRD which includes the *`localAddress`* parameter. This parameter tells Cilium which source address to use for its BGP peering sessions, similar to `update-source` in IOS-XR.
+
+3. The *BGP Node Config Override CRD* which includes the *`localAddress`* parameter. This parameter tells Cilium which source address to use for its BGP peering sessions, similar to `update-source` in IOS-XR.
 
    Here is a portion of the node override CRD with notes:
    ```yaml
@@ -216,9 +206,44 @@ spec:
             - name: "paris-rr"              # must match the name of the peer in the cluster config
               localAddress: fc00:0:800::2   # the source address to use for the peering session
    ```
+
+4. The *BGP Prefix Config CRD* which defines prefix advertisements and policies
+   Here is a portion of the prefix advertisement CRD with notes:
+   ```yaml
+    metadata:
+      name: bgp-ipv6-unicast
+      labels:
+        advertise: bgpv6unicast     # this label will be used by the peer config CRD for prefixes to advertise
+    spec:
+      advertisements:                           
+        - advertisementType: "SRv6LocatorPool" # advertise the SRv6 locator pool (to be created a few steps after this)
+          selector:
+            matchLabels:
+              export: "pool0"
+        - advertisementType: "PodCIDR"          # advertise the pod CIDR prefix for pods in the default VRF
+   ```
+
+### Configure Cilium BGP
+1. On **london-vm-00** apply the *Cilium BGP Config CRD*. This config establishes BGP peering on all three **london-vms** with the route reflectors **paris-xrd05** and **barcelona-xrd06**.
+   ```
+   kubectl apply -f 01-cilium-bgp.yaml
+   ```
+
+   Expected output:
+   ```
+    isovalentbgppeerconfig.isovalent.com/cilium-peer created
+    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-00 created
+    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-01 created
+    isovalentbgpnodeconfigoverride.isovalent.com/london-vm-02 created
+    isovalentbgpadvertisement.isovalent.com/bgp-ipv6-unicast created
+   ```
    
 
 ### Verify Cilium BGP peering 
+
+> [!NOTE]
+> the **paris** and **barcelona**' route-reflectors were preconfigured to peer with the Cilium nodes and inherited the vpnv4 address family configuration during Lab 2, so we don't need to update their configs. 
+
 
 1. Use the *`cilium bgp peers`* command to verify established peering sessions with **paris xrd05** and **barcelona xrd06**. Note, it may take a few seconds to a minute for the peering sessions and bgp table sync.
    
@@ -241,24 +266,6 @@ spec:
 
    
 ### Verify BGP prefix advertisement
-
-The **paris** and **barcelona**' route-reflectors were preconfigured to peer with the Cilium nodes and inherited the vpnv4 address family configuration during Lab 2, so we don't need to update their configs. 
-
-Here is a portion of the prefix advertisement CRD with notes:
-   ```yaml
-    metadata:
-      name: bgp-ipv6-unicast
-      labels:
-        advertise: bgpv6unicast     # this label will be used by the peer config CRD for prefixes to advertise
-    spec:
-      advertisements:                           
-        - advertisementType: "SRv6LocatorPool" # advertise the SRv6 locator pool (to be created a few steps after this)
-          selector:
-            matchLabels:
-              export: "pool0"
-        - advertisementType: "PodCIDR"          # advertise the pod CIDR prefix for pods in the default VRF
-   ```
-
 
 1. Verify the prefix advertisement (you should now see a 1 under the ipv6 unicast column):
    ```
@@ -332,7 +339,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    kubectl apply -f 02-cilium-srv6.yaml
    ```
 
-   Recall the BGP prefix advertisement CRD included a spec for advertising the SRv6 locator pool as well:
+   Recall the *`BGP prefix advertisement CRD`* included a spec for advertising the SRv6 locator pool as well:
    ```diff
      advertisements:
        - advertisementType: "SRv6LocatorPool"  
@@ -341,7 +348,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    +          export: "pool0"
    ```
 
-2. Now that we have a local pool to advertise, let's check our BGP advertised prefixes again:
+2. Now that we have an SRv6 locator pool defined, let's check our BGP advertised prefixes again:
    ```
    cilium bgp routes advertised ipv6 unicast
    ```
@@ -355,7 +362,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    +              65000     fc00:0:6666::1   fc00:0:88f7::/48     fc00:0:800::2    
    ```
 
-3. Now that we've created locator pool, let's validate it:
+3. Validate the locator pool:
    ```
    kubectl get sidmanager -o yaml
    ```
