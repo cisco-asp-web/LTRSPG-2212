@@ -506,13 +506,17 @@ The following diagram illustrates the expected traffic path and highlights the d
 
 1. Using the Visual Code extension, ssh to the **London container's** shell and run a ping to the bulk transport destination IPv4 address on Rome. We will capture and analyze this traffic at multiple points across the network.
 
+   ```
+    ping 40.0.0.1 -i .5
+   ```
+
 ![London ping](../topo_drawings/lab2-amsterdam-ping.png)
 
   Launch an edgeshark capture on the **london-xrd01** container interface Gig0/0/0/0 to inspect the traffic.
 
 ![London gi0/0/0](../topo_drawings/lab2-xrd-edgeshark-g0.png)
 
-  Observing the ICMP traffic exchanged between the London and Rome containers, the echo request is a standard IPv4 packet sourced from 10.101.1.2 and destined for 40.0.0.1, with a measured round-trip time of approximately 120 ms. This latency matches the delay values that were intentionally introduced on the links using Ansible in Lab 1, confirming that traffic is traversing the expected network path.
+  Observing the ICMP traffic exchanged between the London and Rome containers, the echo request is a standard IPv4 packet sourced from 10.101.1.2 and destined for 40.0.0.1, with a measured round-trip time of approximately 120 ms. This latency matches the delay values that were intentionally introduced on the links in Lab 1, confirming that traffic is traversing the expected network path.
 
 ![London gi0/0/0 capture](../topo_drawings/lab2-xrd01-wireshark-g0.png)
 
@@ -550,7 +554,8 @@ The following diagram illustrates the expected traffic path and highlights the d
    - Destination IPv6: fc00:0:2222:3333:7777:e006:: which defines the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
     
 In SRv6 Traffic Engineering, uSIDs allow a source node (ingress PE) to explicitly program a packet’s path through a domain by enforcing a sequence of intermediate waypoints or links. Like all Segment Routing, uSID-based TE is stateless; the entire path and service instructions are encoded in the packet header, meaning transit routers do not need to maintain per-flow state.
-Standard SRv6 requires a 128-bit SID for every hop, which can lead to large packet headers
+
+SRH-style SRv6 requires a 128-bit SID for every hop, which can lead to large packet headers.
 uSIDs solve this by packing six hops into a single address, allowing complex TE paths to be executed without a Segment Routing Header (SRH) in most use cases.
 
 On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamically only when it receives a service route with a specific color. This eliminates the need to pre-configure "full mesh" tunnels, significantly improving scalability.
@@ -563,9 +568,9 @@ On-Demand Next-Hop (ODN) allows the headend to instantiate an SR Policy dynamica
 Like in the previous steps, we need to focus on the IPv6 header (Outer Header - SRv6 transport layer):
 
    - Source IPv6: fc00:0:1111::1 
-   - Destination IPv6: fc00:0::3333:7777:e007:: which defines a modified version of the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
+   - Destination IPv6: fc00:0:3333:7777:e007:: which defines a modified version of the SRv6 segment created earlier for traffic steering accross xrd02, xrd03, xrd04 and xrd07
 
-Unlike MPLS, which pops labels from a stack, SRv6 microSIDs operate by directly modifying the IPv6 destination address to expose the next forwarding instruction. At each hop, the active uSID is consumed by shifting the remaining uSID fields within the destination address, effectively removing the current instruction and advancing the next one. In this lab, the uSID 2222 is consumed at XRD02, resulting in a destination address of fc00:0::3333:7777:e007:: downstream, confirming correct hop-by-hop execution of the SRv6 data plane.
+Unlike MPLS, which pops labels from a stack, SRv6 microSIDs operate by directly modifying the IPv6 destination address to expose the next forwarding instruction. At each hop, the active uSID is consumed by shifting the remaining uSID fields within the destination address, effectively removing the current instruction and advancing the next one. In this step, the uSID 2222 is consumed at XRD02, resulting in a destination address of fc00:0:3333:7777:e007:: downstream, confirming correct hop-by-hop execution of the SRv6 data plane.
 
 
 5. Launch an edgeshark capture on container **zurich-xrd04** interface Gig0/0/0/0 to inspect the traffic.
@@ -577,8 +582,6 @@ Here, the zurich xrd router (XRD04 – 4444) receives a packet whose IPv6 destin
 - No SRv6 Processing: The router does not perform any "Shift" operations because the Destination Address does not match any of its locally configured SRv6 SIDs.
 - Longest Prefix Match (LPM): The router performs a standard Longest Prefix Match lookup on the Destination Address.
 - Forwarding: It finds the route to the final destination (the egress PE or next endpoint) and forwards the packet out the appropriate interface
-
-
 
 
 6. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04**.
@@ -593,7 +596,7 @@ When Rome receives the packet with an IPv6 destination address of fc00:0:7777:e0
 
   ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
-At the Rome router, the SRv6 transport header has been fully processed and removed, and the packet is delivered to the endpoint service. As shown in this capture, only a standard IPv4 ICMP packet remains, sourced from 10.101.1.2 and destined for 40.0.0.1, confirming that the SRv6 encapsulation has been decapsulated. This behavior corresponds to the execution of the SRv6 uDT4 endpoint function, which forwards the packet into the correct routing context . The packet is then forwarded within the Carrots VRF, completing the end-to-end SRv6 packet walk from London to Rome.
+At the Rome router, the SRv6 transport header has been fully processed and removed, and the packet is delivered to the endpoint service. As shown in this capture, only a standard IPv4 ICMP packet remains, sourced from 10.101.1.2 and destined for 40.0.0.1, confirming that the outer SRv6 header been decapsulated. This behavior corresponds to the execution of the SRv6 uDT4 endpoint function, which forwards the packet into the correct routing context. The packet is then forwarded within the Carrots VRF, completing the end-to-end SRv6 packet walk from London to Rome.
 
 
 ---
@@ -625,7 +628,7 @@ If you found this, explain what this uSID represents and why RFC 8986 matters he
          index 20 sid fc00:0:6666::
     ```
 
-    Normally we might expect the tcpudmp output to show *5555:6666:7777* in the packet header, however, when the XRd headend router performs its SRv6-TE policy calculation it recognized that **paris-xrd05's** best path to **rome-xrd07** is through **barcelona-xrd06**, so it doesn't need to include the *6666* in the SID stack.
+Under normal circumstances, we might expect the packet header to include the microSID sequence 5555:6666:7777, explicitly steering traffic through paris-xrd05, barcelona-xrd06, and finally rome-xrd07. However, when the XRd headend router computes the SRv6 Traffic Engineering policy, it determines that the best path from paris-xrd05 to rome-xrd07 naturally traverses barcelona-xrd06 based on the IGP topology. As a result, the headend optimizes the uSID list by omitting 6666, since no additional steering decision is required at that hop. This optimization reduces SID overhead while still enforcing the intended SRv6-TE path, resulting in an outer IPv6 destination address of fc00:0:5555:7777:e006::
 
 
 ## End of Lab 2
