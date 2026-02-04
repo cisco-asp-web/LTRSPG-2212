@@ -492,19 +492,20 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
 3. Ping **london-vm-01** and **london-vm-02** over the *`Backend/SONiC`* network:
 
     ```
-    ping fcbb:0:800:1::2 -i .3 -c 100
-    ```
-    ```
-    ping fcbb:0:800:2::2 -i .3 -c 100
+    ping fcbb:0:800:2::2 -i .3 -c 3
     ```
 
-    While the ping is running we can launch edgeshark using the visual code containerlab extension and inspect the traffic on the **SONiC Leaf00 eth5 ???** interface. Note the traffic is not SRv6 encapsulated at this time:
+    ```
+    admin@leaf00:~$ ping fcbb:0:800:1::2 -i .3 -c 3
+    PING fcbb:0:800:1::2(fcbb:0:800:1::2) 56 data bytes
+    64 bytes from fcbb:0:800:1::2: icmp_seq=1 ttl=62 time=2.13 ms
+    64 bytes from fcbb:0:800:1::2: icmp_seq=2 ttl=62 time=1.74 ms
+    64 bytes from fcbb:0:800:1::2: icmp_seq=3 ttl=62 time=2.09 ms
 
-   <img src="../topo_drawings/lab4-host00-edgeshark.png" width="800" />
-
-    Wireshark is launching and traffic is automatically intercepted.
-
-   <img src="../topo_drawings/lab4-wireshark.png" width="800" />
+    --- fcbb:0:800:1::2 ping statistics ---
+    3 packets transmitted, 3 received, 0% packet loss, time 602ms
+    rtt min/avg/max/mdev = 1.744/1.988/2.131/0.173 ms
+    ```
 
     
 ## End of lab 4
