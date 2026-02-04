@@ -62,7 +62,7 @@ Cisco doesn't currently have a controller product for host-based SRv6 and the Hy
 
 Before we get into PyTorch and automation, let's manually add a Linux route with SRv6 encapsulation:
 
-1. Return to your ssh session on **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path *leaf00* -> **spine01** -> **leaf02**:
+1. Return to your ssh session on **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path *leaf00* -> *spine01* -> *leaf02*:
 
    ```
    sudo ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap segs fcbb:0:1004:1001:1006:fe06:: dev ens5
