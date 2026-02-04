@@ -144,7 +144,8 @@ listening on london-vm-00-be, link-type EN10MB (Ethernet), snapshot length 26214
 23:18:42.197926 IP6 fcbb:0:800:2::2 > fcbb:0:800::2: ICMP6, echo reply, id 28522, seq 136, length 64
 ```
 
-> [!NOTE] we only specified an encapsulated route in the outbound direction, so the return traffic is not encapsulated
+> [!NOTE]
+> We only specified an encapsulated route in the outbound direction, so the return traffic is not encapsulated
 
 ## SRv6 for AI Backend Workloads
 
@@ -266,6 +267,8 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 >
 > With these route + SRv6 encapsulation entries in place the PyTorch training job's traffic to its peers would be evenly load balanced across the traffic without any chance of collision or fabric congestion!
 
+<img src="../topo_drawings/lab5-backend.png" width="800" />
+
    Optional: display the logs from the other two *`srv6-pytorch`* pods.  We should see very similar log output
    ```
    kubectl logs srv6-pytorch-1
@@ -291,7 +294,7 @@ We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at 
    ```
 
 
-4. Exec into one of the *`srv6-pytorch`* pods and manually check the Linux ipv6 routes, run some backend network pings, do some Edgshark-ing!
+1. Exec into one of the *`srv6-pytorch`* pods and manually check the Linux ipv6 routes, run some backend network pings, do some Edgshark-ing!
     ```
     kubectl exec -it srv6-pytorch-0 -- bash
     ```
