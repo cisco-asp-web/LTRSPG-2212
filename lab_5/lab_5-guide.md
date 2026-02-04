@@ -19,7 +19,8 @@ In Lab 5 we will explore this use case with our SONiC backend fabric and the att
     - [PyTorch Distributed Training](#pytorch-distributed-training)
     - [*SRv6 PyTorch Plugin*](#srv6-pytorch-plugin)
     - [Deploying the SRv6 PyTorch Pods](#deploying-the-srv6-pytorch-pods)
-      - [Should we have them startup Edgshark on sonic spine01 in advance of container deployment and automatic pinging?](#should-we-have-them-startup-edgshark-on-sonic-spine01-in-advance-of-container-deployment-and-automatic-pinging)
+    - [Add an Edgeshark capture on the **leaf00's** Ethernet16 interface - it should show the pings as SRv6 encapsulated packets with the uSID stack programmed by the SRv6 PyTorch plugin](#add-an-edgeshark-capture-on-the-leaf00s-ethernet16-interface---it-should-show-the-pings-as-srv6-encapsulated-packets-with-the-usid-stack-programmed-by-the-srv6-pytorch-plugin)
+    - [Add an Edgeshark capture on the **london xrd01** router's core facing interfaces (Gi0/0/0/1 and/or Gi0/0/0/2) should show the pings as SRv6 encapsulated L3VPN packets](#add-an-edgeshark-capture-on-the-london-xrd01-routers-core-facing-interfaces-gi0001-andor-gi0002-should-show-the-pings-as-srv6-encapsulated-l3vpn-packets)
   - [End of lab 5](#end-of-lab-5)
 
 
@@ -203,8 +204,6 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    cd ~/LTRSPG-2212/lab_5/srv6-pytorch/
    ```
 
-#### Should we have them startup Edgshark on sonic spine01 in advance of container deployment and automatic pinging?
-
 2. Use the *kubectl apply* command to deploy the *srv6-plugin* test pods:
 
    ```
@@ -245,7 +244,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 >
 > With these route + SRv6 encapsulation entries in place the PyTorch training job's traffic to its peers would be evenly load balanced across the traffic without any chance of collision or fabric congestion!
 
-   Optional: the other two *`srv6-pytorch`* pods should have very similar log output
+   Optional: display the logs from the other two *`srv6-pytorch`* pods.  We should see very similar log output
    ```
    kubectl logs srv6-pytorch-1
    kubectl logs srv6-pytorch-2
@@ -269,7 +268,26 @@ We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at 
          }]
    ```
 
-4. Run a *kubectl* command to get the first worker pod's IP and VRF info:
+
+4. Exec into one of the *`srv6-pytorch`* pods and manually check the Linux ipv6 routes, run some backend network pings, do some Edgshark-ing!
+    ```
+    kubectl exec -it srv6-pytorch-0 -- bash
+    ```
+    ```
+    ip -6 route
+    ```
+    ```
+    ping fcbb:0:800:1::10 -i .3 -c 100
+    ```
+    ```
+    ping fcbb:0:800:2::10 -i .3 -c 100
+    ```
+
+### Add an Edgeshark capture on the **leaf00's** Ethernet16 interface - it should show the pings as SRv6 encapsulated packets with the uSID stack programmed by the SRv6 PyTorch plugin
+
+**SRv6 PyTorch pods** are using Cilium on the frontend and are connected to *`vrf carrots`* 
+
+5. Run a *kubectl* command to get the first worker pod's IP and VRF info:
    ```
    kubectl get pod srv6-pytorch-1 -o jsonpath="Node: {.spec.nodeName} | IPs: {.status.podIPs[*].ip} | VRF: {.metadata.labels.vrf}" && echo
    ```
@@ -279,32 +297,13 @@ We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at 
    Node: london-vm-01 | IPs: 10.200.1.71 2001:db8:42:2::da42 | VRF: carrots
    ```
 
-5. Run a ping from an *`srv6-pytorch`* worker pod to the remote Rome container in *VRF carrots*
+6. Run a ping from an *`srv6-pytorch`* worker pod to the remote Rome container in *VRF carrots*
    
    ```
    kubectl exec -it srv6-pytorch-1 -- ping 10.107.1.2 -i .4
    ```
 
-   An Edgeshark capture on the **london xrd01** router's core facing interfaces (Gi0/0/0/1 and/or Gi0/0/0/2) should show the pings as SRv6 encapsulated L3VPN packets
-
-**need updated screenshot**
-   Screenshot of output from *`srv6-pytorch-0`* pod with comments (each terminal should have similar output):
-
-   <img src="../topo_drawings/lab5-pytorch-output.png" width="800" />
-
-6. Optional: exec into one of the *`srv6-pytorch`* pods and manually check the Linux ipv6 routes, run some backend network pings, do some Edgshark-ing!
-    ```
-    kubectl exec -it srv6-pytorch-0 -- bash
-    ```
-    ```
-    ip -6 route
-    ```
-    ```
-    ping fcbb:0:800:1::2 -i .3 -c 100
-    ```
-    ```
-    ping fcbb:0:800:2::2 -i .3 -c 100
-    ```
+### Add an Edgeshark capture on the **london xrd01** router's core facing interfaces (Gi0/0/0/1 and/or Gi0/0/0/2) should show the pings as SRv6 encapsulated L3VPN packets
 
 **Congratulations, you have reached the end of Cisco Live Lab LTRSPG-2212, hurray!!**
 
