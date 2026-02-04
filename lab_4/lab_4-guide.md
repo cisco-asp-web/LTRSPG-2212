@@ -312,28 +312,6 @@ FRR operates in SONiC very similar to Classic IOS commands.
 
    We expect to see BGP configurations with unnumbered peering over EthernetX interfaces and SRv6 config including locator, source address for encapsulation, and some static uSID entries.
 
-   Example:
-
-   ```diff
-   segment-routing
-    srv6
-     static-sids
-   +   sid fcbb:0:1004::/48 locator MAIN behavior uN  
-   +   sid fcbb:0:1004:fe04::/64 locator MAIN behavior uDT4 vrf default
-   +   sid fcbb:0:1004:fe06::/64 locator MAIN behavior uDT6 vrf default
-     exit
-     !
-    exit
-    !
-    srv6
-     encapsulation
-   +   source-address fcbb:0:1004::1
-     locators
-      locator MAIN
-   +    prefix fcbb:0:1004::/48 block-len 32 node-len 16 func-bits 16
-       behavior usid
-      exit
-   ```
 ### Verify SONiC BGP peering
 
 With our backend DC fabric now configured we will check to make sure that BGP peering was established. Use the below diagram as a reference to the ASN configured in the prior steps.

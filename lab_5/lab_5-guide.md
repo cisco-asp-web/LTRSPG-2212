@@ -1,7 +1,7 @@
 # Lab 5: SRv6 for Intelligent Load Balancing of AI Workloads [20 Min]
 
 ### Description
-In recent months a few Hyperscalers have expressed interest in running SRv6 over their AI training fabrics. The idea would be to offer their customers the ability to do intelligent and deterministic load balancing of large, long-lived flows, by pinning them to specific paths thru the fabric. The goal is for SRv6 encapsulation right at the host stack or RDMA NIC: *`host-based SRv6!`*
+In recent months a few Hyperscalers have expressed interest in running SRv6 over their AI training fabrics. The idea would be to offer their customers the ability to do intelligent and deterministic load balancing of large, long-lived flows, by pinning them to specific paths thru the fabric. The goal is to perform SRv6 encapsulation right at the host stack or RDMA NIC: *`host-based SRv6!`*
 
 In Lab 5 we will explore this use case with our SONiC backend fabric and the attached *`london VMs`* simulating an AI Training infrastructure. 
 
@@ -17,7 +17,7 @@ In Lab 5 we will explore this use case with our SONiC backend fabric and the att
     - [Jalapeno and Modeling Networks as Graphs](#jalapeno-and-modeling-networks-as-graphs)
     - [AI/ML Workloads and Kubernetes](#aiml-workloads-and-kubernetes)
     - [PyTorch Distributed Training](#pytorch-distributed-training)
-    - [SRv6 PyTorch Plugin](#srv6-pytorch-plugin)
+    - [*SRv6 PyTorch Plugin*](#srv6-pytorch-plugin)
     - [Deploying the SRv6 PyTorch Pods](#deploying-the-srv6-pytorch-pods)
       - [Should we have them startup Edgshark on sonic spine01 in advance of container deployment and automatic pinging?](#should-we-have-them-startup-edgshark-on-sonic-spine01-in-advance-of-container-deployment-and-automatic-pinging)
   - [End of lab 5](#end-of-lab-5)
@@ -61,7 +61,7 @@ Cisco doesn't currently have a controller product for host-based SRv6 and the Hy
 
 Before we get into PyTorch and automation, let's manually add a Linux route with SRv6 encapsulation:
 
-1. Using the visual code containerlab extension open an ssh session to **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path **leaf00** -> **spine01** -> **leaf02**:
+1. Return to your ssh session on **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path **leaf00** -> **spine01** -> **leaf02**:
 
    ```
    sudo ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap segs fcbb:0:1004:1001:1006:fe06:: dev ens5
@@ -80,7 +80,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
 
    - The SRv6 uSID combination in the above will route traffic from **london-vm-00** to **london-vm-02** via **leaf00**, **spine01**, and **leaf02**.
      
-   - The packet that egresses from *`london-vm-00`* will have an outer IPv6 destination header of **fcbb:1001:1006:fe06::** and an inner packet header destination of **fcbb:0:0800:2::2/128**. 
+   - The packet that egresses from *`london-vm-00`* will have an outer IPv6 destination header of **fcbb:1004:1001:1006:fe06::** and an inner packet header destination of **fcbb:0:0800:2::2/128**. 
    
    - The uSID shift-and-forward at **leaf00** and **spine01** will result in an ipv6 destination address of **fcbb:1006:fe06::** when the packet arrives at **leaf02**. 
    
@@ -90,7 +90,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
 
    <img src="../topo_drawings/lab5-host00-host02-static-route.png" width="800" />
 
-1. Using the visual code containerlab extension, connect to SONiC **leaf02**, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
+3. Using the visual code containerlab extension, connect to SONiC **leaf02**, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
    
    **leaf02**
    ```
@@ -113,9 +113,9 @@ admin@leaf02:~$ sudo vtysh -c "show running-config" | grep -A 10 "segment-routin
 segment-routing
  srv6
   static-sids
-   sid fc00:0:1202::/48 locator MAIN behavior uN
-   sid fc00:0:1202:fe04::/64 locator MAIN behavior uDT4 vrf default
-   sid fc00:0:1202:fe06::/64 locator MAIN behavior uDT6 vrf default
+   sid fc00:0:1006::/48 locator MAIN behavior uN
+   sid fc00:0:1006:fe04::/64 locator MAIN behavior uDT4 vrf default
+   sid fc00:0:1006:fe06::/64 locator MAIN behavior uDT6 vrf default
   exit
   !
  exit
@@ -127,7 +127,7 @@ segment-routing
 
 ### Jalapeno and Modeling Networks as Graphs
 
-Using the [Lab 5 scripts and data](./jalapeno/backend/) we've created a model of our SONiC fabric/SRv6 topology data in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
+Using the [Lab 5 scripts and data](./jalapeno/backend/) we pre-built a model of our SONiC fabric/SRv6 topology in Jalapeno's Arango Graph Database. This makes the fabric topology graph available to *`PyTorch`* (or other SDN applications) via Jalapeno's API. 
 
 Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new tab/window. 
 
@@ -142,7 +142,7 @@ After completing **Lab 5** feel free to checkout the [Lab 5 Bonus Section](./lab
 
 ### AI/ML Workloads and Kubernetes
 
-Its very common for operators to use Kubernetes to orchestrate ML workloads and have them communicate over dedicated backend networks. We have our Kubernetes cluster with the **London VMs**, which all happen to have a 2nd interface plugged into our SRv6 enabled SONiC backend fabric.
+Its very common for operators to use Kubernetes to orchestrate ML workloads and have them communicate over dedicated backend networks. We have our Kubernetes cluster with the **London VMs**, which all happen to have a 2nd interface **ens5** plugged into our SRv6 enabled SONiC backend fabric.
 
 ### PyTorch Distributed Training
 
@@ -153,7 +153,7 @@ From https://pytorch.org/projects/pytorch/
 **PyTorch Workflow:**
 When you start a distributed training workload, PyTorch initializes a process group. It uses a backend like [NCCL](https://developer.nvidia.com/nccl) or [Gloo](https://github.com/pytorch/gloo) for communication between nodes. Each node gets a rank and knows about other nodes through the process group
 
-### SRv6 PyTorch Plugin
+### *SRv6 PyTorch Plugin*
 
 We built an SRv6 Plugin for Pytorch!
 
