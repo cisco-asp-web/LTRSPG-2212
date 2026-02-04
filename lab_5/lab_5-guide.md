@@ -88,7 +88,7 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
    
    - *`leaf02`* will then forward the traffic to *`london-vm-02`*
 
-   <img src="../topo_drawings/lab5-host00-host02-static-route.png width="800" />
+   <img src="../topo_drawings/lab5-host00-host02-static-route.png" width="800" />
 
 1. Using the visual code containerlab extension, connect to SONiC *`leaf02`*, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
    
@@ -136,7 +136,7 @@ Use this link to open the [Jalapeno UI](http://198.18.128.101:30700) into a new 
 3. Then you can click "select a layout" and change the layout to show the topology as a CLOS or other options
 
 
-<img src="../topo_drawings/lab5-fabric-topology-graph.png width="800" />
+<img src="../topo_drawings/lab5-fabric-topology-graph.png" width="800" />
 
 After completing **Lab 5** feel free to checkout the [Lab 5 Bonus Section](./lab_5-bonus.md) that explores the Jalapeno GraphDB, API, UI, and other host-based SRv6 scenarios in more detail.
 
@@ -286,7 +286,7 @@ We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at 
 **need updated screenshot**
    Screenshot of output from *`srv6-pytorch-0`* pod with comments (each terminal should have similar output):
 
-   <img src="../topo_drawings/lab5-pytorch-output.png width="800" />
+   <img src="../topo_drawings/lab5-pytorch-output.png" width="800" />
 
 6. Optional: exec into one of the *`srv6-pytorch`* pods and manually check the Linux ipv6 routes, run some backend network pings, do some Edgshark-ing!
     ```
