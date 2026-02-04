@@ -417,6 +417,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
     fc00:0:1111:e009::          uDT6              'carrots'                          bgp-65000           InUse  Y
    +fc00:0:1111:e006::          uB6 (Insert.Red)  'srte_c_50_ep_fc00:0:7777::1' (50, fc00:0:7777::1)  xtc_srv6            InUse  Y 
    +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y  
+   💡fc00:0:b00k:1dea::          uB0ok (Claim)     'DM_Instructor_With_Code_SRv6'     student             InUse  💡
    ```
 
 7. Show SRv6-TE policy detail:
@@ -598,16 +599,12 @@ When Rome receives the packet with an IPv6 destination address of fc00:0:7777:e0
 
 At the Rome router, the SRv6 transport header has been fully processed and removed, and the packet is delivered to the endpoint service. As shown in this capture, only a standard IPv4 ICMP packet remains, sourced from 10.101.1.2 and destined for 40.0.0.1, confirming that the outer SRv6 header been decapsulated. This behavior corresponds to the execution of the SRv6 uDT4 endpoint function, which forwards the packet into the correct routing context. The packet is then forwarded within the Carrots VRF, completing the end-to-end SRv6 packet walk from London to Rome.
 
-
----
-<!-- 
-EASTER_EGG:
-fc00:0:2212:3333:7777:8986::
-If you found this, explain what this uSID represents and why RFC 8986 matters here.
--->
-
+<br><br>
 
 **Validate low latency traffic takes the path: london-xrd01 -> 05 -> 06 -> rome-xrd07**
+
+> [!NOTE]
+> To keep the lab concise, we will not repeat packet captures on every interface for this section. However, students are encouraged to capture traffic on **any interfaces** if they wish to further explore and validate the SRv6 packet walk across the network.
 
 1.  Start a new edgeshark capture  **london-xrd01's** outbound interface (Gi0-0-0-2) to **paris-xrd05**:
 
@@ -617,8 +614,7 @@ If you found this, explain what this uSID represents and why RFC 8986 matters he
     ```
 
     ![Amsterdam Capture](../topo_drawings/lab2-xrd-edgeshark-pcap-fast.png) 
-
-
+   
     Note the explicit segment-list we configured for our low latency policy:
 
     ```
@@ -630,6 +626,7 @@ If you found this, explain what this uSID represents and why RFC 8986 matters he
 
 Under normal circumstances, we might expect the packet header to include the microSID sequence 5555:6666:7777, explicitly steering traffic through paris-xrd05, barcelona-xrd06, and finally rome-xrd07. However, when the XRd headend router computes the SRv6 Traffic Engineering policy, it determines that the best path from paris-xrd05 to rome-xrd07 naturally traverses barcelona-xrd06 based on the IGP topology. As a result, the headend optimizes the uSID list by omitting 6666, since no additional steering decision is required at that hop. This optimization reduces SID overhead while still enforcing the intended SRv6-TE path, resulting in an outer IPv6 destination address of fc00:0:5555:7777:e006::
 
+    Under normal circumstances, we might expect the packet header to include the microSID sequence *5555:6666:7777*, explicitly steering traffic through **paris-xrd05**, **barcelona-xrd06**, and finally **rome-xrd07**. However, when the XRd headend router computes the SRv6 Traffic Engineering policy, it determines that the best path from paris-xrd05 to **rome-xrd07** naturally traverses **barcelona-xrd06** based on the IGP topology. As a result, the headend optimizes the uSID list by omitting 6666, since no additional steering decision is required at that hop. This optimization reduces SID overhead while still enforcing the intended SRv6-TE path, resulting in an outer IPv6 destination address of *fc00:0:5555:7777:e006::*.
 
 ## End of Lab 2
 Please proceed to [Lab 3](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_3/lab_3-guide.md)
