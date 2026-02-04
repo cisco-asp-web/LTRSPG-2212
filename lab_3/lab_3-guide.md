@@ -18,14 +18,15 @@ https://cilium.io/labs/
   - [Lab Objectives](#lab-objectives)
   - [Verify pre-installed Kubernetes and Cilium are running](#verify-pre-installed-kubernetes-and-cilium-are-running)
   - [Kubernetes Custom Resource Definitions (CRDs)](#kubernetes-custom-resource-definitions-crds)
-    - [Cilium BGP](#cilium-bgp)
+  - [Cilium BGP](#cilium-bgp)
+    - [Configure Cilium BGP](#configure-cilium-bgp)
     - [Verify Cilium BGP peering](#verify-cilium-bgp-peering)
     - [Verify BGP prefix advertisement](#verify-bgp-prefix-advertisement)
-  - [Cilium SRv6](#cilium-srv6)     
+  - [Cilium SRv6](#cilium-srv6)
     - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
   - [Cilium VRF](#cilium-vrf)
     - [Create the carrots BGP VRF](#create-the-carrots-bgp-vrf)
-    - [Verify Cilium VRFs and Create Pods](#verify-cilium-vrfs-and-create-pods)
+  - [Verify Cilium VRFs and Create Pods](#verify-cilium-vrfs-and-create-pods)
   - [Verify Cilium advertised L3VPN prefixes in the lab](#verify-cilium-advertised-l3vpn-prefixes-in-the-lab)
     - [Run a ping test!](#run-a-ping-test)
     - [Optional - Traffic capture using Edgeshark](#optional---traffic-capture-using-edgeshark)
@@ -41,12 +42,11 @@ We will have achieved the following objectives upon completion of Lab 3:
   
 ## Verify pre-installed Kubernetes and Cilium are running
 
-Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of the following steps are to be performed on the **london-vm-00** control plane node unless otherwise specified.
+The **london-vm-00** is our Kubernetes control plane node.  All of the following steps are to be performed on **london-vm-00**   unless otherwise specified.
 
 1. Open a terminal session on the **topology-host** and SSH to **london-vm-00**
    ```
    ssh cisco@london-vm-00
-
    ```
 
 2. Run a couple commands to verify the K8s cluster and the Cilium Installation
@@ -87,9 +87,9 @@ Kubernetes and Cilium Enterprise are pre-installed on the **London** VMs. All of
 
   Notes on the pods:
   * `Cilium-envoy`: used as a host proxy for enforcing HTTP and other L7 policies for the cluster. Reference: https://docs.cilium.io/en/latest/security/network/proxy/envoy/
-  * `Cilium-node-init`: used to initialize the node and install the Cilium agent.
+  * `Cilium-node-init`: used to initialize the K8s node and install the Cilium agent.
   * `Cilium-operator`: used to manage the Cilium agent on the node.
-  * `Cilium-h6fz9`: the Cilium agent on the node and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
+  * `Cilium-nnnnn`: the Cilium agent on the node and the element that will perform BGP peering and programming of eBPF SRv6 forwarding policies.
 
 
    Display Cilium DaemonSet status:
