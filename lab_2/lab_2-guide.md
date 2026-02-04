@@ -417,6 +417,7 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
     fc00:0:1111:e009::          uDT6              'carrots'                          bgp-65000           InUse  Y
    +fc00:0:1111:e006::          uB6 (Insert.Red)  'srte_c_50_ep_fc00:0:7777::1' (50, fc00:0:7777::1)  xtc_srv6            InUse  Y 
    +fc00:0:1111:e007::          uB6 (Insert.Red)  'srte_c_40_ep_fc00:0:7777::1' (40, fc00:0:7777::1)  xtc_srv6            InUse  Y  
+   +fc00:0:b00k:1dea::          uB0ok (Claim)     'DM_Instructor_With_Code_SRv6'     student             InUse  Y
    ```
 
 7. Show SRv6-TE policy detail:
@@ -596,12 +597,10 @@ When Rome receives the packet with an IPv6 destination address of fc00:0:7777:e0
 At the Rome router, the SRv6 transport header has been fully processed and removed, and the packet is delivered to the endpoint service. As shown in this capture, only a standard IPv4 ICMP packet remains, sourced from 10.101.1.2 and destined for 40.0.0.1, confirming that the SRv6 encapsulation has been decapsulated. This behavior corresponds to the execution of the SRv6 uDT4 endpoint function, which forwards the packet into the correct routing context . The packet is then forwarded within the Carrots VRF, completing the end-to-end SRv6 packet walk from London to Rome.
 
 
----
-<!-- 
-EASTER_EGG:
-fc00:0:2212:3333:7777:8986::
-If you found this, explain what this uSID represents and why RFC 8986 matters here.
--->
+> 💡 **Observation Challenge**
+> You may encounter an IPv6 destination address similar to  
+> **`fc00:0:2212:3333:7777:8986::`** during this lab.  
+> If you can explain which parts of this address represent **actual SRv6 steering instructions** and why **`8986` is meaningful even though it is not a router SID**, you’re looking at the lab the right way 😉
 
 
 **Validate low latency traffic takes the path: london-xrd01 -> 05 -> 06 -> rome-xrd07**
