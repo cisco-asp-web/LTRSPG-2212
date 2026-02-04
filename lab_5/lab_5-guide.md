@@ -228,7 +228,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
 
    The "job" completes with some pings from each host to each host.
 
-3. Use *kubectl logs* command to see the plugin's log output from the *srv6-pytorch* pods:
+3. Use *kubectl logs* command to see the plugin's log output from the *srv6-pytorch* pods. May take 3-4 minutes for the job to complete:
 
    ```
    kubectl logs srv6-pytorch-0
