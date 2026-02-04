@@ -241,7 +241,9 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    Adding route to fcbb:0:800:2::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1002:1006:fe06::']} to table 254
    ```
 > [!Note]
-> The "Adding route" entries should show encap.red (uSIDs) entries with some amount of disjointness. In the example the first route will travers **leaf00** -> **spine01** -> **leaf01**, the second entry will traverse **leaf00** -> **spine02** -> **leaf02**
+> The "Adding route" entries should show uSID *`encap.red`* entries with some amount of disjointness. In the example the first route will traverse **leaf00** -> **spine01** -> **leaf01**, the second entry will traverse **leaf00** -> **spine02** -> **leaf02**. 
+>
+> With these route + SRv6 encapsulation entries in place the PyTorch training job's traffic to its peers would be evenly load balanced across the traffic without any chance of collision or fabric congestion!
 
    Optional: the other two *`srv6-pytorch`* pods should have very similar log output
    ```
