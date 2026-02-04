@@ -576,13 +576,15 @@ Here, the zurich xrd router (XRD04 – 4444) receives a packet whose IPv6 destin
 
 
 
-1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04** who is the penultimate router.
+1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/1 to inspect the traffic sent by **Zurich-xrd04**.
 
   ![Rome ingress Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
+When Rome receives the packet with an IPv6 destination address of fc00:0:7777:e007::, the active microSID (7777) matches Rome’s own uSID, indicating that the packet has reached its final SRv6 endpoint. At this stage, all transit microSIDs have already been consumed, and no further traffic steering is required. Rome therefore executes the endpoint service behavior associated with e007 (for example, uDT4/uDT6: More information [here](https://www.ciscolive.com/c/dam/r/ciscolive/emea/docs/2025/pdf/BRKSPG-2203.pdf) and [here](https://datatracker.ietf.org/doc/html/rfc8986#name-enddt6-decapsulation-and-sp)), decapsulates the packet as needed, and forwards the inner payload according to the local routing or VRF configuration.
 
 
-7. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic.
+
+1. Launch an edgeshark capture on container **rome-xrd07** interface Gig0/0/0/0 to inspect the traffic.
 
   ![Rome Wireshark Capture](../topo_drawings/lab2-xrd07-wireshark-g1.png)
 
