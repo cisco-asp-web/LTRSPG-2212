@@ -336,7 +336,7 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
    cilium bgp routes advertised ipv6 unicast
    ```
 
-   Example partial output, Cilium is now advertising the node's Locators as highlighted below.
+   Example partial output, Cilium is now advertising the node's Locators as highlighted below. Also, due to the dynamic nature of the allocation your /48 values will differ from the example output:
    ```diff
    Node           VRouter   Peer             Prefix               NextHop           Age     Attrs
    london-vm-00   65000     fc00:0:5555::1   2001:db8:42::/64     fc00:0:800::2           
@@ -394,13 +394,13 @@ First though lets look at the BGP VRF configuration section contained in *03-car
   metadata:
     name: carrots-adverts     # a meta data label / name for the VRF route advertisement
     labels:
-      advertise: bgp-carrots  # a meta data label / name for this particular advertisement
+      advertise: bgp-carrots  # matches the VRF config label
   spec:
     advertisements:
       - advertisementType: "PodCIDR"   # we're going to advertise the k8s pod CIDR or subnet
   ```
 
-Now lets dive deeper into the  *carrots* VRF and the Alpine linux container in the VRF. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 header as detailed in the below diagram.
+Now lets dive deeper into the  *carrots* VRF and the Alpine linux container in the VRF. The goal is to create a forwarding policy so that packets from the container get placed into the *carrots* vrf and then encapsulated in an SRv6 L3VPN header as detailed in the below diagram.
 
 ![Cilium SRv6 L3VPN](/topo_drawings/cilium-packet-forwarding.png)
 
@@ -422,7 +422,7 @@ metadata:
   name: carrots
 spec:
   vrfID: 99                  # the VRF ID - analogous to the Route Distinguisher on a router
-  locatorPoolRef: pool0       # use our previously created locator pool
+  locatorPoolRef: pool0       # use our previously created SRv6 locator pool
   rules:
   - selectors:
     - endpointSelector:
@@ -441,8 +441,9 @@ metadata:
     vrf: carrots   # the pod is in the carrots VRF
   name: carrots0   # the pod's name
 spec:
+  nodeName: london-vm-02  # explicitly assign this pod to london-vm-02 (for later steps in the lab)
   containers:
-  - image: alpine:latest   # the pod's image
+  - image: alpine:latest   # deploy the pod using a super lightweight container image
     imagePullPolicy: IfNotPresent
     name: carrots0
     command:
@@ -476,9 +477,9 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
    kubectl get pod -n veggies carrots0 -o jsonpath="Node: {.spec.nodeName} | IPs: {.status.podIPs[*].ip}" && echo
    ```
 
-   Expected output should look something like the below. Note in this example the pod was deployed to **london-vm-02** your output may differ:
+   Expected output should look something like the below with the pod being deployed to **london-vm-02** with dynamically assigned IP addresses:
    ```
-   Node: london-vm-02 | IPs: 10.200.3.46 2001:db8:42:4::af86
+   Node: london-vm-02 | IPs: 10.200.2.46 2001:db8:42:4::af86
    ```
 
 3. Next we'll verify Cilium has allocated the carrots VRF a SRv6 L3VPN uDT4 SID on **london-vm-02**:
@@ -504,7 +505,7 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
    show bgp vpnv4 unicast | include 10.200.
    ```
    ```
-   show bgp vpnv4 unicast rd 9:9 10.200.0.0/24
+   show bgp vpnv4 unicast rd 9:9 10.200.2.0/24
    ```
 
    In the output of the first command we expect to find the Cilium advertised L3VPN prefixes, example:
@@ -514,18 +515,17 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
 
    In the output of the second command we expect to see detailed information for the prefix. Below is truncated output. Note, due to Cilium's dynamic allocation, your *Received Label* and *Sid* values will most likely differ from this example:
    ```diff
-     Local
-      fc00:0:800::2 (metric 4) from fc00:0:6666::1 (10.8.0.2)
-   +     Received Label 0x4fd00                              # uDT4 function
-        Origin incomplete, localpref 100, valid, internal, not-in-vrf
-        Received Path ID 0, Local Path ID 0, version 0
-        Extended community: RT:9:9 
-        Originator: 10.8.0.2, Cluster list: 10.0.0.6
-        PSID-Type:L3, SubTLV Count:1
-        SubTLV:
-   +      T:1(Sid information), Sid:fc00:0:88f7::(Transposed), Behavior:63, SS-TLV Count:1
-          SubSubTLV:
-            T:1(Sid structure):
+    fc00:0:800:2::2 (metric 4) from fc00:0:6666::1 (10.8.2.2)
+   +   Received Label 0x15300
+      Origin incomplete, localpref 100, valid, internal, not-in-vrf
+      Received Path ID 0, Local Path ID 0, version 0
+      Extended community: RT:9:9 
+      Originator: 10.8.2.2, Cluster list: 10.0.0.6
+      PSID-Type:L3, SubTLV Count:1
+       SubTLV:
+   +     T:1(Sid information), Sid:fc00:0:88d2::(Transposed), Behavior:63, SS-TLV Count:1
+         SubSubTLV:
+          T:1(Sid structure):
    ```
 
 2. Back on **london-vm-00**, verify SRv6 Egress Policies. This command will give you a rough equivalent to the SRv6 L3VPN FIB table
