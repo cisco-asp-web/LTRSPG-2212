@@ -611,8 +611,7 @@ At the Rome router, the SRv6 transport header has been fully processed and remov
     ```
 
     ![Amsterdam Capture](../topo_drawings/lab2-xrd-edgeshark-pcap-fast.png) 
-
-
+   
     Note the explicit segment-list we configured for our low latency policy:
 
     ```
