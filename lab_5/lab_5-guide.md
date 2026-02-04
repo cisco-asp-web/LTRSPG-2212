@@ -61,7 +61,7 @@ Cisco doesn't currently have a controller product for host-based SRv6 and the Hy
 
 Before we get into PyTorch and automation, let's manually add a Linux route with SRv6 encapsulation:
 
-1. Using the visual code containerlab extension open an ssh session to **london-vm-00** and add a Linux SRv6 route to *`london-vm-02`* that will take the path *`leaf00`* -> *`spine01`* -> *`leaf02`*:
+1. Using the visual code containerlab extension open an ssh session to **london-vm-00** and add a Linux SRv6 route to **london-vm-02** that will take the path **leaf00** -> **spine01** -> **leaf02**:
 
    ```
    sudo ip -6 route add fcbb:0:0800:2::/64 encap seg6 mode encap segs fcbb:0:1004:1001:1006:fe06:: dev ens5
@@ -78,19 +78,19 @@ Before we get into PyTorch and automation, let's manually add a Linux route with
    fcbb:0:800:2::/64  encap seg6 mode encap segs 1 [ fcbb:0:1004:1001:1006:fe06:: ] dev ens5 metric 1024 pref medium
    ```
 
-   - The SRv6 uSID combination in the above will route traffic from *`london-vm-00`* to *`london-vm-02`* via *`leaf00`*, *`spine01`*, and *`leaf02`*.
+   - The SRv6 uSID combination in the above will route traffic from **london-vm-00** to **london-vm-02** via **leaf00**, **spine01**, and **leaf02**.
      
    - The packet that egresses from *`london-vm-00`* will have an outer IPv6 destination header of **fcbb:1001:1006:fe06::** and an inner packet header destination of **fcbb:0:0800:2::2/128**. 
    
-   - The uSID shift-and-forward at *`leaf00`* and *`spine01`* will result in an ipv6 destination address of **fcbb:1006:fe06::** when the packet arrives at *`leaf02`*. 
+   - The uSID shift-and-forward at **leaf00** and **spine01** will result in an ipv6 destination address of **fcbb:1006:fe06::** when the packet arrives at **leaf02**. 
    
    - *`leaf02`* recognizes itself and its local uDT6 entry *`fc06`* in the destination address and will proceed to pop the outer IPv6 header and do a lookup on the inner destination address **fcbb:0:0800:2::/64**. 
    
-   - *`leaf02`* will then forward the traffic to *`london-vm-02`*
+   - **leaf02** will then forward the traffic to **london-vm-02**
 
    <img src="../topo_drawings/lab5-host00-host02-static-route.png" width="800" />
 
-1. Using the visual code containerlab extension, connect to SONiC *`leaf02`*, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
+1. Using the visual code containerlab extension, connect to SONiC **leaf02**, invoke FRR vtysh and 'show run' to see the SRv6 local SID entries:
    
    **leaf02**
    ```
@@ -162,7 +162,7 @@ In a few moments we'll launch a PyTorch test in our London K8s cluster. Immediat
   - Get the list of nodes from the distributed workload setup
   - Query the Jalapeno API for a shortest-path (lowest *`load`* metric) for each *source/destination* pair
   - The API returns an SRv6 uSID encapsulation instruction for each *source/destination* pair that will pin traffic to a specific path in the fabric
-  - The *`srv6 plugin`* then programs Linux SRv6 routes on the *container*, similar to the route we manually programmed earlier on *`london-vm-00`*. 
+  - The *`srv6 plugin`* then programs Linux SRv6 routes on the *container*, similar to the route we manually programmed earlier on **london-vm-00**. 
   - The distributed workload's traffic is SRv6 encapsulated as it egresses the source *container*
 
 The effect is the workload's traffic is intelligently load balanced across the fabric and no longer subject to the potential imbalances and congestion associated with ECMP
