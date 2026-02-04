@@ -20,8 +20,7 @@ https://cilium.io/labs/
   - [Kubernetes Custom Resource Definitions (CRDs)](#kubernetes-custom-resource-definitions-crds)
   - [Cilium BGP](#cilium-bgp)
     - [Configure Cilium BGP](#configure-cilium-bgp)
-    - [Verify Cilium BGP peering](#verify-cilium-bgp-peering)
-    - [Verify BGP prefix advertisement](#verify-bgp-prefix-advertisement)
+    - [Verify Cilium BGP peering and prefix advertisement](#verify-cilium-bgp-peering-and-prefix-advertisement)
   - [Cilium SRv6](#cilium-srv6)
     - [Cilium SRv6 SID Manager and Locators](#cilium-srv6-sid-manager-and-locators)
   - [Cilium VRF](#cilium-vrf)
@@ -208,6 +207,7 @@ Our Cilium BGP configuration is broken into four CRDs:
    ```
 
 4. The *BGP Prefix Config CRD* which defines prefix advertisements and policies
+  
    Here is a portion of the prefix advertisement CRD with notes:
    ```yaml
     metadata:
@@ -239,7 +239,7 @@ Our Cilium BGP configuration is broken into four CRDs:
    ```
    
 
-### Verify Cilium BGP peering 
+### Verify Cilium BGP peering and prefix advertisement
 
 > [!NOTE]
 > the **paris** and **barcelona**' route-reflectors were preconfigured to peer with the Cilium nodes and inherited the vpnv4 address family configuration during Lab 2, so we don't need to update their configs. 
@@ -251,7 +251,7 @@ Our Cilium BGP configuration is broken into four CRDs:
    cilium bgp peers
    ```
 
-   We expect each london VM to have two IPv6 BGP peering sessions established and receiving BGP NLRIs for IPv6 and IPv4/mpls_vpn (aka, SRv6 L3VPN).
+   We expect each london VM to have two IPv6 BGP peering sessions established and receiving BGP NLRIs for IPv6 and IPv4/mpls_vpn (aka, SRv6 L3VPN). We also expect to be advertising an IPv6 unicast prefix, but not advertise VPN prefixes yet.
 
    Partial output:
    ```yaml
@@ -262,24 +262,7 @@ Our Cilium BGP configuration is broken into four CRDs:
                  65000     65000    fc00:0:6666::1   established    30s     ipv6/unicast    6         1    
                                                                             ipv4/mpls_vpn   4         0
    <snip>  
-   ```
-
-   
-### Verify BGP prefix advertisement
-
-1. Verify the prefix advertisement (you should now see a 1 under the ipv6 unicast column):
-   ```
-   cilium bgp peers
-   ```
-   ```diff
-   $ cilium bgp peers
-   Node           Local AS   Peer AS   Peer Address     Session State   Uptime   Family          Received   Advertised
-   +london-vm-00   65000      65000     fc00:0:5555::1   established     3m13s    ipv6/unicast    6          1    
-                                                                                  ipv4/mpls_vpn   4          0    
-                   65000      65000     fc00:0:6666::1   established     3m13s    ipv6/unicast    6          1    
-                                                                                  ipv4/mpls_vpn   4          0
-   <snip>
-   ```                                                                         
+   ```                                                                        
 
 2. Let's get a little more detail on advertised prefixes with the `cilium bgp routes` command. Let's first add a -h flag to see our options
 
@@ -296,7 +279,7 @@ Our Cilium BGP configuration is broken into four CRDs:
      cilium bgp routes <available | advertised> <afi> <safi> [vrouter <asn>] [peer|neighbor <address>] [flags]
    ```
 
-3. Let's get the advertised prefixes:
+3. Let's get the advertised IPv6 prefixes:
    ```
    cilium bgp routes advertised ipv6 unicast
    ```
