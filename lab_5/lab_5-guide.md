@@ -240,8 +240,8 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    Adding route to fcbb:0:800:1::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1001:1005:fe06::']} to table 254
    Adding route to fcbb:0:800:2::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1002:1006:fe06::']} to table 254
    ```
-   > [!Note]
-   > The "Adding route" entries should show encap.red (uSIDs) entries with some amount of disjointness. In the example the first route will travers **leaf00** -> **spine01** -> **leaf01**, the second entry will traverse **leaf00** -> **spine02** -> **leaf02**
+> [!Note]
+> The "Adding route" entries should show encap.red (uSIDs) entries with some amount of disjointness. In the example the first route will travers **leaf00** -> **spine01** -> **leaf01**, the second entry will traverse **leaf00** -> **spine02** -> **leaf02**
 
    Optional: the other two *`srv6-pytorch`* pods should have very similar log output
    ```
@@ -249,7 +249,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    kubectl logs srv6-pytorch-2
    ```
 
-We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at the first few lines of the pod spec you'll see that in addition to the default Cilium-provided frontend interface, the pod has been configured to have a backend, *`Multus`* provided interface. And we've configured the pods to join *VRF carrots!*:
+We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at the first few lines of the [pod spec](./srv6-pytorch/srv6-pytorch-test.yaml) you'll see that in addition to the default *`Cilium-provided`* frontend interface, the pod has been configured to have a backend, **Multus** provided interface. And we've configured the pods to join *`VRF carrots!`*:
 
    ```diff
    kind: Pod
