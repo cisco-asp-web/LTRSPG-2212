@@ -168,7 +168,7 @@ In a few moments we'll launch a PyTorch test in our London K8s cluster. Immediat
 The effect is the workload's traffic is intelligently load balanced across the fabric and no longer subject to the potential imbalances and congestion associated with ECMP
 
 > [!Note]
-> If we had GPUs and RDMA NICs we would work to extend the plugin to program route + SRv6 encap entries on the NIC itself
+> If we had GPUs and RDMA NICs we would work to extend the plugin to program route + SRv6 encap entries on the RDMA NIC itself
 
 
 Here's a summary of the workflow:
@@ -197,7 +197,7 @@ The plugin includes a simple demo that uses a *`gloo`* backend because *`gloo`* 
 
 Upon deployment the nodes will perform all the PyTorch ML setup steps, including SRv6 plugin functionality, but will not perform actual ML training...in a future version of this lab we'll try and integrate a small dataset to train on.
 
-1. Using the visual code containerlab extension, connect to our Kubernetes control plane node **london-vm-00** and cd into the lab_5/srv6-pytorch/ directory
+1. Return to your ssh session to the **london-vm-00** Kubernetes control plane node and cd into the lab_5/srv6-pytorch/ directory
 
    ```
    cd ~/LTRSPG-2212/lab_5/srv6-pytorch/
@@ -221,7 +221,7 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    service/srv6-pytorch created
    ```
 
-   As the pods deploy and the PyTorch job initializes the *`srv6-plugin`* takes action. It should create SRv6 routes for each *pod* to each other *pod* participating in the workload.
+   As the pods deploy and the PyTorch job initializes, the *`srv6-plugin`* takes action. It should create SRv6 routes for each *`pod`* to each other *`pod`* participating in the workload.
 
    - *`srv6-pytorch-0`* --> *`srv6-pytorch-1`* and *`srv6-pytorch-2`*
    - *`srv6-pytorch-1`* --> *`srv6-pytorch-0`* and *`srv6-pytorch-2`*
@@ -235,11 +235,13 @@ Upon deployment the nodes will perform all the PyTorch ML setup steps, including
    kubectl logs srv6-pytorch-0
    ```
 
-   Look for successful pings and a log statement something like this:
+   Look for successful pings and "Adding route" entries that look something like this:
    ```
    Adding route to fcbb:0:800:1::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1001:1005:fe06::']} to table 254
    Adding route to fcbb:0:800:2::/64 with encap: {'type': 'seg6', 'mode': 'encap.red', 'segs': ['fcbb:0:1004:1002:1006:fe06::']} to table 254
    ```
+   > [!Note]
+   > The "Adding route" entries should show encap.red (uSIDs) entries with some amount of disjointness. In the example the first route will travers **leaf00** -> **spine01** -> **leaf01**, the second entry will traverse **leaf00** -> **spine02** -> **leaf02**
 
    Optional: the other two *`srv6-pytorch`* pods should have very similar log output
    ```
