@@ -42,12 +42,14 @@ Our SONiC ML Training Fabric topology looks like this:
 
 ## SONiC: A Very Quick Tour
 
-SONiC is Linux plus a microservices-style architecture with modules running as Docker containers. The containers interact and communicate with each other through the Switch State Service (*`swss`*) container. The infrastructure also relies on the use of a *redis-database* engine: a key-value database to provide a language independent interface, a method for data persistence, replication and multi-process communication among all SONiC subsystems.
+SONiC is Linux plus a microservices-style architecture with modules running as Docker containers. The containers interact and communicate with each other through the Switch State Service (*`swss`*) container. The infrastructure also relies on the use of a *redis-database* engine: a key-value database to provide a language independent interface, a method for data persistence, replication, and multi-process communication among all SONiC subsystems.
 
 For a deep dive on SONiC architecture and containers please see: https://sonicfoundation.dev/deep-dive-into-sonic-architecture-design/
 
 
-1. ssh to **leaf00** in our topology using the visual code extension (note: user/password is *`admin/admin`*)
+1. ssh to **leaf00** in our topology using the visual code extension
+  
+   Note: user/password is **admin/admin**)
 
    ```
    ssh admin@clab-cleu26-sonic-leaf-00
