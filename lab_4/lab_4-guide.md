@@ -465,15 +465,12 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
 ### Verify London VM backend network reachability
 
 1. SSH to the **london-vm-00** from the **topology-host**
-
-    **old diagram**
-   <img src="../topo_drawings/lab4-host00-ipaddr.png" width="400" />
-
+   
     ```
     ssh london-vm-00
     ```
-
-3. Disply the VM's ipv6 routing table:
+    
+2. Disply the VM's ipv6 routing table:
    
     ```
     ip -6 route 
@@ -492,7 +489,7 @@ If your *vtysh* session is on **leaf00** keep it open. If not, ssh to **leaf00**
     fe80::/64 dev ens5 proto kernel metric 256 pref medium
     ```
 
-4. Ping **london-vm-01** and **london-vm-02** over the *`Backend/SONiC`* network:
+3. Ping **london-vm-01** and **london-vm-02** over the *`Backend/SONiC`* network:
 
     ```
     ping fcbb:0:800:1::2 -i .3 -c 100
