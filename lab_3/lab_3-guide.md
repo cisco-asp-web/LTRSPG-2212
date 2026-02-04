@@ -173,7 +173,7 @@ Our Cilium BGP configuration is broken into four CRDs:
          peerAddress: fc00:0:6666::1
          peerConfigRef:
            name: "cilium-peer"
-  ```
+   ```
 
 2. The *BGP Peer Config CRD* is where we control address families and other BGP peering or route policies on a per peer or peer-group basis.
 
@@ -387,9 +387,9 @@ Cilium also supports /64 locators, but for simplicity and consistency with our *
 ## Cilium VRF
 
 ### Create the carrots BGP VRF
-You will be applying the full Cilium VRF configuration shortly found here [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml).
+You will be applying the full Cilium VRF configuration [03-carrots-vrf.yaml](cilium/03-carrots-vrf.yaml) shortly.
 
-First though lets look at the BGP VRF configuration section containted in *03-carrots-vrf.yaml* 
+First though lets look at the BGP VRF configuration section contained in *03-carrots-vrf.yaml* 
 
   ```yaml
   ---
