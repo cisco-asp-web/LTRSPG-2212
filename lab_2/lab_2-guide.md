@@ -28,7 +28,7 @@ We will have achieved the following objectives upon completion of Lab 2:
 * Configuration and testing of SRv6 TE policy and traffic steering
 
 ## Topology
-![L3VPN Topology](/topo_drawings/lab2-l3vpn-carrots.png)
+<img src="../topo_drawings/lab2-l3vpn-carrots.png" width="800" />
 
 
 ## Configure SRv6 L3VPN
@@ -238,7 +238,7 @@ Validation command output examples can be found at this [LINK](/lab_2/validation
 
 We will use the below diagram for reference:
 
-![L3VPN Topology](/topo_drawings/lab2-l3vpn-policy.png)
+<img src="../topo_drawings/lab2-l3vpn-policy.png" width="800" />
 
 > [!IMPORTANT]
 > A subsequent section of this lab will validate end-to-end connectivity between the London and Rome containers, providing a detailed, step-by-step walkthrough of traffic forwarding across the network from ingress to egress.
