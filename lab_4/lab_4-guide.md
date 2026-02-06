@@ -292,6 +292,11 @@ We'll use Ansible and execute the [sonic-playbook.yaml](https://github.com/cisco
     spine02  : ok=18   changed=14   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 ``` 
 
+> [!IMPORTANT]
+> Not all truths are found at the edge.
+> Sometimes, the center of the fabric knows more than the leaves.
+> Some secrets only reveal themselves **after an SSH login** — choose the node that binds the fabric together.
+
 **Verify Configuration of FRR in Leaf00**
 
 FRR operates in SONiC very similar to Classic IOS commands. 
