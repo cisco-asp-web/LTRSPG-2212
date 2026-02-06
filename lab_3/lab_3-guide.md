@@ -549,7 +549,7 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
    }
    {
       "destinationCIDRs": [
-        "10.107.2.0/24"
+        "10.107.1.0/24"
       ],
       "destinationSID": "fc00:0:7777:e006::",
       "vrfID": 99
