@@ -47,14 +47,10 @@ SONiC is Linux plus a microservices-style architecture with modules running as D
 For a deep dive on SONiC architecture and containers please see: https://sonicfoundation.dev/deep-dive-into-sonic-architecture-design/
 
 
-1. ssh to **leaf00** in our topology using the visual code extension
+1. Using the containerlab vscode extension, ssh to **sonic-leaf-00**.
   
   > [!NOTE]
   >user/password is **admin/admin**)
-
-   ```
-   ssh admin@clab-cleu26-sonic-leaf-00
-   ```
 
 2. List SONiC's docker containers.
     ```
