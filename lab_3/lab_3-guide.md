@@ -573,17 +573,10 @@ You'll note that the pod is in the *carrots VRF* and the K8s namespace *veggies*
 
 ### Optional - Traffic capture using Edgeshark
 
-The London VMs are connected to the Containerlab topology via Linux bridge instances. You can inspect traffic either at the source (on the bridge) or at the destination (Rome container’s eth2).
+The London VMs are connected to the Containerlab topology via Linux bridge instances. You can inspect traffic either at the source (on the bridge) or at the destination (Rome container’s eth1). We do recommend to inspect the traffic at the destination on Rome's container interface eth1
 
-To capture traffic near the source:
-   - Open Firefox
-   - Go to EdgeShark (http://198.18.133.100:5001/w)
-   - Click Refresh
-   - Select the desired interface to start the capture.
 
-![Edgeshark on the linux bridge](../topo_drawings/lab33edgeshark-linux-bridge.png)
-
-or use the containerlab extension to capture the traffic on Rome's eth2 interface as we previously executed in lab 1 and 2 
+![Edgeshark on the rome container eth1 interface](../topo_drawings/lab3-rome-edgeshark-pcap.png)
 
 
 
