@@ -494,4 +494,4 @@ The ingress PE, **london-xrd01**, will then be configured with SRv6 segment-list
    ```
 
 ## End of Lab 2
-You can either proceed to [Lab 2 - Packet Walk](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_2/lab_2-packet-walk.md) or to [Lab 3](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_3/lab_3-guide.md)
+If you have time we have a great packet walk including packet captures [Lab 2 - Packet Walk](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_2/lab_2-packet-walk.md) or proceed to [Lab 3](https://github.com/cisco-asp-web/LTRSPG-2212/blob/main/lab_3/lab_3-guide.md)
