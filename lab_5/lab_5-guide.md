@@ -369,6 +369,10 @@ The **SRv6 PyTorch pods** are connected to both the backend SONiC fabric and the
 
 2. While the ping is running start an Edgeshark capture on **london-xrd01** Gi0-0-0-3. The capture should show the pings as SRv6 encapsulated packets with the uSID stack programmed by the SRv6 PyTorch plugin. 
 
+<img src="../topo_drawings/lab5-edgeshark-capture-london-gi3.png" width="800" />
+
+
+
 **Congratulations, you have reached the end of Cisco Live Lab LTRSPG-2212, hurray!!**
 
 ## End of lab 5
