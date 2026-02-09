@@ -155,7 +155,7 @@ Expected output will be something like:
 > [!NOTE]
 > We only specified an encapsulated route in the outbound direction, so the return traffic is not encapsulated
 
-1. Delete the route as we don't want to confuse an SRv6 route on the **london-vm** with the SRv6 routes our K8s pods will be running later in the lab
+1. Delete the route as we don't want to confuse an SRv6 route on the **london-vm-00** with the SRv6 routes our K8s pods will be running later in the lab
 
     ```
     sudo ip -6 route del fcbb:0:0800:2::/64
@@ -336,6 +336,10 @@ We didn't review the *`srv6-pytorch`* yaml in detail, but if you take a look at 
     ```
 
 3. While the ping is running start an Edgeshark capture on **leaf00's** Ethernet16 interface - *`Note: it appears as eth5 in Visual Code`*). The capture should show the pings as SRv6 encapsulated packets with the uSID stack programmed by the SRv6 PyTorch plugin. 
+
+
+<img src="../topo_drawings/lab5-edgeshark-capture-leaf00-eth5.png" width="800" />
+
 
 Feel free to Edgeshark capture other interfaces in the fabric. 
 
