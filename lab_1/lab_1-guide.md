@@ -55,15 +55,13 @@ Lab 1 focuses exclusively on the XRd frontend network.
 
 <img src="../topo_drawings/lab-assistant-step-1.png" width="800" />
 
-3. Now on the LTRSPG-2212 screen click the **POD** button to bring up the list of available pods
-   and select the pod number you were assigned.
+3. Now on the LTRSPG-2212 screen click the **POD** button to bring up the list of available pods and select the pod number you were assigned.
 
 <img src="../topo_drawings/lab-assistant-step-2.png" width="800" />
 <img src="../topo_drawings/lab-assistant-step-3.png" width="800" />
 
 
-4. Last step. Now that you have an assigned pod click on the **Connect VPN** button as highlighted bellow
-   to launch the Secure Client VPN on your desktop and connect to your dCLoud Pod.
+4. Last step. Now that you have an assigned pod click on the **Connect VPN** button as highlighted bellow to launch the Secure Client VPN on your desktop and connect to your dCLoud Pod.
 
 <img src="../topo_drawings/lab-assistant-step-4.png" width="800" />
 
