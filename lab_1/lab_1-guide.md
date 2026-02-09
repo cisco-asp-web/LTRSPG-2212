@@ -50,7 +50,8 @@ Lab 1 focuses exclusively on the XRd frontend network.
 ## Selecting Student Pod and Connecting to VPN
 1. You will be using the web based ILT Assistant tool for student pod assignment and connecting your VPN. First, you should have been assigned a lab **POD #** from 1 to 30 by the proctor and been given the six digit **Access Code** for today's lab.
    
-2. Open a browser on your desktop and go the ILT Assistant tool at the following URL https://lab-assistant.com/ and enter your lab **Access Code** as shown in the below screenshot.
+2. Open a browser on your desktop and go the ILT Assistant tool at the following URL https://lab-assistant.com/ and
+   enter your lab **Access Code** as shown in the below screenshot.
 
 <img src="../topo_drawings/lab-assistant-step-1.png" width="800" />
 
@@ -60,7 +61,9 @@ Lab 1 focuses exclusively on the XRd frontend network.
 <img src="../topo_drawings/lab-assistant-step-2.png" width="800" />
 <img src="../topo_drawings/lab-assistant-step-3.png" width="800" />
 
-4. Last step. Now that you have an assigned pod click on the **Connect VPN** button as highlighted bellow to launch the Secure Client VPN on your desktop and connect to your dCLoud Pod.
+
+4. Last step. Now that you have an assigned pod click on the **Connect VPN** button as highlighted bellow
+   to launch the Secure Client VPN on your desktop and connect to your dCLoud Pod.
 
 <img src="../topo_drawings/lab-assistant-step-4.png" width="800" />
 
