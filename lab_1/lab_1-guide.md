@@ -47,6 +47,21 @@ Our network consists of a frontend/WAN with 7 XRd routers providing SRv6 transpo
 
 Lab 1 focuses exclusively on the XRd frontend network.
 
+## Selecting Student Pod and Connecting to VPN
+1. We will be using our Instructor Led Tool (ILT) Assistant web page today for you to assign your pod and connect your provided workstation through VPN. First you should have been assigned a lab pod # from 1 to 30 by the proctor and been given the access code for today's lab.
+2. Open a browser on your desktop and go the following URL https://lab-assistant.com/ and enter your lab access code as seen in the below screenshot.
+
+<img src="../topo_drawings/lab-assistant-step-1.png" width="800" />
+
+3. Now on the LTRSPG-2212 screen click the **POD** button to bring up the list of available pods and select the pod number as you were assigned.
+
+<img src="../topo_drawings/lab-assistant-step-2.png" width="800" />
+<img src="../topo_drawings/lab-assistant-step-3.png" width="800" />
+
+4. Last step. Now that you have an assigned pod click on the **Connect VPN** button as highlighted bellow to launch the Secure Client VPN on your desktop and connect to your dCLoud Pod.
+
+<img src="../topo_drawings/lab-assistant-step-4.png" width="800" />
+
 ## Accessing the routers 
 
 ⚠️⚠️⚠️  Note: This section is provided for reference only. We will walk through router access during the live demo. ⚠️⚠️⚠️ 
