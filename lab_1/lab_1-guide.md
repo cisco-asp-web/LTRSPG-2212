@@ -48,12 +48,14 @@ Our network consists of a frontend/WAN with 7 XRd routers providing SRv6 transpo
 Lab 1 focuses exclusively on the XRd frontend network.
 
 ## Selecting Student Pod and Connecting to VPN
-1. We will be using our Instructor Led Tool (ILT) Assistant web page today for you to assign your pod and connect your provided workstation through VPN. First you should have been assigned a lab pod # from 1 to 30 by the proctor and been given the access code for today's lab.
-2. Open a browser on your desktop and go the following URL https://lab-assistant.com/ and enter your lab access code as seen in the below screenshot.
+1. You will be using the web based ILT Assistant tool for student pod assignment and connecting your VPN. First, you should have been assigned a lab **POD #** from 1 to 30 by the proctor and been given the six digit **Access Code** for today's lab.
+   
+2. Open a browser on your desktop and go the ILT Assistant tool at the following URL https://lab-assistant.com/ and enter your lab **Access Code** as shown in the below screenshot.
 
 <img src="../topo_drawings/lab-assistant-step-1.png" width="800" />
 
-3. Now on the LTRSPG-2212 screen click the **POD** button to bring up the list of available pods and select the pod number as you were assigned.
+3. Now on the LTRSPG-2212 screen click the **POD** button to bring up the list of available pods
+   and select the pod number you were assigned.
 
 <img src="../topo_drawings/lab-assistant-step-2.png" width="800" />
 <img src="../topo_drawings/lab-assistant-step-3.png" width="800" />
