@@ -52,25 +52,74 @@ topology:
       startup-config: xrd-config/rome.cfg
       mgmt-ipv4: 172.20.6.107
 
+# Container Edge Nodes
     app-container-rome:
       kind: linux
-      image: cl-rome-container:latest
+      image: vpackets/ciscolive-container:latest
       mgmt-ipv4: 172.20.6.109
       cap-add:
         - NET_ADMIN
         - NET_RAW
       ports:
         - 2222:22
+      exec:
+        # System settings
+        - hostname rome
+        - echo "rome" > /etc/hostname
+        - echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        - lldpd
+        # Interface Optimization & Readiness
+        - ip link set eth1 txqueuelen 1000 mtu 1500
+        - ip link set eth1 up
+        - sysctl -w net.ipv6.conf.eth1.accept_dad=0
+        # eth1 IPv4 & IPv6 Addressing
+        - ip addr add 10.107.1.2/24 dev eth1
+        - ip addr add fc00:0:107:1::2/64 dev eth1
+        # Loopbacks
+        - ip addr add 20.0.0.1/32 dev lo
+        - ip addr add 30.0.0.1/32 dev lo
+        - ip addr add 40.0.0.1/32 dev lo
+        - ip addr add 50.0.0.1/32 dev lo
+        - ip addr add fc00:0:40::1/128 dev lo
+        - ip addr add fc00:0:50::1/128 dev lo
+        # Static Routing
+        - ip route add 10.0.0.0/8 via 10.107.1.1
+        - ip route add 10.1.1.0/24 via 10.107.1.1
+        - ip route add 10.8.0.0/16 via 10.107.1.1
+        - ip -6 route add fc00:0::/32 via fc00:0:107:1::1
+        - ip -6 route add fc00:0:101:1::/64 via fc00:0:107:1::1
 
     app-container-london:
       kind: linux
-      image: cl-london-container:latest
+      image: vpackets/ciscolive-container:latest
       mgmt-ipv4: 172.20.6.108
       cap-add:
         - NET_ADMIN
         - NET_RAW
       ports:
         - 22222:22
+      exec:
+        # System settings
+        - hostname london
+        - echo "london" > /etc/hostname
+        - echo "nameserver 8.8.8.8" > /etc/resolv.conf
+        - lldpd
+        # Interface Optimization & Readiness
+        - ip link set eth1 txqueuelen 1000 mtu 1500
+        - ip link set eth1 up
+        - sysctl -w net.ipv6.conf.eth1.accept_dad=0
+        # eth1 IPv4 & IPv6 Addressing
+        - ip addr add 10.101.1.2/24 dev eth1
+        - ip addr add fc00:0:101:1::2/64 dev eth1
+        # Static Routing
+        - ip route add 10.0.0.0/24 via 10.101.1.1
+        - ip route add 10.107.1.0/24 via 10.101.1.1
+        - ip route add 10.1.1.0/24 via 10.101.1.1
+        - ip route add 40.0.0.0/24 via 10.101.1.1
+        - ip route add 50.0.0.0/24 via 10.101.1.1
+        - ip -6 route add fc00:0::/32 via fc00:0:101:1::1
+        - ip -6 route add fc00:0:40::1/64 via fc00:0:101:1::1
+        - ip -6 route add fc00:0:50::1/64 via fc00:0:101:1::1
 
 # London DC SONiC Network
     sonic-leaf-00:
@@ -135,7 +184,6 @@ topology:
     london-vm-02-be:
       kind: bridge
 
-
   links:
 
     # Core Network Links
@@ -162,16 +210,14 @@ topology:
     - endpoints: ["sonic-leaf-02:eth2", "sonic-spine-01:eth3"]
     - endpoints: ["sonic-leaf-02:eth3", "sonic-spine-02:eth3"]
 
-
     # London DC SONiC Network Links to London VMs
     - endpoints: ["sonic-leaf-00:eth5", "london-vm-00-be:sonic-leaf00-eth5"]
     - endpoints: ["sonic-leaf-01:eth5", "london-vm-01-be:sonic-leaf01-eth5"]
     - endpoints: ["sonic-leaf-02:eth5", "london-vm-02-be:sonic-leaf02-eth5"]
 
-
-    # London DC SONiC  Front End Network Links between London VMs (bridges) and XRd
+    # London DC SONiC Front End Network Links between London VMs (bridges) and XRd
     - endpoints: ["xrd-london:Gi0-0-0-3", "london-vm-00-fe:xrd-london:Gi0-0-0-3"]
     - endpoints: ["xrd-london:Gi0-0-0-4", "london-vm-01-fe:xrd-london:Gi0-0-0-4"]
     - endpoints: ["xrd-london:Gi0-0-0-5", "london-vm-02-fe:xrd-london:Gi0-0-0-5"]
 
-
+  
