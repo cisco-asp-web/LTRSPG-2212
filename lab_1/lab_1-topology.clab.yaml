@@ -55,7 +55,7 @@ topology:
 # Container Edge Nodes
     app-container-rome:
       kind: linux
-      image: vpackets/ciscolive-container:latest
+      image: net-tools:latest
       mgmt-ipv4: 172.20.6.109
       cap-add:
         - NET_ADMIN
@@ -91,7 +91,7 @@ topology:
 
     app-container-london:
       kind: linux
-      image: vpackets/ciscolive-container:latest
+      image: net-tools:latest
       mgmt-ipv4: 172.20.6.108
       cap-add:
         - NET_ADMIN
